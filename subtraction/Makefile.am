@@ -5,28 +5,24 @@ INCLUDES = \
   -I$(OFFLINE_MAIN)/include \
   -I`root-config --incdir`
 
-libTreeMaker_la_LDFLAGS = \
+libhisubtraction_la_LDFLAGS = \
   -nodefaultlibs \
   -L$(libdir) \
   -L$(OFFLINE_MAIN)/lib \
   `root-config --libs`
 
 lib_LTLIBRARIES = \
-  libTreeMaker.la
+  libhisubtraction.la
 
 include_HEADERS = \
-  TreeMaker.h \
-  TreeMakerLinkDef.h \
   SubtractCEMC.h \
   SubtractCEMCLinkDef.h
 
-libTreeMaker_la_SOURCES = \
-  TreeMaker.C \
-  TreeMaker_Dict.C \
+libhisubtraction_la_SOURCES = \
   SubtractCEMC.C \
   SubtractCEMC_Dict.C
 
-libTreeMaker_la_LIBADD = \
+libhisubtraction_la_LIBADD = \
   -lg4dst \
   -lg4eval \
   -ljetbackground \
@@ -39,7 +35,7 @@ noinst_PROGRAMS = \
   testexternals
 
 testexternals_LDADD = \
-  libTreeMaker.la
+  libhisubtraction.la
 
 testexternals.C:
 	echo "//*** this is a generated file. Do not commit, do not edit" > $@

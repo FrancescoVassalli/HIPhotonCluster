@@ -26,50 +26,16 @@ AM_CPPFLAGS = \
   -I$(ROOTSYS)/include 
 
 pkginclude_HEADERS = \
-  RawClusterBuilderFwd.h \
-  RawClusterBuilderGraph.h \
-  RawClusterBuilderTemplate.h \
-  RawClusterBuilderTemplateSub.h \
-  RawClusterPositionCorrection.h \
-  RawTowerCalibration.h
-
+  RawClusterBuilderTemplateSub.h 
 
 if ! MAKEROOT6
   ROOT5_DICTS = \
-  RawClusterBuilderGraph_Dict.cc \
-  RawClusterBuilderTemplate_Dict.cc \
-  RawClusterBuilderTemplateSub_Dict.cc \
-  RawClusterBuilderTemplateFEMC_Dict.cc \
-  RawClusterBuilderTemplateEEMC_Dict.cc \
-  RawClusterBuilderFwd_Dict.cc \
-  RawClusterPositionCorrection_Dict.cc \
-  RawClusterDeadAreaMask_Dict.cc \
-  RawTowerCombiner_Dict.cc \
-  RawTowerCalibration_Dict.cc \
-  RawTowerDeadTowerInterp_Dict.cc \
-  RawTowerDeadMapLoader_Dict.cc
+  RawClusterBuilderTemplateSub_Dict.cc 
 endif
-
 
 libcalo_reco_la_SOURCES = \
   $(ROOT5_DICTS) \
-  BEmcCluster.cc \
-  BEmcRec.cc \
-  BEmcRecCEMC.cc \
-  BEmcRecFEMC.cc \
-  BEmcRecEEMC.cc \
-  RawClusterBuilderGraph.cc \
-  RawClusterBuilderTemplate.cc \
-  RawClusterBuilderTemplateSub.cc \
-  RawClusterBuilderTemplateFEMC.cc \
-  RawClusterBuilderTemplateEEMC.cc \
-  RawClusterBuilderFwd.cc \
-  RawClusterPositionCorrection.cc \
-  RawClusterDeadAreaMask.cc \
-  RawTowerCombiner.cc \
-  RawTowerCalibration.cc \
-  RawTowerDeadTowerInterp.cc \
-  RawTowerDeadMapLoader.cc
+  RawClusterBuilderTemplateSub.cc 
 
 # Rule for generating table CINT dictionaries.
 %_Dict.cc: %.h %LinkDef.h

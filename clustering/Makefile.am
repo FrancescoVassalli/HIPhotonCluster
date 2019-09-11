@@ -17,7 +17,6 @@ libcalo_reco_la_LIBADD = \
   -lgsl \
   -lgslcblas \
   -lcalo_io \
-	-lcalo_reco\
   -lcalo_util  \
   -lphparameter
 
@@ -27,21 +26,31 @@ AM_CPPFLAGS = \
   -I$(ROOTSYS)/include 
 
 pkginclude_HEADERS = \
-  RawClusterBuilderTemplateSub.h \
-	BEmcCluster.h \
-	BEmcRec.h \
-	BEmcRecCEMC.h
+  RawClusterBuilderTemplateSub.h 
+
 
 if ! MAKEROOT6
   ROOT5_DICTS = \
-  RawClusterBuilderTemplateSub_Dict.cc 
+  RawClusterBuilderGraph_Dict.cc \
+  RawClusterBuilderTemplate_Dict.cc \
+  RawClusterBuilderTemplateSub_Dict.cc \
+  RawClusterBuilderTemplateFEMC_Dict.cc \
+  RawClusterBuilderTemplateEEMC_Dict.cc \
+  RawClusterBuilderFwd_Dict.cc \
+  RawClusterPositionCorrection_Dict.cc \
+  RawClusterDeadAreaMask_Dict.cc \
+  RawTowerCombiner_Dict.cc \
+  RawTowerCalibration_Dict.cc \
+  RawTowerDeadTowerInterp_Dict.cc \
+  RawTowerDeadMapLoader_Dict.cc
 endif
+
 
 libcalo_reco_la_SOURCES = \
   $(ROOT5_DICTS) \
-  RawClusterBuilderTemplateSub.cc \
-	BEmcRec.cc \
-	BEmcCluster.cc
+  BEmcCluster.cc \
+  BEmcRec.cc \
+  BEmcRecCEMC.cc 
 
 # Rule for generating table CINT dictionaries.
 %_Dict.cc: %.h %LinkDef.h

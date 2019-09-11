@@ -27,23 +27,27 @@
 #include "G4_HIJetReco.C"
 #include "G4_DSTReader.C"
 #include "DisplayOn.C"
+#include "SubtractCEMC.h"
+#include "RawClusterBuilderTemplateSub.h"
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libg4testbench.so)
 R__LOAD_LIBRARY(libphhepmc.so)
 R__LOAD_LIBRARY(libPHPythia6.so)
 R__LOAD_LIBRARY(libPHPythia8.so)
+R__LOAD_LIBRARY(libcalo_reco.so)
+R__LOAD_LIBRARY(libhisubtraction.so)
 #endif
 
 using namespace std;
 
 
-  int Fun4All_G4_sPHENIX(
-      const int nEvents = 1,
-      const char *outputFile = "G4sPHENIX.root",
-      const char *inputFile = NULL)
+int Fun4All_G4_sPHENIX(
+    const int nEvents = 1,
+    const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
+    const char *outputFile = "G4sPHENIX.root",
+    const char *embed_input_file = "/sphenix/data/data02/review_2017-08-02/sHijing/fm_0-4.list")
 {
-  const char *embed_input_file = "";
-  
+
   //===============
   // Input options
   //===============
@@ -58,7 +62,7 @@ using namespace std;
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = (bool) inputFile;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
   const bool runpythia8 = false;
@@ -77,7 +81,7 @@ using namespace std;
   const bool usegun = false && !readhits;
   // Throw single Upsilons, may be embedded in Hijing by setting readhepmc flag also  (note, careful to set Z vertex equal to Hijing events)
   const bool upsilons = false && !readhits;
-  const int num_upsilons_per_event = 0;  // can set more than 1 upsilon per event, each has a unique embed flag
+  const int num_upsilons_per_event = 1;  // can set more than 1 upsilon per event, each has a unique embed flag
   // Event pile up simulation with collision rate in Hz MB collisions.
   // Note please follow up the macro to verify the settings for beam parameters
   const double pileup_collision_rate = 0;  // 100e3 for 100kHz nominal AuAu collision rate.
@@ -93,7 +97,7 @@ using namespace std;
   bool do_tracking = true;
   bool do_tracking_cell = do_tracking && true;
   bool do_tracking_track = do_tracking_cell && true;
-  bool do_tracking_eval = do_tracking_track &&false;
+  bool do_tracking_eval = do_tracking_track && false;
 
   bool do_pstof = false;
 
@@ -126,7 +130,8 @@ using namespace std;
   bool do_calotrigger = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_jet_reco = true;
-  bool do_jet_eval = do_jet_reco && false;
+  bool do_jet_eval = do_jet_reco && true;
+
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
   // single particle / p+p-only simulations, or for p+Au / Au+Au
   // simulations which don't particularly care about jets)
@@ -144,7 +149,6 @@ using namespace std;
   gSystem->Load("libg4detectors.so");
   gSystem->Load("libphhepmc.so");
   gSystem->Load("libg4testbench.so");
-  //gSystem->Load("libg4hough.so");
   gSystem->Load("libg4eval.so");
   gSystem->Load("libg4intt.so");
   // establish the geometry and reconstruction setup
@@ -234,9 +238,9 @@ using namespace std;
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("gamma", 15);  // mu+,e+,proton,pi+,Upsilon
-      //gen->add_particles("pi0", 3);  // mu+,e+,proton,pi+,Upsilon
-      //gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("pi-", 1);  // mu+,e+,proton,pi+,Upsilon
+      gen->add_particles("pi+",100); // 100 pion option
+      gen->add_particles("gamma",2); // 100 pion option
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -248,15 +252,15 @@ using namespace std;
                                               PHG4SimpleEventGenerator::Uniform,
                                               PHG4SimpleEventGenerator::Uniform);
         gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
-        gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(5.0,30.0);
+      gen->set_pt_range(0.1, 20.0);
       gen->Embed(2);
-      gen->Verbosity(0);
+      gen->Verbosity(10);
 
       se->registerSubsystem(gen);
     }
@@ -435,6 +439,17 @@ using namespace std;
     HIJetReco();
   }
 
+  gSystem->Load("libcalo_reco.so");
+  gSystem->Load("libhisubtraction.so");
+  SubtractCEMC *st = new SubtractCEMC();
+  st->SetFlowModulation( 1 );
+  st->Verbosity( 10 );
+  se->registerSubsystem( st );
+
+  RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
+  ClusterBuilderSub->Verbosity( 10 );
+  se->registerSubsystem( ClusterBuilderSub );
+
   //----------------------
   // Simulation evaluation
   //----------------------
@@ -497,7 +512,7 @@ using namespace std;
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
     //! Usually, ID = 0 means the primary Au+Au collision background
-    in->set_embedding_id(3);
+    //in->set_embedding_id(2);
   }
   else
   {
@@ -556,10 +571,10 @@ using namespace std;
                 /*bool*/ do_hcalin_twr,
                 /*bool*/ do_hcalout_twr);
   }
-  cout<<"outputting \n"<<endl;
-  Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
-  if (do_dst_compress) DstCompress(out);
-  se->registerOutputManager(out);
+
+   Fun4AllDstOutputManager *out = new Fun4AllDstOutputManager("DSTOUT", outputFile);
+   if (do_dst_compress) DstCompress(out);
+    se->registerOutputManager(out);
 
   //-----------------
   // Event processing

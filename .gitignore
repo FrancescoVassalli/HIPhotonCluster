@@ -1,1 +1,17 @@
 *Dict*
+*/Makefile.in
+*/depcomp
+*/build/*
+*/config.*
+*/aclocal.m4
+*/autom4te.cache/*
+*/configure
+*/missing
+*/install-sh
+*/ltmain.sh
+gen/G4*
+gen/DisplayOn.C
+gen/GlobalVariables.C
+gen/LocalGen.csh
+gen/flowAfterburner.xml
+gen/vis.mac

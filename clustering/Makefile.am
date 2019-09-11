@@ -9,7 +9,8 @@ lib_LTLIBRARIES = \
 
 libcalo_reco_la_LDFLAGS = \
   -L$(libdir) \
-  -L$(OFFLINE_MAIN)/lib
+  -L$(OFFLINE_MAIN)/lib\
+ `root-config --libs`
 
 libcalo_reco_la_LIBADD = \
   -lphool \
@@ -23,10 +24,16 @@ libcalo_reco_la_LIBADD = \
 AM_CPPFLAGS = \
   -I$(includedir) \
   -I$(OFFLINE_MAIN)/include \
-  -I$(ROOTSYS)/include 
+  -I$(ROOTSYS)/include \
+  -I`root-config --incdir`
 
 pkginclude_HEADERS = \
-  RawClusterBuilderTemplateSub.h 
+  RawClusterBuilderFwd.h \
+  RawClusterBuilderGraph.h \
+  RawClusterBuilderTemplate.h \
+  RawClusterBuilderTemplateSub.h \
+  RawClusterPositionCorrection.h \
+  RawTowerCalibration.h
 
 
 if ! MAKEROOT6
@@ -34,15 +41,8 @@ if ! MAKEROOT6
   RawClusterBuilderGraph_Dict.cc \
   RawClusterBuilderTemplate_Dict.cc \
   RawClusterBuilderTemplateSub_Dict.cc \
-  RawClusterBuilderTemplateFEMC_Dict.cc \
-  RawClusterBuilderTemplateEEMC_Dict.cc \
-  RawClusterBuilderFwd_Dict.cc \
   RawClusterPositionCorrection_Dict.cc \
-  RawClusterDeadAreaMask_Dict.cc \
-  RawTowerCombiner_Dict.cc \
-  RawTowerCalibration_Dict.cc \
-  RawTowerDeadTowerInterp_Dict.cc \
-  RawTowerDeadMapLoader_Dict.cc
+  RawTowerCalibration_Dict.cc 
 endif
 
 
@@ -50,7 +50,12 @@ libcalo_reco_la_SOURCES = \
   $(ROOT5_DICTS) \
   BEmcCluster.cc \
   BEmcRec.cc \
-  BEmcRecCEMC.cc 
+  BEmcRecCEMC.cc \
+  RawClusterBuilderGraph.cc \
+  RawClusterBuilderTemplate.cc \
+  RawClusterBuilderTemplateSub.cc \
+  RawClusterPositionCorrection.cc \
+  RawTowerCalibration.cc 
 
 # Rule for generating table CINT dictionaries.
 %_Dict.cc: %.h %LinkDef.h

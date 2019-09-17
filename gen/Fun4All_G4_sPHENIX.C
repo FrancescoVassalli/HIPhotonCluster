@@ -135,7 +135,7 @@ int Fun4All_G4_sPHENIX(
   // HI Jet Reco for p+Au / Au+Au collisions (default is false for
   // single particle / p+p-only simulations, or for p+Au / Au+Au
   // simulations which don't particularly care about jets)
-  bool do_HIjetreco = false && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
+  bool do_HIjetreco = true && do_cemc_twr && do_hcalin_twr && do_hcalout_twr;
 
   bool do_dst_compress = false;
 
@@ -171,7 +171,7 @@ int Fun4All_G4_sPHENIX(
     }
 
   Fun4AllServer *se = Fun4AllServer::instance();
-  se->Verbosity(0);
+  se->Verbosity(10);
   // just if we set some flags somewhere in this macro
   recoConsts *rc = recoConsts::instance();
   // By default every random number generator uses
@@ -608,9 +608,9 @@ int Fun4All_G4_sPHENIX(
 
 
   se->End();
-  std::cout << "All done" << std::endl;
   delete se;
   gSystem->Exit(0);
+  std::cout << "All done" << std::endl;
   return 0;
 }
 

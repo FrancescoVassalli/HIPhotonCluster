@@ -28,7 +28,6 @@ AM_CPPFLAGS = \
   -I`root-config --incdir`
 
 pkginclude_HEADERS = \
-  RawClusterBuilderFwd.h \
   RawClusterBuilderGraph.h \
   RawClusterBuilderTemplate.h \
   RawClusterBuilderTemplateSub.h \

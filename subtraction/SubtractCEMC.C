@@ -42,7 +42,7 @@ int SubtractCEMC::InitRun(PHCompositeNode *topNode)
 int SubtractCEMC::process_event(PHCompositeNode *topNode)
 {
   if (Verbosity() > 0) {
-    //std::cout << "SubtractCEMC::process_event: entering, with _use_flow_modulation = " << _use_flow_modulation << std::endl;
+    std::cout << "SubtractCEMC::process_event: entering, with _use_flow_modulation = " << _use_flow_modulation << std::endl;
   }
 
   // pull out the tower containers and geometry objects at the start
@@ -52,7 +52,7 @@ int SubtractCEMC::process_event(PHCompositeNode *topNode)
 
   if (Verbosity() > 0)
   {
-    //std::cout << "SubtractCEMC::process_event: " << towersEM3->size() << " TOWER_CALIB_CEMC towers" << std::endl;
+    std::cout << "SubtractCEMC::process_event: " << towersEM3->size() << " TOWER_CALIB_CEMC towers" << std::endl;
   }
 
   // these should have already been created during InitRun()
@@ -62,12 +62,12 @@ int SubtractCEMC::process_event(PHCompositeNode *topNode)
 
   if (Verbosity() > 0)
   {
-    //std::cout << "SubtractCEMC::process_event: starting with " << emcal_towers->size() << " TOWER_CALIB_CEMC_SUB1 towers" << std::endl;
+    std::cout << "SubtractCEMC::process_event: starting with " << emcal_towers->size() << " TOWER_CALIB_CEMC_SUB1 towers" << std::endl;
   }
 
   TowerBackground *towerbackground = findNode::getClass<TowerBackground>(topNode, "TowerBackground_Sub2");
 
-  //towerbackground->identify();
+  towerbackground->identify();
 
   // read these in to use, even if we don't use flow modulation in the subtraction
   float background_v2 = towerbackground->get_v2();
@@ -117,7 +117,7 @@ int SubtractCEMC::process_event(PHCompositeNode *topNode)
     float local_eta = tower_geom->get_eta();
     int lookup_eta_bin = geomIH->get_etabin( local_eta );
 
-    //std::cout << " at CEMC tower with local_eta = " << local_eta << " , this maps to IHCal eta bin = " << lookup_eta_bin << std::endl;
+    std::cout << " at CEMC tower with local_eta = " << local_eta << " , this maps to IHCal eta bin = " << lookup_eta_bin << std::endl;
 
     float UE = towerbackground->get_UE(0).at( lookup_eta_bin );
 
@@ -132,16 +132,16 @@ int SubtractCEMC::process_event(PHCompositeNode *topNode)
     float new_energy = raw_energy - UE;
     tower->set_energy(new_energy);
 
-    //if (Verbosity() > 5 && raw_energy > 1 )
-    //std::cout << " SubtractCEMC::process_event : EMCal tower at eta / phi = " << tower->get_bineta() << " / " << tower->get_binphi() << ", pre-sub / after-sub E = " << raw_energy << " / " << tower->get_energy() << std::endl;
+    if (Verbosity() > 5 && raw_energy > 1 )
+    std::cout << " SubtractCEMC::process_event : EMCal tower at eta / phi = " << tower->get_bineta() << " / " << tower->get_binphi() << ", pre-sub / after-sub E = " << raw_energy << " / " << tower->get_energy() << std::endl;
   }
 
   if (Verbosity() > 0)
   {
-    //std::cout << "SubtractCEMC::process_event: ending with " << emcal_towers->size() << " TOWER_CALIB_CEMC_SUB1 towers" << std::endl;
+    std::cout << "SubtractCEMC::process_event: ending with " << emcal_towers->size() << " TOWER_CALIB_CEMC_SUB1 towers" << std::endl;
   }
 
-  //if (Verbosity() > 0) std::cout << "SubtractCEMC::process_event: exiting" << std::endl;
+  if (Verbosity() > 0) std::cout << "SubtractCEMC::process_event: exiting" << std::endl;
 
   return Fun4AllReturnCodes::EVENT_OK;
 }

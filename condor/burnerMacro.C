@@ -5,7 +5,7 @@
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libsubtractionburner.so)
 
-int after_Reco(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfile="embedanalysis.root",int runNumber=0)
+int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfile="embedanalysis.root",int runNumber=0)
 {
   
   gSystem->Load("libfun4all.so");

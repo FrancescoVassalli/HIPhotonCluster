@@ -9,11 +9,12 @@
 #define SUBTRACTEDCLUSTERBURNER_H__
 
 #include <fun4all/SubsysReco.h>
-#include <TFile.h>
-#include <TTree.h>
 #include <string>
 
 class PHCompositeNode;
+class RawClusterContainer;
+class TFile;
+class TTree;
 
 class SubtractedClusterBurner: public SubsysReco
 {
@@ -32,9 +33,18 @@ class SubtractedClusterBurner: public SubsysReco
 		bool doNodePointers(PHCompositeNode* topNode);
 
 		const unsigned int _kRunNumber;
+		const unsigned int _kMINCLUSTERENERGY=2;//in GeV
+		const unsigned int _kMAXCLUSTERS=400;
 		TFile *_f=NULL; ///< output file
 		TTree *_ttree=NULL; ///<signal data for making track pair cuts
-    std::string _foutname;
+		RawClusterContainer* _subClusterContainer=NULL;
+    	std::string _foutname;
+
+    	float _b_clustersub_E    [ _kMAXCLUSTERS ];                                                                                                                                                              
+		float _b_clustersub_ecore[ _kMAXCLUSTERS ] ;                                                                                                                                             
+		float _b_clustersub_eta  [ _kMAXCLUSTERS ];                                                                                                                                                               
+		float _b_clustersub_phi  [ _kMAXCLUSTERS ];                                                                                                                                                               
+		float _b_clustersub_n;                            
 };
 
 

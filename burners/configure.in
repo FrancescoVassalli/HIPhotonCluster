@@ -11,6 +11,6 @@ fi
 
 ROOTLIBS=`root-config --libs`
 AC_SUBST(ROOTLIBS)
-
+AM_CONDITIONAL([MAKEROOT6],[test `root-config --version | awk '{print $1>=6.?"1":"0"}'` = 1])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

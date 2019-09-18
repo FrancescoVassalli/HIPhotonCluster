@@ -18,6 +18,11 @@ include_HEADERS = \
   SubtractCEMC.h \
   SubtractCEMCLinkDef.h
 
+if MAKEROOT6
+pcmdir = $(libdir)
+nobase_dist_pcm_DATA = \
+	SubtractCEMC_Dict_rdict.pcm 
+endif
 libhisubtraction_la_SOURCES = \
   SubtractCEMC.C \
   SubtractCEMC_Dict.C

@@ -17,6 +17,11 @@ lib_LTLIBRARIES = \
 include_HEADERS = \
   SubtractedClusterBurner.h \
   SubtractedClusterBurnerLinkDef.h
+if MAKEROOT6
+pcmdir = $(libdir)
+nobase_dist_pcm_DATA = \
+	SubtractedClusterBurner_Dict_rdict.pcm 
+endif
 
 libsubtractionburner_la_SOURCES = \
   SubtractedClusterBurner.C \

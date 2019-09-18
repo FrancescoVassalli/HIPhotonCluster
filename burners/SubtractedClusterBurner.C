@@ -20,10 +20,10 @@ int SubtractedClusterBurner::InitRun(PHCompositeNode *topNode)
 	_f = new TFile( _foutname.c_str(), "RECREATE");
 	_ttree = new TTree("subtractedTree","super stylish sapling");
   _ttree->Branch("sub_clus_e",&_b_clustersub_E);
-  _ttree->Branch("sub_clus_e",&_b_clustersub_ecore);
-  _ttree->Branch("sub_clus_e",&_b_clustersub_eta);
-  _ttree->Branch("sub_clus_e",&_b_clustersub_phi);
-  _ttree->Branch("sub_clus_e",&_b_clustersub_n);
+  _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore);
+  _ttree->Branch("sub_clus_eta",&_b_clustersub_eta);
+  _ttree->Branch("sub_clus_phi",&_b_clustersub_phi);
+  _ttree->Branch("sub_clus_n",&_b_clustersub_n);
 
 	return 0;
 }
@@ -70,6 +70,7 @@ int SubtractedClusterBurner::process_event(PHCompositeNode *topNode)
 int SubtractedClusterBurner::End(PHCompositeNode *topNode)
 {
 	cout<<"closing"<<endl;
+  _ttree->Write();
 	_f->Write();
 	_f->Close();
 	return 0;

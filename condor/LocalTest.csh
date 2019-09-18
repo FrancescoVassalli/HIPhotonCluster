@@ -18,8 +18,8 @@ cp ../subtraction/* $SCRATCH_AREA
 cp ../burners/* $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_FILE\",\"\"\) 
-cp $OUT_FILE $OUT_LOCATION$OUT_FILE
+#root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_FILE\",\"\"\) 
+#cp $OUT_FILE $OUT_LOCATION$OUT_FILE
 root -b -q $BURNER\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",$p\)
 #
 rm -rf $SCRATCH_AREA

@@ -19,11 +19,11 @@ int SubtractedClusterBurner::InitRun(PHCompositeNode *topNode)
 
 	_f = new TFile( _foutname.c_str(), "RECREATE");
 	_ttree = new TTree("subtractedTree","super stylish sapling");
-  _ttree->Branch("sub_clus_e",&_b_clustersub_E);
-  _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore);
-  _ttree->Branch("sub_clus_eta",&_b_clustersub_eta);
-  _ttree->Branch("sub_clus_phi",&_b_clustersub_phi);
   _ttree->Branch("sub_clus_n",&_b_clustersub_n);
+  _ttree->Branch("sub_clus_e",&_b_clustersub_E,"sub_clus_e[sub_clus_n]/F");
+  _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
+  _ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
+  _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");
 
 	return 0;
 }

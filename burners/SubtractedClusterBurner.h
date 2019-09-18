@@ -9,15 +9,18 @@
 #define SUBTRACTEDCLUSTERBURNER_H__
 
 #include <fun4all/SubsysReco.h>
+#include <TFile.h>
+#include <TTree.h>
+#include <string>
 
-class RawClusterContainer.h
+class PHCompositeNode;
 
 class SubtractedClusterBurner: public SubsysReco
 {
 
 	public:
 
-		SubtractedClusterBurner(const std::string &name);
+		SubtractedClusterBurner(const std::string &name,unsigned run);
 		~SubtractedClusterBurner();
 		int InitRun(PHCompositeNode*);
 
@@ -27,22 +30,11 @@ class SubtractedClusterBurner: public SubsysReco
 
 	private:
 		bool doNodePointers(PHCompositeNode* topNode);
-		SvtxVertex* get_primary_vertex(PHCompositeNode* topNode)const;
-		/** helper function for process_event
-		 * fills the member fields with information from the conversions 
-		 * finds the clusters associated with the truth conversions*/
-		void numUnique(std::map<int,Conversion>* map,SvtxTrackEval* trackEval,RawClusterContainer* mainClusterContainer,std::vector<std::pair<SvtxTrack*,SvtxTrack*>>* tightBackground);
-		///fills the member fields for all the background trees
-		void processTrackBackground(std::vector<SvtxTrack*>*v,SvtxTrackEval*);
-		void recordConversion(Conversion *conversion,TLorentzVector *tlv_photon,TLorentzVector *tlv_electron, TLorentzVector *tlv_positron);
-
-		int get_embed(PHG4Particle* particle, PHG4TruthInfoContainer* truthinfo) const;
-		float vtoR(PHG4VtxPoint* vtx)const;
 
 		const unsigned int _kRunNumber;
 		TFile *_f=NULL; ///< output file
 		TTree *_ttree=NULL; ///<signal data for making track pair cuts
-		string _foutname;
+    std::string _foutname;
 };
 
 

@@ -27,7 +27,7 @@ int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfil
   hitsin->fileopen( infile );
   se->registerInputManager(hitsin);
  
-  SubtractionBurner *rCE = new SubtractionBurner(outfile,runNumber);
+  SubtractedClusterBurner *rCE = new SubtractedClusterBurner(outfile,runNumber);
   se->registerSubsystem( rCE );
 
   se->run();

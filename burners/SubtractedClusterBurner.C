@@ -1,4 +1,7 @@
 #include "SubtractedClusterBurner.h"
+#include <calobase/RawCluster.h>
+#include <phool/getClass.h>
+#include <TMath.h>
 #include <iostream>
 using namespace std;
 SubtractedClusterBurner::SubtractedClusterBurner(const std::string &name, unsigned runnumber) : SubsysReco("SubtractedClusterBurner"),
@@ -30,7 +33,7 @@ bool SubtractedClusterBurner::doNodePointers(PHCompositeNode* topNode){
 	_subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC_SUB");
 	if(!_subClusterContainer){
 		cerr<<Name()<<": critical error-bad nodes \n";
-		if(!_mainClusterContainer){
+		if(!_subClusterContainer){
 			cerr<<"\t RawClusterContainer is bad";
 		}
 		cerr<<endl;
@@ -42,30 +45,23 @@ bool SubtractedClusterBurner::doNodePointers(PHCompositeNode* topNode){
 int SubtractedClusterBurner::process_event(PHCompositeNode *topNode)
 {
 	doNodePointers(topNode);
-	RawClusterContainer::ConstRange begin_end = clusters->getClusters();                                                                                                                                           
-	RawClusterContainer::ConstIterator rtiter;    
+	RawClusterContainer::ConstRange begin_end = _subClusterContainer->getClusters(); 
+	RawClusterContainer::ConstIterator rtiter;
+  _b_clustersub_n=0; 
 
-  _b_clustersub_n=0;                                                                                                                                                                 
-
-	for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter)                                                                                                                                           
-	{                                                                                                                                                                                                             
-		RawCluster *cluster = rtiter->second;                                                                                                                                                                       
-
-		float energy = cluster->get_energy();                                                                                                                                                                       
-
-		if ( energy < _kMINCLUSTERENERGY ) continue;                                                                                                                                                                                 
-
-		float phi = cluster->get_phi();                                                                                                                                                                             
-		float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) );                                                                                                                   
-
-		_b_clustersub_E[ _b_clustersub_n ] = energy ;                                                                                                                                                               
-		_b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ;                                                                                                                                             
-		_b_clustersub_eta[ _b_clustersub_n ] = eta ;                                                                                                                                                               
-		_b_clustersub_phi[ _b_clustersub_n ] = phi ;                                                                                                                                                               
-
-		_b_clustersub_n++;                                                                                                                                                                                         
-
-	}                                                                                                                                                                                                             
+	for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
+	{ 
+		RawCluster *cluster = rtiter->second; 
+		float energy = cluster->get_energy(); 
+		if ( energy < _kMINCLUSTERENERGY ) continue; 
+		float phi = cluster->get_phi(); 
+		float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
+		_b_clustersub_E[ _b_clustersub_n ] = energy ; 
+		_b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ; 
+		_b_clustersub_eta[ _b_clustersub_n ] = eta ; 
+		_b_clustersub_phi[ _b_clustersub_n ] = phi ; 
+		_b_clustersub_n++; 
+	} 
   _ttree->Fill();  
   return 0;
 }

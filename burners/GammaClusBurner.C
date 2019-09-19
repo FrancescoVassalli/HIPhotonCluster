@@ -1,11 +1,15 @@
 #include "GammaClusBurner.h"
+
 #include <calobase/RawCluster.h>
+#include <g4main/PHG4Particle.h>
 #include <phool/getClass.h>
-#include <TMath.h>
+
 #include <iostream>
 using namespace std;
 
 const float GammaClusBurner::_kCLUSTERDR = 0.2f;
+const float GammaClusBurner::_kMAXETA=1.1f;
+
 
 GammaClusBurner::GammaClusBurner(const std::string &name, unsigned runnumber=0,bool isHI=false) : SubsysReco("GammaClusBurner"),
   _kRunNumber(runnumber), _kISHI(isHI)
@@ -95,3 +99,8 @@ RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
     _f->Close();
     return 0;
   }
+
+double GammaClusBurner::DeltaR (TLorentzVector *tlv, RawCluster* cluster){
+  float cluseta=-1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) );
+  return DeltaR(tlv->Eta(),cluseta,tlv->Phi(),cluster->get_phi());
+}

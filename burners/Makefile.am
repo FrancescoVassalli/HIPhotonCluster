@@ -16,9 +16,10 @@ lib_LTLIBRARIES = \
 
 include_HEADERS = \
   SubtractedClusterBurner.h \
+  SubtractedClusterBurnerLinkDef.h\
 	GammaClusBurner.h\
-	GammaClusLinkDef.h\
-  SubtractedClusterBurnerLinkDef.h
+	GammaClusBurnerLinkDef.h
+
 if MAKEROOT6
 pcmdir = $(libdir)
 nobase_dist_pcm_DATA = \

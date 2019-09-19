@@ -53,11 +53,14 @@ class GammaClusBurner: public SubsysReco
     }
 
     bool doNodePointers(PHCompositeNode* topNode);
+    RawCluster* getCluster(TLorentzVector* tlv);
+
 
     const unsigned int _kRunNumber;
     const bool _kISHI;
     static const unsigned int _kMINCLUSTERENERGY=2;//in GeV
     static const unsigned int _kMAXCLUSTERS=400;
+    static const float _kCLUSTERDR;
     TFile *_f=NULL; ///< output file
     TTree *_ttree=NULL; ///<signal data for making track pair cuts
     RawClusterContainer* _subClusterContainer=NULL;

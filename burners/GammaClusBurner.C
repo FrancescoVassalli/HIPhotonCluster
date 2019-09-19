@@ -4,6 +4,9 @@
 #include <TMath.h>
 #include <iostream>
 using namespace std;
+
+const float GammaClusBurner::_kCLUSTERDR = 0.2f;
+
 GammaClusBurner::GammaClusBurner(const std::string &name, unsigned runnumber=0,bool isHI=false) : SubsysReco("GammaClusBurner"),
   _kRunNumber(runnumber), _kISHI(isHI)
 {
@@ -63,7 +66,6 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       if ( energy < _kMINCLUSTERENERGY ) continue; 
       float phi = cluster->get_phi(); 
       float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
-      //do i want transverse energy?
       _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
       _b_clustersub_E[ _b_clustersub_n ] = energy ; 
       _b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ; 
@@ -71,10 +73,11 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
       _b_clustersub_n++; 
     }
-    return 0;
   }
+  return 0;
+}
 
-  RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
+RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
     RawClusterContainer::ConstRange begin_end = _subClusterContainer->getClusters(); 
     RawClusterContainer::ConstIterator rtiter;
     for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 

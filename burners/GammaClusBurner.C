@@ -67,7 +67,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
     if(g4particle->get_pid()==22){
       TLorentzVector gamma_tlv;
       gamma_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
-      if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta)>_kMAXETA) continue;
+      if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta())>_kMAXETA) continue;
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
       if ( energy < _kMINCLUSTERENERGY ) continue; 
@@ -85,23 +85,24 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
 }
 
 RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
-    RawClusterContainer::ConstRange begin_end = _subClusterContainer->getClusters(); 
-    RawClusterContainer::ConstIterator rtiter;
-    for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
-    { 
-      RawCluster *cluster = rtiter->second; 
-      if(DeltaR(tlv,cluster)<_kCLUSTERDR) return cluster;
-    }
+  RawClusterContainer::ConstRange begin_end = _subClusterContainer->getClusters(); 
+  RawClusterContainer::ConstIterator rtiter;
+  for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
+  { 
+    RawCluster *cluster = rtiter->second; 
+    if(DeltaR(tlv,cluster)<_kCLUSTERDR) return cluster;
   }
+  return NULL;
+}
 
-  int GammaClusBurner::End(PHCompositeNode *topNode)
-  {
-    cout<<"closing"<<endl;
-    _ttree->Write();
-    _f->Write();
-    _f->Close();
-    return 0;
-  }
+int GammaClusBurner::End(PHCompositeNode *topNode)
+{
+  cout<<"closing"<<endl;
+  _ttree->Write();
+  _f->Write();
+  _f->Close();
+  return 0;
+}
 
 double GammaClusBurner::DeltaR (TLorentzVector *tlv, RawCluster* cluster){
   float cluseta=-1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) );

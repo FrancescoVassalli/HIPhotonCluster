@@ -2,7 +2,10 @@
 
 #include <calobase/RawCluster.h>
 #include <g4main/PHG4Particle.h>
+#include <g4main/PHG4TruthInfoContainer.h>
 #include <phool/getClass.h>
+
+#include <TLorentzVector.h>
 
 #include <iostream>
 using namespace std;

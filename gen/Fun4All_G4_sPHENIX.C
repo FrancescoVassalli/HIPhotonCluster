@@ -244,7 +244,7 @@ int Fun4All_G4_sPHENIX(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("e+",10);
+      gen->add_particles("gamma",10);
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -262,7 +262,7 @@ int Fun4All_G4_sPHENIX(
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(0.1, 20.0);
+      gen->set_pt_range(0.1, 35.0);
       gen->Embed(2);
       gen->Verbosity(10);
 

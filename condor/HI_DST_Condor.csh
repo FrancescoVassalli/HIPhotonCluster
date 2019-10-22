@@ -39,8 +39,8 @@ cp clustering/* $SCRATCH_AREA
 cp subtraction/* $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-root -b -q Fun4All_G4_sPHENIX.C\(20,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+root -b -q Fun4All_G4_sPHENIX.C\(50,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 #
 rm -rf $SCRATCH_AREA
 #
-#exit 0
+exit 0

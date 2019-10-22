@@ -1,11 +1,11 @@
 #include <fun4all/Fun4AllServer.h>
 #include <fun4all/Fun4AllDstInputManager.h>
-#include "SubtractedClusterBurner.h"
+#include "GammaClusBurner.h"
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libsubtractionburner.so)
 
-int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfile="embedanalysis.root",int runNumber=0)
+int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfile="embedanalysis.root",int runNumber=0,bool HI=false)
 {
   
   gSystem->Load("libfun4all.so");
@@ -27,7 +27,7 @@ int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfil
   hitsin->fileopen( infile );
   se->registerInputManager(hitsin);
  
-  SubtractedClusterBurner *rCE = new SubtractedClusterBurner(outfile,runNumber);
+  GammaClusBurner *rCE = new GammaClusBurner(outfile,runNumber,HI);
   se->registerSubsystem( rCE );
 
   se->run();

@@ -2,10 +2,10 @@
 @ p = ( ${1} )
 #
 set OUT_LOCATION="/sphenix/user/vassalli/idTest/"
-set OUT_FILE="out${p}.root"
-set SCRATCH_AREA="/sphenix/user/vassalli/srtch/"
-set ANA_FILE="ana${p}.root"
+set OUT_FILE="G_DST_OUT${p}.root"
+set ANA_FILE=G_ANA${p}.root
 #
+set SCRATCH_AREA="/sphenix/user/vassalli/srtch/"
 set SOURCE_GEN="/direct/phenix+u/vassalli/sphenix/id/gen/*"
 set BURNER="burnerMacro.C"
 #
@@ -18,9 +18,9 @@ cp ../subtraction/* $SCRATCH_AREA
 cp ../burners/* $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-#root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_FILE\",\"\"\) 
-#cp $OUT_FILE $OUT_LOCATION$OUT_FILE
-root -b -q $BURNER\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",$p\)
+root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_FILE\"\) 
+cp $OUT_FILE $OUT_LOCATION$OUT_FILE
+root -b -q $BURNER\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
 #
 rm -rf $SCRATCH_AREA
 #

@@ -75,6 +75,7 @@ class GammaClusBurner: public SubsysReco
     /** \defgroup  variables  for the TTrees
       @{*/
     float _b_truthphoton_E   [ _kMAXCLUSTERS ];
+    float _b_truthphoton_pT   [ _kMAXCLUSTERS ];
     float _b_clustersub_E    [ _kMAXCLUSTERS ];
     float _b_clustersub_ecore[ _kMAXCLUSTERS ] ;
     float _b_clustersub_eta  [ _kMAXCLUSTERS ];

@@ -31,6 +31,7 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree = new TTree("subtractedTree","super stylish sapling");
   _ttree->Branch("sub_clus_n",&_b_clustersub_n);
   _ttree->Branch("tphoton_e",&_b_truthphoton_E,"tphoton_e[sub_clus_n]/F");
+  _ttree->Branch("tphoton_pT",&_b_truthphoton_pT,"tphoton_pT[sub_clus_n]/F");
   _ttree->Branch("sub_clus_e",&_b_clustersub_E,"sub_clus_e[sub_clus_n]/F");
   _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
   _ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
@@ -61,8 +62,11 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
   doNodePointers(topNode);
   _b_clustersub_n=0; 
   PHG4TruthInfoContainer::Range range = _truthinfo->GetParticleRange(); //look at all truth particles
+  unsigned nCluster=0;
+  unsigned nFullClusters=0;
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
+    nCluster++;
     //maybe I am double counting due to kinematic updates
     if(g4particle->get_pid()==22){
       TLorentzVector gamma_tlv;
@@ -70,10 +74,13 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta())>_kMAXETA) continue;
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
-      if ( energy < _kMINCLUSTERENERGY ) continue; 
+      cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<'\n';
+      //if ( energy < _kMINCLUSTERENERGY ) continue; 
+      nFullClusters++;
       float phi = cluster->get_phi(); 
       float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
       _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
+      _b_truthphoton_pT[_b_clustersub_n ] =gamma_tlv.Pt();
       _b_clustersub_E[ _b_clustersub_n ] = energy ; 
       _b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ; 
       _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
@@ -81,23 +88,31 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       _b_clustersub_n++; 
     }
   }
+  cout<<"Found "<<nCluster<<" clusters\n";
+  cout<<"Found "<<nFullClusters<<" high energy clusters\n";
   return 0;
 }
 
 RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
   RawClusterContainer::ConstRange begin_end = _subClusterContainer->getClusters(); 
   RawClusterContainer::ConstIterator rtiter;
+  double dr=-1;
+  RawCluster *rcluster=NULL;
   for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
   { 
     RawCluster *cluster = rtiter->second; 
-    if(DeltaR(tlv,cluster)<_kCLUSTERDR) return cluster;
+    if(DeltaR(tlv,cluster)<dr||dr<0){
+      dr=DeltaR(tlv,cluster);
+      rcluster=cluster;
+    }
   }
-  return NULL;
+  return rcluster;
 }
 
 int GammaClusBurner::End(PHCompositeNode *topNode)
 {
   cout<<"closing"<<endl;
+  _f->cd();
   _ttree->Write();
   _f->Write();
   _f->Close();

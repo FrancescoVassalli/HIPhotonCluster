@@ -62,11 +62,8 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
   doNodePointers(topNode);
   _b_clustersub_n=0; 
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
-  unsigned nCluster=0;
-  unsigned nFullClusters=0;
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
-    nCluster++;
     //maybe I am double counting due to kinematic updates
     if(g4particle->get_pid()==22){
       TLorentzVector gamma_tlv;
@@ -75,8 +72,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
       cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dR= "<<DeltaR(&gamma_tlv,cluster)<<'\n';
-      //if ( energy < _kMINCLUSTERENERGY ) continue; 
-      nFullClusters++;
+      if ( energy < _kMINCLUSTERENERGY ) continue; 
       float phi = cluster->get_phi(); 
       float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
       _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
@@ -88,8 +84,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       _b_clustersub_n++; 
     }
   }
-  cout<<"Found "<<nCluster<<" clusters\n";
-  cout<<"Found "<<nFullClusters<<" high energy clusters\n";
+  _ttree->Fill();
   return 0;
 }
 

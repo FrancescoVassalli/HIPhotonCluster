@@ -61,7 +61,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
 {
   doNodePointers(topNode);
   _b_clustersub_n=0; 
-  PHG4TruthInfoContainer::Range range = _truthinfo->GetParticleRange(); //look at all truth particles
+  PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   unsigned nCluster=0;
   unsigned nFullClusters=0;
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
@@ -74,7 +74,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta())>_kMAXETA) continue;
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
-      cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<'\n';
+      cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dR= "<<DeltaR(&gamma_tlv,cluster)<<'\n';
       //if ( energy < _kMINCLUSTERENERGY ) continue; 
       nFullClusters++;
       float phi = cluster->get_phi(); 
@@ -101,7 +101,7 @@ RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
   for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
   { 
     RawCluster *cluster = rtiter->second; 
-    if(DeltaR(tlv,cluster)<dr||dr<0){
+    if(cluster->get_energy()>1&&(DeltaR(tlv,cluster)<dr||dr<0)){
       dr=DeltaR(tlv,cluster);
       rcluster=cluster;
     }

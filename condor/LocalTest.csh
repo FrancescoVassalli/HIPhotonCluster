@@ -2,8 +2,8 @@
 @ p = ( ${1} )
 #
 set OUT_LOCATION="/sphenix/user/vassalli/idTest/"
-set OUT_FILE="G_DST_OUT${p}.root"
-set ANA_FILE=G_ANA${p}.root
+set OUT_FILE="HI_DST_OUT${p}.root"
+set ANA_FILE=HI_ANA${p}.root
 #
 set SCRATCH_AREA="/sphenix/user/vassalli/srtch/"
 set SOURCE_GEN="/direct/phenix+u/vassalli/sphenix/id/gen/*"

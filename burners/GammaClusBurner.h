@@ -62,7 +62,7 @@ class GammaClusBurner: public SubsysReco
     const unsigned int _kRunNumber;
     const bool _kISHI;
     static const unsigned int _kMINCLUSTERENERGY=2;//in GeV
-    static const unsigned int _kMAXCLUSTERS=400;
+    static const unsigned int _kMAXCLUSTERS=600;
     static const float _kCLUSTERDR;
     static const float _kMAXETA;
 

@@ -40,7 +40,7 @@ cp clustering/* $SCRATCH_AREA
 cp subtraction/* $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-#root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
 #
 rm -rf $SCRATCH_AREA

@@ -1,5 +1,5 @@
 #!/bin/csh 
-@ p = ( ${1} )
+@ p = ( ${1} + 2 )
 #
 set OUT_LOCATION="/sphenix/user/vassalli/idTest/HIsample/"
 set OUT_FILE=HI_DST_OUT${p}.root
@@ -40,6 +40,7 @@ cp subtraction/* $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
 root -b -q Fun4All_G4_sPHENIX.C\(50,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
 #
 rm -rf $SCRATCH_AREA
 #

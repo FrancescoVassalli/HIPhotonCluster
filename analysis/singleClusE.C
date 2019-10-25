@@ -48,7 +48,7 @@ struct Average{
     n=a.n;
   }
   double getError(){
-    if(n==0) return 0;
+    if(n<=1) return 0;
     double cm2 =0;
     for(double x : *allVals){
       cm2+=(x-value)*(x-value);

@@ -1,3 +1,6 @@
+#include <TChain.h>
+#include <TFile.h>
+#include <TH1F.h>
 
 struct Average{
   double value;
@@ -30,13 +33,13 @@ struct Average{
     return Average((value*n)/(n+1)+v/(n+1),n+1,allVals);
   }
   void operator +=(double v){
-    if(!allVals) *this=Average();
+    if(!allVals) allVals=new vector<double>();
     allVals->push_back(v);
     value=(value*n)/(n+1)+v/(n+1);
     ++n;
   }
   void operator +=(float fv){
-    if(!allVals) cerr<<"Null set"<<endl;
+    if(!allVals) allVals=new vector<double>();
     double v = (double) fv;
     allVals->push_back(v);
     value=(value*n)/(n+1)+v/(n+1);
@@ -88,7 +91,7 @@ void makeEspec(TTree* tree,string ext=""){
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
     for(unsigned i=0; i<clusn; i++){
-      if((int)gammaE[i]>kBINS) continue;
+      if((int)gammaE[i]>=kBINS) continue;
       v_average[(int)gammaE[i]]+=clusE[i];
       v_average_core[(int)gammaE[i]]+=clusEcore[i];
     }
@@ -105,7 +108,7 @@ void makeEspec(TTree* tree,string ext=""){
 
 
 int singleClusE(){
-  string inName="/sphenix/user/vassalli/idTest/G_ANA0.root";
+  string inName="/sphenix/user/vassalli/idTest/singlesample/gana.root";
   TFile *f_data = new TFile("anadata.root","UPDATE");
   TChain *singleTree = new TChain("subtractedTree");
   singleTree->Add(inName.c_str());

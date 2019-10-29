@@ -60,6 +60,9 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
 int GammaClusBurner::process_event(PHCompositeNode *topNode)
 {
   doNodePointers(topNode);
+  if(_kRunNumber%10==0){
+    cout<<"GamaClusBurner Processesing Event "<<_kRunNumber<<endl;
+  }
   _b_clustersub_n=0; 
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {

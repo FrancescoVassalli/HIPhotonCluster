@@ -3,6 +3,7 @@
 #
 set OUT_LOCATION="/sphenix/user/vassalli/idTest/HIsample/"
 set OUT_FILE=HI_DST_OUT${p}.root
+set ANA_FILE=HI_DST_ANA${p}.root
 @ n1 = 50 * ($p + 1)
 @ n2 = 50 * $p
 set s1 = ""
@@ -37,9 +38,11 @@ mkdir $SCRATCH_AREA
 cp gen/* $SCRATCH_AREA
 cp clustering/* $SCRATCH_AREA
 cp subtraction/* $SCRATCH_AREA
+cp burners/* $SCRATCH_AREA
+cp condor/burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-root -b -q Fun4All_G4_sPHENIX.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+#root -b -q Fun4All_G4_sPHENIX.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
 #
 rm -rf $SCRATCH_AREA

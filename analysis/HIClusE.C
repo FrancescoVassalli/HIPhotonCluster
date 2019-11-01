@@ -109,9 +109,9 @@ void makeEspec(TTree* tree,string ext=""){
 
 int HIClusE(){
   TFile *f_data = new TFile("anadata.root","UPDATE");
-  string inName="/sphenix/user/vassalli/idTest/HIsample/HIana.root";
+  string inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
   TChain *hiTree = new TChain("subtractedTree");
   hiTree->Add(inName.c_str());
-  makeEspec(hiTree,"HI");
+  makeEspec(hiTree,"HIsub");
   return 0;
 }

@@ -1,16 +1,27 @@
-##############################################
-# please add new classes in alphabetical order
-
 AUTOMAKE_OPTIONS = foreign
 
-# List of shared libraries to produce
-lib_LTLIBRARIES = \
-  libcalo_reco.la 
+AM_CPPFLAGS = \
+  -I$(includedir) \
+  -I$(OFFLINE_MAIN)/include \
+  -I$(ROOTSYS)/include \
+  -I`root-config --incdir`
 
 libcalo_reco_la_LDFLAGS = \
   -L$(libdir) \
   -L$(OFFLINE_MAIN)/lib\
  `root-config --libs`
+
+lib_LTLIBRARIES = \
+  libcalo_reco.la 
+
+pkginclude_HEADERS = \
+  RawClusterBuilderGraph.h \
+  RawClusterBuilderFwd.h \
+  RawClusterBuilderTemplate.h \
+  RawClusterBuilderTemplateSub.h \
+  RawClusterBuilderTemplateFEMC.h \
+  RawClusterPositionCorrection.h \
+  RawTowerCalibration.h 
 
 libcalo_reco_la_LIBADD = \
   -lphool \
@@ -21,25 +32,13 @@ libcalo_reco_la_LIBADD = \
   -lcalo_util  \
   -lphparameter
 
-AM_CPPFLAGS = \
-  -I$(includedir) \
-  -I$(OFFLINE_MAIN)/include \
-  -I$(ROOTSYS)/include \
-  -I`root-config --incdir`
-
-pkginclude_HEADERS = \
-  RawClusterBuilderGraph.h \
-  RawClusterBuilderTemplate.h \
-  RawClusterBuilderTemplateSub.h \
-  RawClusterPositionCorrection.h \
-  RawTowerCalibration.h
-
-
 if ! MAKEROOT6
   ROOT5_DICTS = \
   RawClusterBuilderGraph_Dict.cc \
+  RawClusterBuilderFwd_Dict.cc \
   RawClusterBuilderTemplate_Dict.cc \
   RawClusterBuilderTemplateSub_Dict.cc \
+  RawClusterBuilderTemplateFEMC_Dict.cc \
   RawClusterPositionCorrection_Dict.cc \
   RawTowerCalibration_Dict.cc 
 endif
@@ -50,15 +49,19 @@ libcalo_reco_la_SOURCES = \
   BEmcCluster.cc \
   BEmcRec.cc \
   BEmcRecCEMC.cc \
+  BEmcRecFEMC.cc \
+	BEmcProfile.cc \
   RawClusterBuilderGraph.cc \
+  RawClusterBuilderFwd.cc \
   RawClusterBuilderTemplate.cc \
   RawClusterBuilderTemplateSub.cc \
+  RawClusterBuilderTemplateFEMC.cc \
   RawClusterPositionCorrection.cc \
   RawTowerCalibration.cc 
 
 # Rule for generating table CINT dictionaries.
 %_Dict.cc: %.h %LinkDef.h
-	rootcint -f $@ @CINTDEFS@ -c $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $^
+	rootcint -f $@ -c $(CINTFLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $^
 
 
 ################################################

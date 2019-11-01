@@ -449,7 +449,8 @@ int Fun4All_G4_sPHENIX(
     HIJetReco();
   }
 
-/*  gSystem->Load("libcalo_reco.so");
+  cout<<"Adding Subtraction"<<endl;
+  gSystem->Load("libcalo_reco.so");
   gSystem->Load("libhisubtraction.so");
   SubtractCEMC *st = new SubtractCEMC();
   st->SetFlowModulation( 1 );
@@ -459,7 +460,7 @@ int Fun4All_G4_sPHENIX(
   RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
   ClusterBuilderSub->Verbosity( 10 );
   se->registerSubsystem( ClusterBuilderSub );
-*/
+
   //----------------------
   // Simulation evaluation
   //----------------------

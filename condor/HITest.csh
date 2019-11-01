@@ -1,9 +1,9 @@
 #!/bin/csh 
-@ p = ( ${1} + 2 )
+@ p = ( ${1} )
 #
 set OUT_LOCATION="/sphenix/user/vassalli/idTest/"
-set OUT_FILE=HI_DST_OUT${p}.root
-set ANA_FILE=HI_DST_ANA${p}.root
+set OUT_FILE=HI_SUB_OUT${p}.root
+set ANA_FILE=HI_SUB_ANA${p}.root
 @ n1 = 50 * ($p + 1)
 @ n2 = 50 * $p
 set s1 = ""
@@ -43,8 +43,8 @@ cp ../burners/* $SCRATCH_AREA
 cp burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-#root -b -q Fun4All_G4_sPHENIX.C\(50,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
-root -b -q burnerMacro.C\(\"/sphenix/user/vassalli/idTest/HIsample/HI_DST_OUT44.root\",\"/sphenix/user/vassalli/idTest/HIsample/HI_DST_ANA44.root\",${p}\)
+root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+#root -b -q burnerMacro.C\(\"/sphenix/user/vassalli/idTest/HIsample/HI_DST_OUT44.root\",\"/sphenix/user/vassalli/idTest/HIsample/HI_DST_ANA44.root\",${p}\)
 #
 rm -rf $SCRATCH_AREA
 #

@@ -36,6 +36,7 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
   _ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
   _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");
+  _ttree->Branch("sub_clus_prob",&_b_clustersub_prob,"sub_clus_prob[sub_clus_n]/F");
 
   return 0;
 }
@@ -82,6 +83,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       _b_truthphoton_pT[_b_clustersub_n ] =gamma_tlv.Pt();
       _b_clustersub_E[ _b_clustersub_n ] = energy ; 
       _b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ; 
+      _b_clustersub_prob[ _b_clustersub_n ] = cluster->get_prob() ; 
       _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
       _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
       _b_clustersub_n++; 

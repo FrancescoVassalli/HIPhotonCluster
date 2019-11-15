@@ -84,7 +84,7 @@ void makeEspec(TTree* tree,string ext=""){
   TH1F* eCoreSpec = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
   name = "eff";
   name+=ext;
-  TH1F* eff = new TH1F(name.c_str(),"",kBINS,-2,2);
+  TH1F* eff = new TH1F(name.c_str(),"",kBINS,0,2);
 
   eSpec->Sumw2();
   eCoreSpec->Sumw2();

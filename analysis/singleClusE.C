@@ -133,6 +133,10 @@ void makeEspec(TTree* tree,string ext=""){
   }
   eSpec->Write();
   eCoreSpec->Write();
+  eff->Write();
+  for(TH1F* plot : eDist){
+    plot->Write();
+  }
 }
 
 

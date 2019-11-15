@@ -84,7 +84,7 @@ void makeEspec(TTree* tree,string ext=""){
   TH1F* eCoreSpec = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
   name = "eff";
   name+=ext;
-  TH1F* eff = new TH1F(name.c_str(),"",20,-2,2);
+  TH1F* eff = new TH1F(name.c_str(),"",kBINS,-2,2);
 
   eSpec->Sumw2();
   eCoreSpec->Sumw2();
@@ -153,7 +153,7 @@ int singleClusE(){
 
   inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
   TChain *subTree = new TChain("subtractedTree");
-  hiTree->Add(inName.c_str());
+  subTree->Add(inName.c_str());
   makeEspec(subTree,"sub");
   return 0;
 }

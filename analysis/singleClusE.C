@@ -84,7 +84,7 @@ void makeEspec(TTree* tree,string ext=""){
   TH1F* eCoreSpec = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
   name = "eff";
   name+=ext;
-  TH1F* eff = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
+  TH1F* eff = new TH1F(name.c_str(),"",20,-2,2);
 
   eSpec->Sumw2();
   eCoreSpec->Sumw2();
@@ -104,7 +104,6 @@ void makeEspec(TTree* tree,string ext=""){
     name+=bound1;name+="_";name+=bound2;
     eDist[count] = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
     eDist[count]->Sumw2();
-    cout<<"here"<<endl;
   }
 
   for(unsigned event=0; event<tree->GetEntries();event++){

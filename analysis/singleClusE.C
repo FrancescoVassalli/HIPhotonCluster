@@ -119,7 +119,7 @@ void makeEspec(TTree* tree,string ext=""){
 
       v_average[(int)(gammaE[i])]+=clusE[i];
       v_average_core[(int)(gammaE[i])]+=clusEcore[i];
-      response[(int)(gammaE[i])]= clusE[i]/gammaE[i];
+      response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
 
       if(gammaE[i]<15){
         eDist[0]->Fill(clusE[i]);

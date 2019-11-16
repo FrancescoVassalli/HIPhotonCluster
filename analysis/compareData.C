@@ -4,17 +4,23 @@ void makeRatio(TFile* thisFile){
 	gStyle->SetOptStat(0);
 	TH1F *spec  = (TH1F*) thisFile->Get("eSpec");
 	TH1F *core  = (TH1F*) thisFile->Get("eCoreSpec");
-	TH1F *HIspec, *HIcore;
-	HIspecsub  = (TH1F*) thisFile->Get("eSpecHIsub");
-	HIcoresub  = (TH1F*) thisFile->Get("eCoreSpecHIsub");
+	TH1F *HIspec, *HIcore, *HIspecsub, *HIcoresub;
+	HIspecsub  = (TH1F*) thisFile->Get("eSpecsub");
+	HIcoresub  = (TH1F*) thisFile->Get("eCoreSpecsub");
 	HIspec  = (TH1F*) thisFile->Get("eSpecHI");
 	HIcore  = (TH1F*) thisFile->Get("eCoreSpecHI");
+	cout<<"here"<<endl;
+	if (!(spec&&core&&HIspecsub&&HIcore&&HIspec&&HIcoresub))
+	{
+		cerr<<"Missing Plot!"<<endl;
+	}
 	HIspec->Divide(spec);
 	HIcore->Divide(core);
 	HIspecsub->Divide(spec);
 	HIcoresub->Divide(core);
 	HIspec->SetTitle(";E_{#gamma} [GeV];E_{EMC_HIJING}/E_{EMC_Single}");
 	HIspecsub->SetLineColor(kGreen-3);
+	cout<<"here"<<endl;
 	HIcoresub->SetLineColor(kGreen-3);
 	TLegend *tl = new TLegend(.7,.1,.9,.3);
 	TCanvas *tc = new TCanvas();
@@ -61,6 +67,9 @@ void compareDist(TFile *thisFile){
 	TH1F *Dist  = (TH1F*) thisFile->Get("dist5_15");
 	TH1F* Distsub  = (TH1F*) thisFile->Get("distsub5_15");
 	TH1F* DistHI= (TH1F*) thisFile->Get("distHI5_15");
+	Dist->Scale(1/Dist->Integral());
+	DistHI->Scale(1/DistHI->Integral());
+	Distsub->Scale(1/Distsub->Integral());
 	Dist->SetTitle("5-15 Gev;#frac{E_{#it{cluster}}}{#it{p}_{T}^{#it{truth}}};");
 	Distsub->SetLineColor(kGreen-3);
 	DistHI->SetLineColor(kMagenta-2);
@@ -78,6 +87,9 @@ void compareDist(TFile *thisFile){
 	TH1F *Dist2  = (TH1F*) thisFile->Get("dist15_25");
 	TH1F* Distsub2  = (TH1F*) thisFile->Get("distsub15_25");
 	TH1F* DistHI2= (TH1F*) thisFile->Get("distHI15_25");
+	Dist2->Scale(1/Dist2->Integral());
+	DistHI2->Scale(1/DistHI2->Integral());
+	Distsub2->Scale(1/Distsub2->Integral());
 	Dist2->SetTitle("15-25 Gev;#frac{E_{#it{cluster}}}{#it{p}_{T}^{#it{truth}}};");
 	Distsub2->SetLineColor(kGreen-3);
 	DistHI2->SetLineColor(kMagenta-2);
@@ -92,9 +104,12 @@ void compareDist(TFile *thisFile){
 	tl2->AddEntry(Dist2,"Single Photon","l");
 	tl2->Draw();
 
-	TH1F *Dist3  = (TH1F*) thisFile->Get("dist15_25");
-	TH1F* Distsub3  = (TH1F*) thisFile->Get("distsub15_25");
-	TH1F* DistHI3= (TH1F*) thisFile->Get("distHI15_25");
+	TH1F *Dist3  = (TH1F*) thisFile->Get("dist25_35");
+	TH1F* Distsub3  = (TH1F*) thisFile->Get("distsub25_35");
+	TH1F* DistHI3= (TH1F*) thisFile->Get("distHI25_35");
+	Dist3->Scale(1/Dist3->Integral());
+	DistHI3->Scale(1/DistHI3->Integral());
+	Distsub3->Scale(1/Distsub3->Integral());
 	Dist3->SetTitle(">25 Gev;#frac{E_{#it{cluster}}}{#it{p}_{T}^{#it{truth}}};");
 	Distsub3->SetLineColor(kGreen-3);
 	DistHI3->SetLineColor(kMagenta-2);
@@ -113,6 +128,7 @@ void compareDist(TFile *thisFile){
 
 void compareData(){
 	TFile *anaData = new TFile("anadata.root","READ");
-	//makeRatio(anaData);
+	makeRatio(anaData);
 	compareEff(anaData);
+	compareDist(anaData);
 }

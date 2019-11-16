@@ -78,17 +78,13 @@ void makeEspec(TTree* tree,string ext=""){
   string name = "eSpec";
   name+=ext;
   //the avergae cluster energy at each photon e
-  TH1F* eSpec = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
+  TH1F* eSpec = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
   name = "eCoreSpec";
   name+=ext;
-  TH1F* eCoreSpec = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
-  name = "eff";
-  name+=ext;
-  TH1F* eff = new TH1F(name.c_str(),"",kBINS,0,2);
+  TH1F* eCoreSpec = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
 
   eSpec->Sumw2();
   eCoreSpec->Sumw2();
-  eff->Sumw2();
 
   //used to calculate the average
   vector<Average> v_average(kBINS);
@@ -106,12 +102,25 @@ void makeEspec(TTree* tree,string ext=""){
     eDist[count]->Sumw2();
   }
 
+  //show the response distribution of cluster energy for a photon E range
+  TH1F* response[kBINS];
+  for(unsigned int count=0; count<kBINS; count++){
+    name="response";
+    name+=ext;
+    name+=to_string(count);
+    response[count] = new TH1F(name.c_str(),"",kBINS,0,2);
+    response[count]->Sumw2();
+  }
+
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
     for(unsigned i=0; i<clusn; i++){
       if((int)gammaE[i]>=kBINS) continue;
-      v_average[(int)gammaE[i]]+=clusE[i];
-      v_average_core[(int)gammaE[i]]+=clusEcore[i];
+
+      v_average[(int)(gammaE[i])]+=clusE[i];
+      v_average_core[(int)(gammaE[i])]+=clusEcore[i];
+      response[(int)(gammaE[i])]= clusE[i]/gammaE[i];
+
       if(gammaE[i]<15){
         eDist[0]->Fill(clusE[i]);
       }
@@ -121,9 +130,9 @@ void makeEspec(TTree* tree,string ext=""){
       else{
         eDist[2]->Fill(clusE[i]);
       }
-      eff->Fill(clusE[i]/gammaE[i]);
     }
   }
+
   for(unsigned bin=1;bin<kBINS+1;bin++){
     eSpec->SetBinContent(bin,v_average[bin-1].value);
     eSpec->SetBinError(bin,v_average[bin-1].getError());
@@ -132,8 +141,11 @@ void makeEspec(TTree* tree,string ext=""){
   }
   eSpec->Write();
   eCoreSpec->Write();
-  eff->Write();
   for(TH1F* plot : eDist){
+    plot->Write();
+  }
+  for (TH1F* plot : response)
+  {
     plot->Write();
   }
 }

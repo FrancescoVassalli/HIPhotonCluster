@@ -81,6 +81,7 @@ class GammaClusBurner: public SubsysReco
     float _b_clustersub_eta  [ _kMAXCLUSTERS ];
     float _b_clustersub_phi  [ _kMAXCLUSTERS ];
     float _b_clustersub_prob  [ _kMAXCLUSTERS ];
+    float _b_matchDR  [ _kMAXCLUSTERS ];
     unsigned _b_clustersub_n;     
     /**@}*/                       
 };

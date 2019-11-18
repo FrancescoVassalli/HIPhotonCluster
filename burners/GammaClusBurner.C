@@ -3,6 +3,7 @@
 #include <calobase/RawCluster.h>
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
+#include <jetbackground/TowerBackground.h>
 #include <phool/getClass.h>
 
 #include <TLorentzVector.h>
@@ -37,6 +38,7 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
   _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");
   _ttree->Branch("sub_clus_prob",&_b_clustersub_prob,"sub_clus_prob[sub_clus_n]/F");
+  _ttree->Branch("matchDR",&_b_matchDR,"matchDR[sub_clus_n]/F");
 
   return 0;
 }
@@ -47,6 +49,13 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
   if(_kISHI)_subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC_SUB");
   else _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
   _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
+  TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground");
+  if(!towerBack){
+    cerr<<Name()<<": TowerBackground not in node tree\n";
+  }
+  else{
+    cout<<"TowerBackground is valid = "<<towerBack->isValid();
+  }
   if(!_subClusterContainer){
     cerr<<Name()<<": critical error-bad nodes \n";
     if(!_subClusterContainer){
@@ -54,6 +63,9 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
     }
     cerr<<endl;
     goodPointers=false;
+  }
+  else{
+    cout<<Name()<<" found event with "<<_subClusterContainer->size()<<" clusters\n";
   }
   return goodPointers;
 }
@@ -70,9 +82,12 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
     PHG4Particle* g4particle = iter->second;
     //maybe I am double counting due to kinematic updates
     if(g4particle->get_pid()==22){
+      //if it is a photon make the tlv
       TLorentzVector gamma_tlv;
       gamma_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
+      //if the photon is not in acceptance eta or energy skip it
       if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta())>_kMAXETA) continue;
+      //find the matching cluster
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
       cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dR= "<<DeltaR(&gamma_tlv,cluster)<<'\n';
@@ -86,6 +101,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       _b_clustersub_prob[ _b_clustersub_n ] = cluster->get_prob() ; 
       _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
       _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
+      _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
       _b_clustersub_n++; 
     }
   }
@@ -98,9 +114,11 @@ RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
   RawClusterContainer::ConstIterator rtiter;
   double dr=-1;
   RawCluster *rcluster=NULL;
+  //loop over all clusters to find match with lowest delta R
   for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
   { 
     RawCluster *cluster = rtiter->second; 
+    //cluster must have at least 1GeV to be considered
     if(cluster->get_energy()>1&&(DeltaR(tlv,cluster)<dr||dr<0)){
       dr=DeltaR(tlv,cluster);
       rcluster=cluster;

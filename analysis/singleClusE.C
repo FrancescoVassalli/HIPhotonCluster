@@ -68,11 +68,13 @@ void makeEspec(TTree* tree,string ext=""){
   float gammaE[600];
   float clusE[600];
   float clusEcore[600];
+  float matchDR[600];
 
   tree->SetBranchAddress("tphoton_e",gammaE);
   tree->SetBranchAddress("sub_clus_n",&clusn);
   tree->SetBranchAddress("sub_clus_e",clusE);
   tree->SetBranchAddress("sub_clus_ecore",clusEcore);
+  tree->SetBranchAddress("matchDR",matchDR);
 
   const int kBINS=40;
   string name = "eSpec";
@@ -112,6 +114,15 @@ void makeEspec(TTree* tree,string ext=""){
     response[count]->Sumw2();
   }
 
+  name="DR"; name+=ext;
+  TH1F* dRDist = new TH1F(name.c_str(),"",kBins,0,.1);
+
+  name="DRlowpt"; name+=ext;
+  TH1F* dRLowPt = new TH1F(name.c_str(),"",kBins,0,.1);
+
+  dRDist->Sumw2();
+  dRLowPt->Sumw2();
+
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
     for(unsigned i=0; i<clusn; i++){
@@ -130,6 +141,8 @@ void makeEspec(TTree* tree,string ext=""){
       else{
         eDist[2]->Fill(clusE[i]);
       }
+      dRDist->Fill(matchDR[i]);
+      if(gammE[i]<15) dRLowPt->Fill(matchDR[i]);
     }
   }
 
@@ -148,6 +161,8 @@ void makeEspec(TTree* tree,string ext=""){
   {
     plot->Write();
   }
+  dRDist->Write();
+  dRLowPt->Write();
 }
 
 

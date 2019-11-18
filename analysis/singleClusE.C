@@ -167,6 +167,7 @@ void makeEspec(TTree* tree,string ext=""){
   }
   dRDist->Write();
   dRLowPt->Write();
+  dRHighPt->Write();
 }
 
 

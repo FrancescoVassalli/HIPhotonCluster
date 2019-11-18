@@ -115,10 +115,13 @@ void makeEspec(TTree* tree,string ext=""){
   }
 
   name="DR"; name+=ext;
-  TH1F* dRDist = new TH1F(name.c_str(),"",kBins,0,.1);
+  TH1F* dRDist = new TH1F(name.c_str(),"",kBINS,0,.1);
 
   name="DRlowpt"; name+=ext;
-  TH1F* dRLowPt = new TH1F(name.c_str(),"",kBins,0,.1);
+  TH1F* dRLowPt = new TH1F(name.c_str(),"",kBINS,0,.1);
+
+  name="DRhighpt"; name+=ext;
+  TH1F* dRHighPt = new TH1F(name.c_str(),"",kBINS,0,.1);
 
   dRDist->Sumw2();
   dRLowPt->Sumw2();
@@ -142,7 +145,8 @@ void makeEspec(TTree* tree,string ext=""){
         eDist[2]->Fill(clusE[i]);
       }
       dRDist->Fill(matchDR[i]);
-      if(gammE[i]<15) dRLowPt->Fill(matchDR[i]);
+      if(gammaE[i]<15) dRLowPt->Fill(matchDR[i]);
+      else dRHighPt->Fill(matchDR[i]);
     }
   }
 
@@ -173,10 +177,10 @@ int singleClusE(){
   singleTree->Add(inName.c_str());
   makeEspec(singleTree);
 
-  inName="/sphenix/user/vassalli/idTest/HIsample/HIana.root";
+  /*inName="/sphenix/user/vassalli/idTest/HIsample/HIana.root";
   TChain *hiTree = new TChain("subtractedTree");
   hiTree->Add(inName.c_str());
-  makeEspec(hiTree,"HI");
+  makeEspec(hiTree,"HI");*/
 
   inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
   TChain *subTree = new TChain("subtractedTree");

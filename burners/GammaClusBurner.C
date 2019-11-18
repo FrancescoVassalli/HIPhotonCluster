@@ -118,8 +118,7 @@ RawCluster* GammaClusBurner::getCluster(TLorentzVector* tlv){
   for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
   { 
     RawCluster *cluster = rtiter->second; 
-    //cluster must have at least 1GeV to be considered
-    if(cluster->get_energy()>1&&(DeltaR(tlv,cluster)<dr||dr<0)){
+    if(cluster->get_energy()>_kMINCLUSTERENERGY&&(DeltaR(tlv,cluster)<dr||dr<0)){
       dr=DeltaR(tlv,cluster);
       rcluster=cluster;
     }

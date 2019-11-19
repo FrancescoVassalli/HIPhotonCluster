@@ -67,7 +67,8 @@ struct Average{
       cm2+=(x-value)*(x-value);
       cm4+=(x-value)*(x-value)*(x-value)*(x-value);
     }
-    return cm4/n-cm2*(n-3)/(n*(n-1.));
+    double s2 = cm2/(n-1);
+    return sqrt(cm4/n-s2*s2*(n-3)/(n*(n-1.)));
   }
 
 };

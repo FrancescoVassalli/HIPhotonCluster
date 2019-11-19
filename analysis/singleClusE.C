@@ -125,6 +125,13 @@ void makeEspec(TTree* tree,string ext=""){
 
   dRDist->Sumw2();
   dRLowPt->Sumw2();
+  
+  //calculate average response at each truth e
+  vector<Average> v_response(kBINS);
+  name="Response_E";
+  name+=ext;
+  TH1F *response_e = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
+  response_e->Sumw2();
 
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
@@ -134,6 +141,7 @@ void makeEspec(TTree* tree,string ext=""){
       v_average[(int)(gammaE[i])]+=clusE[i];
       v_average_core[(int)(gammaE[i])]+=clusEcore[i];
       response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
+      v_average[(int)(gammaE[i])]+=clusE[i]/gammaE[i];
 
       if(gammaE[i]<15){
         eDist[0]->Fill(clusE[i]);
@@ -155,9 +163,12 @@ void makeEspec(TTree* tree,string ext=""){
     eSpec->SetBinError(bin,v_average[bin-1].getError());
     eCoreSpec->SetBinContent(bin,v_average_core[bin-1].value);
     eCoreSpec->SetBinError(bin,  v_average_core[bin-1].getError());
+    response_e->SetBinContent(bin,v_response[bin-1].value);
+    response_e->SetBinError(bin, v_response[bin-1].getError());
   }
   eSpec->Write();
   eCoreSpec->Write();
+  response_e->Write();
   for(TH1F* plot : eDist){
     plot->Write();
   }

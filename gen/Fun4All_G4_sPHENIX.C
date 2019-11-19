@@ -257,7 +257,7 @@ int Fun4All_G4_sPHENIX(
                                               PHG4SimpleEventGenerator::Uniform,
                                               PHG4SimpleEventGenerator::Uniform);
         gen->set_vertex_distribution_mean(0.0, 0.0, 0.0);
-        gen->set_vertex_distribution_width(0.0, 0.0, 5.0);
+        gen->set_vertex_distribution_width(0.0, 0.0, 0.0);
       }
       gen->set_vertex_size_function(PHG4SimpleEventGenerator::Uniform);
       gen->set_vertex_size_parameters(0.0, 0.0);

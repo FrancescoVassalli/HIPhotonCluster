@@ -107,9 +107,11 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
         _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
         _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
+        keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 
       }
       else{
+        cout<<"Cluster Rejected!\n";
         unsigned int clustersub_n = keys_map[cluster->get_id()];
         _b_truthphoton_E[clustersub_n ] =-999;
         _b_truthphoton_pT[clustersub_n ] =-999;

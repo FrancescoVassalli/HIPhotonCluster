@@ -129,7 +129,7 @@ void makeEspec(TTree* tree,string ext=""){
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
     for(unsigned i=0; i<clusn; i++){
-      if((int)gammaE[i]>=kBINS) continue;
+      if(gammaE[i]<0||(int)gammaE[i]>=kBINS) continue;
 
       v_average[(int)(gammaE[i])]+=clusE[i];
       v_average_core[(int)(gammaE[i])]+=clusEcore[i];
@@ -168,6 +168,7 @@ void makeEspec(TTree* tree,string ext=""){
   dRDist->Write();
   dRLowPt->Write();
   dRHighPt->Write();
+
 }
 
 
@@ -183,9 +184,10 @@ int singleClusE(){
   hiTree->Add(inName.c_str());
   makeEspec(hiTree,"HI");*/
 
-  inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
+/*  inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
   TChain *subTree = new TChain("subtractedTree");
   subTree->Add(inName.c_str());
   makeEspec(subTree,"sub");
+  */
   return 0;
 }

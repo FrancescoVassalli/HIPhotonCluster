@@ -59,16 +59,9 @@ struct Average{
     double s = sqrt(cm2/(n-1));
     return s/sqrt(n);
   }
-  double getErrorError(){
+  double getErrorError(){ //assume that the underlying distribution is normal
     if(n<=1) return 0;
-    double cm2 =0;
-    double cm4 =0;
-    for(double x : *allVals){
-      cm2+=(x-value)*(x-value);
-      cm4+=(x-value)*(x-value)*(x-value)*(x-value);
-    }
-    double s2 = cm2/(n-1);
-    return sqrt(cm4/n-s2*s2*(n-3)/(n*(n-1.)));
+    return 2*getError()*getError()/(n-1.);
   }
 
 };

@@ -179,15 +179,15 @@ int singleClusE(){
   singleTree->Add(inName.c_str());
   makeEspec(singleTree);
 
-  /*inName="/sphenix/user/vassalli/idTest/HIsample/HIana.root";
+  inName="/sphenix/user/vassalli/idTest/HIsample/HIana.root";
   TChain *hiTree = new TChain("subtractedTree");
   hiTree->Add(inName.c_str());
-  makeEspec(hiTree,"HI");*/
+  makeEspec(hiTree,"HI");
 
-/*  inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
+  inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
   TChain *subTree = new TChain("subtractedTree");
   subTree->Add(inName.c_str());
   makeEspec(subTree,"sub");
-  */
+  
   return 0;
 }

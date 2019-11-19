@@ -59,7 +59,16 @@ struct Average{
     double s = sqrt(cm2/(n-1));
     return s/sqrt(n);
   }
-  //calculate error
+  double getErrorError(){
+    if(n<=1) return 0;
+    double cm2 =0;
+    double cm4 =0;
+    for(double x : *allVals){
+      cm2+=(x-value)*(x-value);
+      cm4+=(x-value)*(x-value)*(x-value)*(x-value);
+    }
+    return cm4/n-cm2*(n-3)/(n*(n-1.));
+  }
 
 };
 
@@ -84,9 +93,17 @@ void makeEspec(TTree* tree,string ext=""){
   name = "eCoreSpec";
   name+=ext;
   TH1F* eCoreSpec = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
+  name = "eRes";
+  name+=ext;
+  TH1F *eRes = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
+  name = "eResCore";
+  name+=ext;
+  TH1F *eCoreRes = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
 
   eSpec->Sumw2();
   eCoreSpec->Sumw2();
+  eRes->Sumw2();
+  eCoreRes->Sumw2();
 
   //used to calculate the average
   vector<Average> v_average(kBINS);
@@ -165,10 +182,16 @@ void makeEspec(TTree* tree,string ext=""){
     eCoreSpec->SetBinError(bin,  v_average_core[bin-1].getError());
     response_e->SetBinContent(bin,v_response[bin-1].value);
     response_e->SetBinError(bin, v_response[bin-1].getError());
+    eRes->SetBinContent(bin,v_average[bin-1].getError());
+    eRes->SetBinError(bin,v_average[bin-1].getErrorError());
+    eCoreRes->SetBinContent(bin,v_average[bin-1].getError());
+    eCoreRes->SetBinError(bin,v_average[bin-1].getErrorError());
   }
   eSpec->Write();
   eCoreSpec->Write();
   response_e->Write();
+  eRes->Write();
+  eCoreRes->Write();
   for(TH1F* plot : eDist){
     plot->Write();
   }

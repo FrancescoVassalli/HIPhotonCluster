@@ -9,6 +9,7 @@
 #include <TLorentzVector.h>
 
 #include <iostream>
+#include <map>
 using namespace std;
 
 const float GammaClusBurner::_kCLUSTERDR = 0.2f;
@@ -77,6 +78,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
     cout<<"GamaClusBurner Processesing Event "<<_kRunNumber<<endl;
   }
   _b_clustersub_n=0; 
+  std::map<unsigned int,unsigned int> keys_map; //make a list of which clusters I've used so I don't do merged clusters
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
@@ -91,18 +93,33 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
       cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dR= "<<DeltaR(&gamma_tlv,cluster)<<'\n';
+      cout<<"\t \t cluster at (eta,phi) = ("<<-1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) )<<','<<cluster->get_phi()<<")and photon at (eta,phi) = ("
+        <<gamma_tlv.Eta()<<','<<gamma_tlv.Phi()<<")\n";
       if ( energy < _kMINCLUSTERENERGY ) continue; 
-      float phi = cluster->get_phi(); 
-      float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
-      _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
-      _b_truthphoton_pT[_b_clustersub_n ] =gamma_tlv.Pt();
-      _b_clustersub_E[ _b_clustersub_n ] = energy ; 
-      _b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ; 
-      _b_clustersub_prob[ _b_clustersub_n ] = cluster->get_prob() ; 
-      _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
-      _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
-      _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
-      _b_clustersub_n++; 
+      if (keys_map.find(cluster->get_id())==keys_map.end()){
+        float phi = cluster->get_phi(); 
+        float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
+        _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
+        _b_truthphoton_pT[_b_clustersub_n ] =gamma_tlv.Pt();
+        _b_clustersub_E[ _b_clustersub_n ] = energy ; 
+        _b_clustersub_ecore[ _b_clustersub_n ] = cluster->get_ecore() ; 
+        _b_clustersub_prob[ _b_clustersub_n ] = cluster->get_prob() ; 
+        _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
+        _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
+        _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
+        _b_clustersub_n++; 
+      }
+      else{
+        unsigned int clustersub_n = keys_map[cluster->get_id()];
+        _b_truthphoton_E[clustersub_n ] =-999;
+        _b_truthphoton_pT[clustersub_n ] =-999;
+        _b_clustersub_E[ clustersub_n ] = -999 ; 
+        _b_clustersub_ecore[ clustersub_n ] = -999 ; 
+        _b_clustersub_prob[ clustersub_n ] = -999 ; 
+        _b_clustersub_eta[ clustersub_n ] = -999 ; 
+        _b_clustersub_phi[ clustersub_n ] = -999 ; 
+        _b_matchDR[ clustersub_n ] = -999 ; 
+      }
     }
   }
   _ttree->Fill();

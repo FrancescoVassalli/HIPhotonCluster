@@ -50,12 +50,13 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
   if(_kISHI)_subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC_SUB");
   else _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
   _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
-  TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground");
+  TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
   if(!towerBack){
     cerr<<Name()<<": TowerBackground not in node tree\n";
   }
   else{
     cout<<"TowerBackground is valid = "<<towerBack->isValid();
+    towerBack->identify();
   }
   if(!_subClusterContainer){
     cerr<<Name()<<": critical error-bad nodes \n";

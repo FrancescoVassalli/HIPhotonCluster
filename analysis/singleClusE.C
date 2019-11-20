@@ -69,6 +69,7 @@ struct Average{
     Average error;
     double tolerance=0;
     double lastError=-1.;
+    double change=-1.;
     do{
       //draw a random sample
       Average sample;
@@ -82,15 +83,14 @@ struct Average{
       error+=ierror;
       //get the error on the average
       //find out how much the error changed 
-      double change=-1.;
       if (lastError>0)
       {
-        change=dabs(error.getError()-lastError);
+        change=std::abs(error.getError()-lastError);
         tolerance=error.getError()*.01;
       }
       lastError=error.getError();
       // if the error changed less than the tolerance do this again 
-    }while(change<0||change>tolerance)
+    }while(change<0||change>tolerance);
     delete toy;
     return error.getError();
   }

@@ -64,7 +64,7 @@ void compareResponse(TFile *thisFile){
 		responsesub->Scale(1/responsesub->Integral());
 		responseHI->Scale(1/responseHI->Integral());
 		string title = to_string(i);
-		title+=" GeV;#frac{E_{#it{cluster}}}{#it{p}_{T}^{#it{truth}}};";
+		title+=" GeV;#frac{E_{#it{cluster}}}{E_{#it{truth}}};";
 		response->SetTitle(title.c_str());
 		responsesub->SetLineColor(kGreen-3);
 		responseHI->SetLineColor(kMagenta-2);
@@ -222,7 +222,7 @@ void compareData(){
 	TFile *anaData = new TFile("anadata.root","READ");
 	makeRatio(anaData);
 	compareError(anaData);
-	compareResponse(anaData);
+	//compareResponse(anaData);
 	compareAverageResponse(anaData);
 	compareDist(anaData);
 }

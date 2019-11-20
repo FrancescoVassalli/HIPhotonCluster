@@ -1,6 +1,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TH1F.h>
+#include <algorithm>
 
 struct Average{
   double value;
@@ -61,12 +62,37 @@ struct Average{
   }
   double getErrorError(){ 
     if(n<=1) return 0;
-
-    double cm2 =0;
+    TH1D *toy = new TH1D("toy","",1,*std::min_element(allVals->begin(),allVals->end())-1,*std::max_element(allVals->begin(),allVals->end())+1);
     for(double x : *allVals){
-      cm2+=(x-value)*(x-value);
+      toy->Fill(x);
     }
-    double s = sqrt(cm2/(n-1));
+    Average error;
+    double tolerance=0;
+    double lastError=-1.;
+    do{
+      //draw a random sample
+      Average sample;
+      for (int i = 0; i < n; ++i)
+      {
+        sample+=toy->GetRandom();
+      }
+      //calculate the statistic
+      double ierror = sample.getError();
+      //add the statistic to an average
+      error+=ierror;
+      //get the error on the average
+      //find out how much the error changed 
+      double change=-1.;
+      if (lastError>0)
+      {
+        change=dabs(error.getError()-lastError);
+        tolerance=error.getError()*.01;
+      }
+      lastError=error.getError();
+      // if the error changed less than the tolerance do this again 
+    }while(change<0||change>tolerance)
+    delete toy;
+    return error.getError();
   }
 
 };

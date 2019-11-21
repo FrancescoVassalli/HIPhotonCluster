@@ -40,9 +40,9 @@ cp burners/* $SCRATCH_AREA
 cp condor/burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-set OUT_FILE=HI_DST_OUT${p}.root
-set HI_FILE=HI_DST_ANA${p}.root
-set SUB_FILE=HI_SUB_ANA${p}.root
+set OUT_FILE=OUT${p}.root
+set HI_FILE=HI_ANA${p}.root
+set SUB_FILE=SUB_ANA${p}.root
 #root -b -q Fun4All_G4_sPHENIX.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$HI_FILE\",${p},0\)
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$SUB_FILE\",${p},1\)

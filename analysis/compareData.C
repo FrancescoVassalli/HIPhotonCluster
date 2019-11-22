@@ -25,6 +25,9 @@ void makeRatio(TFile* thisFile){
 	HIspecsub->Divide(spec);
 	HIcoresub->Divide(core);
 	HIspec->SetTitle(";E_{#gamma} [GeV];E_{EMC_HIJING}/E_{EMC_Single}");
+	HIcore->SetTitle("Core;E_{#gamma} [GeV];E_{EMC_HIJING}/E_{EMC_Single}");
+	HIspec->GetYaxis()->SetTitleOffset(1);
+	HIcore->GetYaxis()->SetTitleOffset(1);
 	HIspecsub->SetLineColor(kGreen-3);
 	cout<<"here"<<endl;
 	HIcoresub->SetLineColor(kGreen-3);
@@ -46,8 +49,21 @@ void makeRatio(TFile* thisFile){
 }
 
 void compareResponse(TFile *thisFile){
+	const int kBINS=40;
 	gStyle->SetOptStat(0);
-	for (int i = 0; i < 40; ++i)
+	TH1F *low = new TH1F("lowpTResponse","",kBINS,0,2);
+	TH1F *medium = new TH1F("medpTResponse","",kBINS,0,2);
+	TH1F *high = new TH1F("highpTResponse","",kBINS,0,2);
+
+	TH1F *lowHI = new TH1F("lowpTResponseHI","",kBINS,0,2);
+	TH1F *mediumHI = new TH1F("medpTResponseHI","",kBINS,0,2);
+	TH1F *highHI = new TH1F("highpTResponseHI","",kBINS,0,2);
+
+	TH1F *lowSub = new TH1F("lowpTResponseSub","",kBINS,0,2);
+	TH1F *mediumSub = new TH1F("medpTResponseSub","",kBINS,0,2);
+	TH1F *highSub = new TH1F("highpTResponseSub","",kBINS,0,2);
+
+	for (int i = 0; i < kBINS; ++i)
 	{
 		string name = "response";
 		string name1, name2, name3;
@@ -60,26 +76,182 @@ void compareResponse(TFile *thisFile){
 		TH1F *response  = (TH1F*) thisFile->Get(name1.c_str());
 		TH1F* responsesub  = (TH1F*) thisFile->Get(name2.c_str());
 		TH1F* responseHI= (TH1F*) thisFile->Get(name3.c_str());
-		response->Scale(1/response->Integral());
-		responsesub->Scale(1/responsesub->Integral());
-		responseHI->Scale(1/responseHI->Integral());
-		string title = to_string(i);
-		title+=" GeV;#frac{E_{#it{cluster}}}{E_{#it{truth}}};";
-		response->SetTitle(title.c_str());
-		responsesub->SetLineColor(kGreen-3);
-		responseHI->SetLineColor(kMagenta-2);
-		TLegend *tl = new TLegend(.7,.7,.9,.9);
-		TCanvas *tc = new TCanvas();
-		tc->Draw();
-		response->GetYaxis()->SetRangeUser(0,.34);
-		response->Draw();
-		responsesub->Draw("same");
-		responseHI->Draw("same");
-		tl->AddEntry(responseHI,"unsubtracted HIJING","l");
-		tl->AddEntry(responsesub,"subtracted HIJING","l");
-		tl->AddEntry(response,"Single Photon","l");
-		tl->Draw();
+		if (i<kBINS/3)
+		{
+			low->Add(response);
+			lowHI->Add(responseHI);
+			lowSub->Add(responsesub);
+		}
+		else if (i<2*kBINS/3)
+		{
+			medium->Add(response);
+			mediumHI->Add(responseHI);
+			mediumSub->Add(responsesub);
+		}
+		else
+		{
+			high->Add(response);
+			highHI->Add(responseHI);
+			highSub->Add(responsesub);
+		}
 	}
+	low->Scale(1/low->Integral());
+	lowSub->Scale(1/lowSub->Integral());
+	lowHI->Scale(1/lowHI->Integral());
+	medium->Scale(1/medium->Integral());
+	mediumSub->Scale(1/mediumSub->Integral());
+	mediumHI->Scale(1/mediumHI->Integral());
+	high->Scale(1/high->Integral());
+	highSub->Scale(1/highSub->Integral());
+	highHI->Scale(1/highHI->Integral());
+	
+	lowSub->SetLineColor(kGreen-3);
+	low->SetLineColor(kMagenta-2);
+	mediumSub->SetLineColor(kGreen-3);
+	medium->SetLineColor(kMagenta-2);
+	highSub->SetLineColor(kGreen-3);
+	high->SetLineColor(kMagenta-2);
+
+	TLegend *tl = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc = new TCanvas();
+	tc->Draw();
+	low->GetYaxis()->SetTitleOffset(1);
+	low->SetTitle("low;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	low->Draw();
+	lowSub->Draw("same");
+	lowHI->Draw("same");
+	tl->AddEntry(lowHI,"unsubtracted HIJING","l");
+	tl->AddEntry(lowSub,"subtracted HIJING","l");
+	tl->AddEntry(low,"Single Photon","l");
+	tl->Draw();
+
+	TLegend *tl2 = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc2 = new TCanvas();
+	tc2->Draw();
+	medium->GetYaxis()->SetTitleOffset(1);
+	medium->SetTitle("medium;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	medium->Draw();
+	mediumSub->Draw("same");
+	mediumHI->Draw("same");
+	tl2->AddEntry(mediumHI,"unsubtracted HIJING","l");
+	tl2->AddEntry(mediumSub,"subtracted HIJING","l");
+	tl2->AddEntry(medium,"Single Photon","l");
+	tl2->Draw();
+
+	TLegend *tl3 = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc3 = new TCanvas();
+	tc3->Draw();
+	high->GetYaxis()->SetTitleOffset(1);
+	high->SetTitle("high;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	high->Draw();
+	highSub->Draw("same");
+	highHI->Draw("same");
+	tl3->AddEntry(highHI,"unsubtracted HIJING","l");
+	tl3->AddEntry(highSub,"subtracted HIJING","l");
+	tl3->AddEntry(high,"Single Photon","l");
+	tl3->Draw();
+
+	//Redo the same thing with the core \\\\\\\\\\\\\\\\
+
+	/*TH1F *lowCore = new TH1F("lowpTResponseCore","",kBINS,0,2);
+	TH1F *mediumCore = new TH1F("medpTResponseCore","",kBINS,0,2);
+	TH1F *highCore = new TH1F("highpTResponseCore","",kBINS,0,2);
+
+	TH1F *lowHICore = new TH1F("lowpTResponseHICore","",kBINS,0,2);
+	TH1F *mediumHICore = new TH1F("medpTResponseHICore","",kBINS,0,2);
+	TH1F *highHICore = new TH1F("highpTResponseHICore","",kBINS,0,2);
+
+	TH1F *lowSubCore = new TH1F("lowpTResponseSubCore","",kBINS,0,2);
+	TH1F *mediumSubCore = new TH1F("medpTResponseSubCore","",kBINS,0,2);
+	TH1F *highSubCore = new TH1F("highpTResponseSubCore","",kBINS,0,2);
+
+	for (int i = 0; i < kBINS; ++i)
+	{
+		string name = "response";
+		string name1, name2, name3;
+		name1=name2=name3=name;
+		name1+=to_string(i);
+		name2+="sub";
+		name3+="HI";
+		name2+=to_string(i);
+		name3+=to_string(i);
+		TH1F *response  = (TH1F*) thisFile->Get(name1.c_str());
+		TH1F* responsesub  = (TH1F*) thisFile->Get(name2.c_str());
+		TH1F* responseHI= (TH1F*) thisFile->Get(name3.c_str());
+		if (i<kBINS/3)
+		{
+			low->Add(response);
+			lowHI->Add(responseHI);
+			lowSub->Add(responsesub);
+		}
+		else if (i<2*kBINS/3)
+		{
+			medium->Add(response);
+			mediumHI->Add(responseHI);
+			mediumSub->Add(responsesub);
+		}
+		else
+		{
+			high->Add(response);
+			highHI->Add(responseHI);
+			highSub->Add(responsesub);
+		}
+	}
+	low->Scale(1/low->Integral());
+	lowSub->Scale(1/lowSub->Integral());
+	lowHI->Scale(1/lowHI->Integral());
+	medium->Scale(1/medium->Integral());
+	mediumSub->Scale(1/mediumSub->Integral());
+	mediumHI->Scale(1/mediumHI->Integral());
+	high->Scale(1/high->Integral());
+	highSub->Scale(1/highSub->Integral());
+	highHI->Scale(1/highHI->Integral());
+	
+	lowSub->SetLineColor(kGreen-3);
+	low->SetLineColor(kMagenta-2);
+	mediumSub->SetLineColor(kGreen-3);
+	medium->SetLineColor(kMagenta-2);
+	highSub->SetLineColor(kGreen-3);
+	high->SetLineColor(kMagenta-2);
+
+	TLegend *tl = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc = new TCanvas();
+	tc->Draw();
+	low->GetYaxis()->SetTitleOffset(1);
+	low->SetTitle("low;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	low->Draw();
+	lowSub->Draw("same");
+	lowHI->Draw("same");
+	tl->AddEntry(lowHI,"unsubtracted HIJING","l");
+	tl->AddEntry(lowSub,"subtracted HIJING","l");
+	tl->AddEntry(low,"Single Photon","l");
+	tl->Draw();
+
+	TLegend *tl2 = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc2 = new TCanvas();
+	tc2->Draw();
+	medium->GetYaxis()->SetTitleOffset(1);
+	medium->SetTitle("medium;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	medium->Draw();
+	mediumSub->Draw("same");
+	mediumHI->Draw("same");
+	tl2->AddEntry(mediumHI,"unsubtracted HIJING","l");
+	tl2->AddEntry(mediumSub,"subtracted HIJING","l");
+	tl2->AddEntry(medium,"Single Photon","l");
+	tl2->Draw();
+
+	TLegend *tl3 = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc3 = new TCanvas();
+	tc3->Draw();
+	high->GetYaxis()->SetTitleOffset(1);
+	high->SetTitle("high;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	high->Draw();
+	highSub->Draw("same");
+	highHI->Draw("same");
+	tl3->AddEntry(highHI,"unsubtracted HIJING","l");
+	tl3->AddEntry(highSub,"subtracted HIJING","l");
+	tl3->AddEntry(high,"Single Photon","l");
+	tl3->Draw();*/
 }
 
 void compareDist(TFile *thisFile){
@@ -170,6 +342,9 @@ void compareError(TFile *thisFile){
 	HIRessub->Divide(Res);
 	HIcoresub->Divide(core);
 	HIRes->SetTitle(";E_{#gamma} [GeV];#sigma_{EMC_HIJING}/#sigma_{EMC_Single}");
+	HIcore->SetTitle("Core;E_{#gamma} [GeV];#sigma_{EMC_HIJING}/#sigma_{EMC_Single}");
+	HIRes->GetYaxis()->SetTitleOffset(1);
+	HIcore->GetYaxis()->SetTitleOffset(1);
 	HIRessub->SetLineColor(kGreen-3);
 	cout<<"here"<<endl;
 	HIcoresub->SetLineColor(kGreen-3);
@@ -189,6 +364,73 @@ void compareError(TFile *thisFile){
 	tl2->AddEntry(HIcoresub,"subtracted","l");
 	tl2->Draw();
 }
+
+void baseError(TFile *thisFile){
+	gStyle->SetOptStat(0);
+	TH1F *spec  = (TH1F*) thisFile->Get("eSpec");
+	TH1F *core  = (TH1F*) thisFile->Get("eCoreSpec");
+	TH1F* HIspecsub  = (TH1F*) thisFile->Get("eSpecsub");
+	TH1F* HIcoresub  = (TH1F*) thisFile->Get("eCoreSpecsub");
+	TH1F* HIspec  = (TH1F*) thisFile->Get("eSpecHI");
+	TH1F* HIcore  = (TH1F*) thisFile->Get("eCoreSpecHI");
+
+	TH1F *Res  = (TH1F*) thisFile->Get("eRes");
+	TH1F *coreres  = (TH1F*) thisFile->Get("eResCore");
+	TH1F* HIRessub  = (TH1F*) thisFile->Get("eRessub");
+	TH1F* HIRescoresub  = (TH1F*) thisFile->Get("eResCoresub");
+	TH1F* HIRes  = (TH1F*) thisFile->Get("eResHI");
+	TH1F* HIRescore  = (TH1F*) thisFile->Get("eResCoreHI");
+
+	/*if (!(Res&&core&&HIRessub&&HIcore&&HIRes&&HIcoresub))
+	{
+		cerr<<"Missing Plot!"<<endl;
+	}*/
+	/*Res->Rebin();
+	core->Rebin();
+	HIRes->Rebin();
+	HIcoresub->Rebin();
+	HIcore->Rebin();
+	HIRessub->Rebin();*/
+
+	Res->Divide(spec);
+	coreres->Divide(core);
+	HIRes->Divide(HIspec);
+	HIRescore->Divide(HIcore);
+	HIRessub->Divide(HIspecsub);
+	HIRescoresub->Divide(HIcoresub);
+
+
+	HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIcore->SetTitle("Core;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIRes->GetYaxis()->SetTitleOffset(1);
+	HIcore->GetYaxis()->SetTitleOffset(1);
+
+	HIRessub->SetLineColor(kGreen-3);
+	Res->SetLineColor(kMagenta-2);
+	HIcoresub->SetLineColor(kGreen-3);
+	coreres->SetLineColor(kMagenta-2);
+
+	TLegend *tl = new TLegend(.7,.1,.9,.3);
+	TCanvas *tc = new TCanvas();
+	tc->Draw();
+	HIRes->Draw();
+	HIRessub->Draw("same");
+	Res->Draw("same");
+	tl->AddEntry(HIRes,"unsubtracted","l");
+	tl->AddEntry(HIRessub,"subtracted","l");
+	tl->AddEntry(Res,"single","l");
+	tl->Draw();
+	TLegend *tl2 = new TLegend(.7,.1,.9,.3);
+	TCanvas *tc2 = new TCanvas();
+	HIcore->Draw();
+	HIcoresub->Draw("same");
+	coreres->Draw("same");
+	tl2->AddEntry(HIcore,"unsubtracted","l");
+	tl2->AddEntry(HIcoresub,"subtracted","l");
+	tl2->AddEntry(coreres,"single","l");
+	tl2->Draw();
+}
+
 
 void compareAverageResponse(TFile *thisFile){
 	gStyle->SetOptStat(0);
@@ -220,9 +462,10 @@ void compareAverageResponse(TFile *thisFile){
 
 void compareData(){
 	TFile *anaData = new TFile("anadata.root","READ");
-	makeRatio(anaData);
-	compareError(anaData);
-	//compareResponse(anaData);
-	compareAverageResponse(anaData);
-	compareDist(anaData);
+	//makeRatio(anaData);
+	//compareError(anaData);
+	compareResponse(anaData);
+	//compareAverageResponse(anaData);
+	//compareDist(anaData);
+	baseError(anaData);
 }

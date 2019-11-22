@@ -48,7 +48,7 @@ void makeRatio(TFile* thisFile){
 	tl2->Draw();
 }
 
-void compareResponse(TFile *thisFile){
+void compareResponse(TFile *thisFile, string savename){
 	const int kBINS=40;
 	gStyle->SetOptStat(0);
 	TH1F *low = new TH1F("lowpTResponse","",kBINS,0,2);
@@ -150,6 +150,26 @@ void compareResponse(TFile *thisFile){
 	tl3->AddEntry(highSub,"subtracted HIJING","l");
 	tl3->AddEntry(high,"Single Photon","l");
 	tl3->Draw();
+
+	if (savename.length()>0)
+	{
+		savename+="compareResponse.pdf";
+		TCanvas *saveCanvas = new TCanvas();
+		saveCanvas->Divide(1,3);
+		saveCanvas->cd(1);
+		low->Draw();
+		lowHI->Draw("same");
+		lowSub->Draw("same");
+		saveCanvas->cd(2);
+		medium->Draw();
+		mediumHI->Draw("same");
+		mediumSub->Draw("same");
+		saveCanvas->cd(3);
+		high->Draw();
+		highHI->Draw("same");
+		highSub->Draw("same");
+		saveCanvas->SaveAs(savename.c_str());
+	}
 
 	//Redo the same thing with the core \\\\\\\\\\\\\\\\
 
@@ -365,7 +385,7 @@ void compareError(TFile *thisFile){
 	tl2->Draw();
 }
 
-void baseError(TFile *thisFile){
+void baseError(TFile *thisFile,string savename){
 	gStyle->SetOptStat(0);
 	TH1F *spec  = (TH1F*) thisFile->Get("eSpec");
 	TH1F *core  = (TH1F*) thisFile->Get("eCoreSpec");
@@ -429,6 +449,21 @@ void baseError(TFile *thisFile){
 	tl2->AddEntry(HIcoresub,"subtracted","l");
 	tl2->AddEntry(coreres,"single","l");
 	tl2->Draw();
+	if (savename.length()>0)
+	{
+		savename+="baseError.pdf";
+		TCanvas *saveCanvas = new TCanvas();
+		saveCanvas->Divide(2,1);
+		saveCanvas->cd(1);
+		Res->Draw();
+		HIRes->Draw("same");
+		HIRessub->Draw("same");
+		saveCanvas->cd(2);
+		coreres->Draw();
+		HIRescore->Draw("same");
+		HIRescoresub->Draw("same");
+		saveCanvas->SaveAs(savename.c_str());
+	}
 }
 
 
@@ -461,11 +496,13 @@ void compareAverageResponse(TFile *thisFile){
 
 
 void compareData(){
+  	string savename = "preThanksgiving1";
+
 	TFile *anaData = new TFile("anadata.root","READ");
 	//makeRatio(anaData);
 	//compareError(anaData);
-	compareResponse(anaData);
+	compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//compareDist(anaData);
-	baseError(anaData);
+	baseError(anaData,savename);
 }

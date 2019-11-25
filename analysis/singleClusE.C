@@ -6,7 +6,6 @@
 struct Average{
   double value;
   vector<double> *allVals;
-  double *s;
   int n;
   Average(){
     value=0;
@@ -24,6 +23,12 @@ struct Average{
     value=(double)v;
     this->n=n;
     allVals=new vector<double>();
+  }
+  ~Average(){
+    if(s){
+      delete s;
+      s=NULL;
+    }
   }
   Average operator +(double v){
     allVals->push_back(v);
@@ -61,7 +66,8 @@ struct Average{
     for(double x : *allVals){
       cm2+=(x-value)*(x-value);
     }
-    *s = sqrt(cm2/(n-1));
+    if(!s) s= new double(sqrt(cm2/(n-1)));
+    else *s = sqrt(cm2/(n-1));
     return *s;
   }
   double getSError(){ 
@@ -98,6 +104,9 @@ struct Average{
     delete toy;
     return error.getError();
   }
+
+  private:
+  double *s=NULL;
 
 };
 

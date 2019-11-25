@@ -72,7 +72,8 @@ struct Average{
   }
   double getSError(){ 
     if(n<=1) return 0;
-    TH1D *toy = new TH1D("toy","",1,*std::min_element(allVals->begin(),allVals->end())-1,*std::max_element(allVals->begin(),allVals->end())+1);
+    static const float tolAdjust =.001; //this is a hyper paramater for how the tolerance is made 
+    TH1D *toy = new TH1D("toy","",1,*std::min_element(allVals->begin(),allVals->end()),*std::max_element(allVals->begin(),allVals->end()));
     for(double x : *allVals){
       toy->Fill(x);
     }
@@ -96,7 +97,7 @@ struct Average{
       if (lastError>0)
       {
         change=std::abs(error.getError()-lastError);
-        tolerance=error.getError()*.01;
+        tolerance=error.getError()*tolAdjust;
       }
       lastError=error.getError();
       // if the error changed less than the tolerance do this again 

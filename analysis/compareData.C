@@ -54,14 +54,20 @@ void compareResponse(TFile *thisFile, string savename){
 	TH1F *low = new TH1F("lowpTResponse","",kBINS,0,2);
 	TH1F *medium = new TH1F("medpTResponse","",kBINS,0,2);
 	TH1F *high = new TH1F("highpTResponse","",kBINS,0,2);
+	TH1F *extreme = new TH1F("extremepTResponse","",kBINS,0,2);
+
 
 	TH1F *lowHI = new TH1F("lowpTResponseHI","",kBINS,0,2);
 	TH1F *mediumHI = new TH1F("medpTResponseHI","",kBINS,0,2);
 	TH1F *highHI = new TH1F("highpTResponseHI","",kBINS,0,2);
+	TH1F *extremeHI = new TH1F("extremepTResponse","",kBINS,0,2);
+
 
 	TH1F *lowSub = new TH1F("lowpTResponseSub","",kBINS,0,2);
 	TH1F *mediumSub = new TH1F("medpTResponseSub","",kBINS,0,2);
 	TH1F *highSub = new TH1F("highpTResponseSub","",kBINS,0,2);
+	TH1F *extremeSub = new TH1F("extremepTResponse","",kBINS,0,2);
+
 
 	for (int i = 0; i < kBINS; ++i)
 	{
@@ -88,11 +94,16 @@ void compareResponse(TFile *thisFile, string savename){
 			mediumHI->Add(responseHI);
 			mediumSub->Add(responsesub);
 		}
-		else
+		else if (i<35)
 		{
 			high->Add(response);
 			highHI->Add(responseHI);
 			highSub->Add(responsesub);
+		}
+		else{
+			extreme->Add(response);
+			extremeHI->Add(responseHI);
+			extremeSub->Add(responsesub);
 		}
 	}
 	low->Scale(1/low->Integral());
@@ -104,6 +115,9 @@ void compareResponse(TFile *thisFile, string savename){
 	high->Scale(1/high->Integral());
 	highSub->Scale(1/highSub->Integral());
 	highHI->Scale(1/highHI->Integral());
+	extreme->Scale(1/extreme->Integral());
+	extremeHI->Scale(1/extremeHI->Integral());
+	extremeSub->Scale(1/extremeSub->Integral());
 	
 	lowSub->SetLineColor(kGreen-3);
 	low->SetLineColor(kMagenta-2);
@@ -111,6 +125,8 @@ void compareResponse(TFile *thisFile, string savename){
 	medium->SetLineColor(kMagenta-2);
 	highSub->SetLineColor(kGreen-3);
 	high->SetLineColor(kMagenta-2);
+	extreme->SetLineColor(kMagenta-2);
+	extremeSub->SetLineColor(kGreen-3);
 
 	TLegend *tl = new TLegend(.7,.7,.9,.9);
 	TCanvas *tc = new TCanvas();
@@ -142,7 +158,7 @@ void compareResponse(TFile *thisFile, string savename){
 	TCanvas *tc3 = new TCanvas();
 	tc3->Draw();
 	high->GetYaxis()->SetTitleOffset(1);
-	high->SetTitle("high;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	high->SetTitle("26-35 GeV;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
 	high->Draw();
 	highSub->Draw("same");
 	highHI->Draw("same");
@@ -151,11 +167,24 @@ void compareResponse(TFile *thisFile, string savename){
 	tl3->AddEntry(high,"Single Photon","l");
 	tl3->Draw();
 
+	TLegend *tl4 = new TLegend(.7,.7,.9,.9);
+	TCanvas *tc4 = new TCanvas();
+	tc4->Draw();
+	extreme->GetYaxis()->SetTitleOffset(1);
+	extreme->SetTitle("35+ GeV;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	extreme->Draw();
+	extremeSub->Draw("same");
+	extremeHI->Draw("same");
+	tl4->AddEntry(extremeHI,"unsubtracted HIJING","l");
+	tl4->AddEntry(extremeSub,"subtracted HIJING","l");
+	tl4->AddEntry(extreme,"Single Photon","l");
+	tl4->Draw();
+
 	if (savename.length()>0)
 	{
 		savename+="compareResponse.pdf";
 		TCanvas *saveCanvas = new TCanvas();
-		saveCanvas->Divide(1,3);
+		saveCanvas->Divide(2,2);
 		saveCanvas->cd(1);
 		low->Draw();
 		lowHI->Draw("same");
@@ -168,6 +197,10 @@ void compareResponse(TFile *thisFile, string savename){
 		high->Draw();
 		highHI->Draw("same");
 		highSub->Draw("same");
+		saveCanvas->cd(4);
+		extreme->Draw();
+		extremeSub->Draw("same");
+		extremeHI->Draw("same");
 		saveCanvas->SaveAs(savename.c_str());
 	}
 
@@ -496,7 +529,7 @@ void compareAverageResponse(TFile *thisFile){
 
 
 void compareData(){
-  	string savename = "preThanksgiving1";
+  	string savename = "";
 
 	TFile *anaData = new TFile("anadata.root","READ");
 	//makeRatio(anaData);

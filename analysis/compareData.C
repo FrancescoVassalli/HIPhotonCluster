@@ -517,7 +517,7 @@ void baseResponseError(TFile *thisFile,string savename){
 	HIRessub->Divide(HIspecsub);
 
 
-	HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	/*HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
 	HIRes->GetYaxis()->SetTitleOffset(1);
 
 	HIRessub->SetLineColor(kGreen-3);
@@ -532,7 +532,7 @@ void baseResponseError(TFile *thisFile,string savename){
 	tl->AddEntry(HIRes,"unsubtracted","l");
 	tl->AddEntry(HIRessub,"subtracted","l");
 	tl->AddEntry(Res,"single","l");
-	tl->Draw();
+	tl->Draw();*/
 	
 	/*if (savename.length()>0)
 	{
@@ -587,9 +587,9 @@ void compareData(string savename=""){
 	TFile *anaData = new TFile("anadata.root","READ");
 	//makeRatio(anaData);
 	//compareError(anaData);
-	compareResponse(anaData,savename);
+	//compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//compareDist(anaData);
-	baseError(anaData,savename)
+	//baseError(anaData,savename);
 	baseResponseError(anaData,savename);
 }

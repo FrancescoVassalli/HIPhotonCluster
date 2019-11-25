@@ -60,13 +60,13 @@ void compareResponse(TFile *thisFile, string savename){
 	TH1F *lowHI = new TH1F("lowpTResponseHI","",kBINS,0,2);
 	TH1F *mediumHI = new TH1F("medpTResponseHI","",kBINS,0,2);
 	TH1F *highHI = new TH1F("highpTResponseHI","",kBINS,0,2);
-	TH1F *extremeHI = new TH1F("extremepTResponse","",kBINS,0,2);
+	TH1F *extremeHI = new TH1F("extremepTResponseHI","",kBINS,0,2);
 
 
 	TH1F *lowSub = new TH1F("lowpTResponseSub","",kBINS,0,2);
 	TH1F *mediumSub = new TH1F("medpTResponseSub","",kBINS,0,2);
 	TH1F *highSub = new TH1F("highpTResponseSub","",kBINS,0,2);
-	TH1F *extremeSub = new TH1F("extremepTResponse","",kBINS,0,2);
+	TH1F *extremeSub = new TH1F("extremepTResponseSub","",kBINS,0,2);
 
 
 	for (int i = 0; i < kBINS; ++i)
@@ -384,12 +384,12 @@ void compareError(TFile *thisFile){
 	{
 		cerr<<"Missing Plot!"<<endl;
 	}
-	Res->Rebin();
+	/*Res->Rebin();
 	core->Rebin();
 	HIRes->Rebin();
 	HIcoresub->Rebin();
 	HIcore->Rebin();
-	HIRessub->Rebin();
+	HIRessub->Rebin();*/
 	HIRes->Divide(Res);
 	HIcore->Divide(core);
 	HIRessub->Divide(Res);
@@ -489,10 +489,12 @@ void baseError(TFile *thisFile,string savename){
 		saveCanvas->Divide(2,1);
 		saveCanvas->cd(1);
 		Res->Draw();
+		Res->GetYaxis()->SetRangeUser(.001,.05);
 		HIRes->Draw("same");
 		HIRessub->Draw("same");
 		saveCanvas->cd(2);
 		coreres->Draw();
+		coreres->GetYaxis()->SetRangeUser(.001,.05);
 		HIRescore->Draw("same");
 		HIRescoresub->Draw("same");
 		saveCanvas->SaveAs(savename.c_str());
@@ -528,12 +530,11 @@ void compareAverageResponse(TFile *thisFile){
 }
 
 
-void compareData(){
-  	string savename = "";
+void compareData(string savename=""){
 
 	TFile *anaData = new TFile("anadata.root","READ");
 	//makeRatio(anaData);
-	//compareError(anaData);
+	compareError(anaData);
 	compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//compareDist(anaData);

@@ -223,10 +223,11 @@ void makeEspec(TTree* tree,string ext=""){
     eCoreSpec->SetBinError(bin,  v_average_core[bin-1].getError());
     response_e->SetBinContent(bin,v_response[bin-1].value);
     response_e->SetBinError(bin, v_response[bin-1].getError());
-    eRes->SetBinContent(bin,v_average[bin-1].getError());
+    eRes->SetBinContent(bin,v_average[bin-1].getS());
     eRes->SetBinError(bin,v_average[bin-1].getSError());
-    eCoreRes->SetBinContent(bin,v_average[bin-1].getError());
+    eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
+    //cout<<"Bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<
   }
   eSpec->Write();
   eCoreSpec->Write();

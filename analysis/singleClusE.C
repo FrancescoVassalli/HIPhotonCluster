@@ -72,7 +72,7 @@ struct Average{
   }
   double getSError(){ 
     if(n<=1) return 0;
-    static const float tolAdjust =.001; //this is a hyper paramater for how the tolerance is made 
+    static const float tolAdjust =.0001; //this is a hyper paramater for how the tolerance is made 
     TH1D *toy = new TH1D("toy","",1,*std::min_element(allVals->begin(),allVals->end()),*std::max_element(allVals->begin(),allVals->end()));
     for(double x : *allVals){
       toy->Fill(x);

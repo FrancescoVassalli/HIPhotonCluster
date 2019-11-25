@@ -501,6 +501,58 @@ void baseError(TFile *thisFile,string savename){
 	}
 }
 
+void baseResponseError(TFile *thisFile,string savename){
+	gStyle->SetOptStat(0);
+
+	TH1F *spec  = (TH1F*) thisFile->Get("response");
+	TH1F* HIspecsub  = (TH1F*) thisFile->Get("responsesub");
+	TH1F* HIspec  = (TH1F*) thisFile->Get("responseHI");
+
+	TH1F *Res  = (TH1F*) thisFile->Get("eResponseRes");
+	TH1F* HIRessub  = (TH1F*) thisFile->Get("eResponseRessub");
+	TH1F* HIRes  = (TH1F*) thisFile->Get("eResponseResHI");
+
+	Res->Divide(spec);
+	HIRes->Divide(HIspec);
+	HIRessub->Divide(HIspecsub);
+
+
+	HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIRes->GetYaxis()->SetTitleOffset(1);
+
+	HIRessub->SetLineColor(kGreen-3);
+	Res->SetLineColor(kMagenta-2);
+
+	TLegend *tl = new TLegend(.7,.1,.9,.3);
+	TCanvas *tc = new TCanvas();
+	tc->Draw();
+	HIRes->Draw();
+	HIRessub->Draw("same");
+	Res->Draw("same");
+	tl->AddEntry(HIRes,"unsubtracted","l");
+	tl->AddEntry(HIRessub,"subtracted","l");
+	tl->AddEntry(Res,"single","l");
+	tl->Draw();
+	
+	/*if (savename.length()>0)
+	{
+		savename+="baseError.pdf";
+		TCanvas *saveCanvas = new TCanvas();
+		saveCanvas->Divide(2,1);
+		saveCanvas->cd(1);
+		Res->Draw();
+		Res->GetYaxis()->SetRangeUser(.001,.05);
+		HIRes->Draw("same");
+		HIRessub->Draw("same");
+		saveCanvas->cd(2);
+		coreres->Draw();
+		coreres->GetYaxis()->SetRangeUser(.001,.05);
+		HIRescore->Draw("same");
+		HIRescoresub->Draw("same");
+		saveCanvas->SaveAs(savename.c_str());
+	}*/
+}
+
 
 void compareAverageResponse(TFile *thisFile){
 	gStyle->SetOptStat(0);
@@ -534,9 +586,10 @@ void compareData(string savename=""){
 
 	TFile *anaData = new TFile("anadata.root","READ");
 	//makeRatio(anaData);
-	compareError(anaData);
+	//compareError(anaData);
 	compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//compareDist(anaData);
-	baseError(anaData,savename);
+	baseError(anaData,savename)
+	baseResponseError(anaData,savename);
 }

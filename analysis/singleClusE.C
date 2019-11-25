@@ -135,6 +135,9 @@ void makeEspec(TTree* tree,string ext=""){
   name = "eRes";
   name+=ext;
   TH1F *eRes = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
+  name = "eResponseRes";
+  name+=ext;
+  TH1F *eResponseRes = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
   name = "eResCore";
   name+=ext;
   TH1F *eCoreRes = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
@@ -225,6 +228,8 @@ void makeEspec(TTree* tree,string ext=""){
     response_e->SetBinError(bin, v_response[bin-1].getError());
     eRes->SetBinContent(bin,v_average[bin-1].getS());
     eRes->SetBinError(bin,v_average[bin-1].getSError());
+    eResponseRes->SetBinContent(bin,v_response[bin-1].getS());
+    eResponseRes->SetBinError(bin,v_response[bin-1].getSError());
     eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
     //cout<<"Bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<

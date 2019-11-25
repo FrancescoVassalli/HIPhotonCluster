@@ -189,7 +189,7 @@ void makeEspec(TTree* tree,string ext=""){
   vector<Average> v_response(kBINS);
   name="Response_E";
   name+=ext;
-  TH1F *response_e = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
+  TH1F *response_e = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
   response_e->Sumw2();
 
   for(unsigned event=0; event<tree->GetEntries();event++){
@@ -232,7 +232,8 @@ void makeEspec(TTree* tree,string ext=""){
     responseRes->SetBinError(bin,v_response[bin-1].getSError());
     eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
-    //cout<<"Bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<
+    cout<<"Energy bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<v_average[bin-1].getS()
+    <<"\n Response bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n';
   }
   eSpec->Write();
   eCoreSpec->Write();

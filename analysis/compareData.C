@@ -504,20 +504,20 @@ void baseError(TFile *thisFile,string savename){
 void baseResponseError(TFile *thisFile,string savename){
 	gStyle->SetOptStat(0);
 
-	TH1F *spec  = (TH1F*) thisFile->Get("response");
-	TH1F* HIspecsub  = (TH1F*) thisFile->Get("responsesub");
-	TH1F* HIspec  = (TH1F*) thisFile->Get("responseHI");
+	TH1F *spec  = (TH1F*) thisFile->Get("Response_E");
+	TH1F* HIspecsub  = (TH1F*) thisFile->Get("Response_Esub");
+	TH1F* HIspec  = (TH1F*) thisFile->Get("Response_EHI");
 
-	TH1F *Res  = (TH1F*) thisFile->Get("eResponseRes");
-	TH1F* HIRessub  = (TH1F*) thisFile->Get("eResponseRessub");
-	TH1F* HIRes  = (TH1F*) thisFile->Get("eResponseResHI");
+	TH1F *Res  = (TH1F*) thisFile->Get("responseRes");
+	TH1F* HIRessub  = (TH1F*) thisFile->Get("responseRessub");
+	TH1F* HIRes  = (TH1F*) thisFile->Get("responseResHI");
 
 	Res->Divide(spec);
 	HIRes->Divide(HIspec);
 	HIRessub->Divide(HIspecsub);
 
 
-	/*HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
 	HIRes->GetYaxis()->SetTitleOffset(1);
 
 	HIRessub->SetLineColor(kGreen-3);
@@ -532,7 +532,7 @@ void baseResponseError(TFile *thisFile,string savename){
 	tl->AddEntry(HIRes,"unsubtracted","l");
 	tl->AddEntry(HIRessub,"subtracted","l");
 	tl->AddEntry(Res,"single","l");
-	tl->Draw();*/
+	tl->Draw();
 	
 	/*if (savename.length()>0)
 	{
@@ -590,6 +590,6 @@ void compareData(string savename=""){
 	//compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//compareDist(anaData);
-	//baseError(anaData,savename);
+	baseError(anaData,savename);
 	baseResponseError(anaData,savename);
 }

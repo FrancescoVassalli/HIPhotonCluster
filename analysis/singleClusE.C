@@ -6,6 +6,7 @@
 struct Average{
   double value;
   vector<double> *allVals;
+  double *s;
   int n;
   Average(){
     value=0;
@@ -53,14 +54,17 @@ struct Average{
   }
   double getError(){
     if(n<=1) return 0;
+    return getS()/sqrt(n);
+  }
+  double getS(){
     double cm2 =0;
     for(double x : *allVals){
       cm2+=(x-value)*(x-value);
     }
-    double s = sqrt(cm2/(n-1));
-    return s/sqrt(n);
+    *s = sqrt(cm2/(n-1));
+    return *s;
   }
-  double getErrorError(){ 
+  double getSError(){ 
     if(n<=1) return 0;
     TH1D *toy = new TH1D("toy","",1,*std::min_element(allVals->begin(),allVals->end())-1,*std::max_element(allVals->begin(),allVals->end())+1);
     for(double x : *allVals){
@@ -78,7 +82,7 @@ struct Average{
         sample+=toy->GetRandom();
       }
       //calculate the statistic
-      double ierror = sample.getError();
+      double ierror = sample.getS();
       //add the statistic to an average
       error+=ierror;
       //get the error on the average
@@ -210,9 +214,9 @@ void makeEspec(TTree* tree,string ext=""){
     response_e->SetBinContent(bin,v_response[bin-1].value);
     response_e->SetBinError(bin, v_response[bin-1].getError());
     eRes->SetBinContent(bin,v_average[bin-1].getError());
-    eRes->SetBinError(bin,v_average[bin-1].getErrorError());
+    eRes->SetBinError(bin,v_average[bin-1].getSError());
     eCoreRes->SetBinContent(bin,v_average[bin-1].getError());
-    eCoreRes->SetBinError(bin,v_average[bin-1].getErrorError());
+    eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
   }
   eSpec->Write();
   eCoreSpec->Write();
@@ -229,7 +233,6 @@ void makeEspec(TTree* tree,string ext=""){
   dRDist->Write();
   dRLowPt->Write();
   dRHighPt->Write();
-
 }
 
 

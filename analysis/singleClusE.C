@@ -199,14 +199,14 @@ void makeEspec(TTree* tree,string ext=""){
     for(unsigned i=0; i<clusn; i++){
       if(gammaE[i]<0||(int)gammaE[i]>=kBINS) continue;
 
-      v_average[(int)(gammaE[i])]+=clusE[i];
-      v_average_core[(int)(gammaE[i])]+=clusEcore[i];
       if (clusE[i]>.2*gammaE[i])
       {
+        v_average[(int)(gammaE[i])]+=clusE[i];
+        v_average_core[(int)(gammaE[i])]+=clusEcore[i];
         response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
         v_response[(int)(gammaE[i])]+=clusE[i]/gammaE[i];
+        eDist[(int)(gammaE[i])]->Fill(clusE[i]);
       }
-      eDist[(int)(gammaE[i])]->Fill(clusE[i]);
           /*if(gammaE[i]<15){
         eDist[0]->Fill(clusE[i]);
       }

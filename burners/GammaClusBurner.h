@@ -9,6 +9,7 @@
 #define GAMMACLUSBURNER_H__
 
 #include <fun4all/SubsysReco.h>
+#include <calobase/RawCluster.h>
 #include <calobase/RawClusterContainer.h>
 
 #include <TFile.h>
@@ -37,6 +38,10 @@ class GammaClusBurner: public SubsysReco
 
 
   private:
+    inline double get_eta(RawCluster* cluster){
+      return -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) );
+    }
+
     inline double DeltaPhi (double phi1, double phi2, const bool sign=0) {
       phi1 = (phi1);
       phi2 = (phi2);
@@ -82,6 +87,8 @@ class GammaClusBurner: public SubsysReco
     float _b_clustersub_phi  [ _kMAXCLUSTERS ];
     float _b_clustersub_prob  [ _kMAXCLUSTERS ];
     float _b_matchDR  [ _kMAXCLUSTERS ];
+    float _b_matchEta  [ _kMAXCLUSTERS ];
+    float _b_matchPhi  [ _kMAXCLUSTERS ];
     unsigned _b_clustersub_n;     
     /**@}*/                       
 };

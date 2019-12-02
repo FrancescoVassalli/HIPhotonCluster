@@ -117,12 +117,16 @@ void makeEspec(TTree* tree,string ext=""){
   float clusE[600];
   float clusEcore[600];
   float matchDR[600];
+  float matchDPhi[600];
+  float matchDEta[600];
 
   tree->SetBranchAddress("tphoton_e",gammaE);
   tree->SetBranchAddress("sub_clus_n",&clusn);
   tree->SetBranchAddress("sub_clus_e",clusE);
   tree->SetBranchAddress("sub_clus_ecore",clusEcore);
   tree->SetBranchAddress("matchDR",matchDR);
+  tree->SetBranchAddress("matchDPhi",matchDPhi);
+  tree->SetBranchAddress("matchDEta",matchDEta);
 
   const int kBINS=40;
   string name = "eSpec";
@@ -177,6 +181,8 @@ void makeEspec(TTree* tree,string ext=""){
 
   name="DR"; name+=ext;
   TH1F* dRDist = new TH1F(name.c_str(),"",kBINS,0,.1);
+  name="DEtaPhi"; name+=ext;
+  TH2F* dEtaPhi = new TH2F(name.c_str(),"",kBINS,0,.1,kBINS,0,.1);
 
   name="DRlowpt"; name+=ext;
   TH1F* dRLowPt = new TH1F(name.c_str(),"",kBINS,0,.1);
@@ -217,6 +223,7 @@ void makeEspec(TTree* tree,string ext=""){
         eDist[2]->Fill(clusE[i]);
       }*/
       dRDist->Fill(matchDR[i]);
+      dEtaPhi->Fill(matchDEta[i],matchDPhi[i]);
       if(gammaE[i]<15) dRLowPt->Fill(matchDR[i]);
       else dRHighPt->Fill(matchDR[i]);
     }
@@ -254,6 +261,7 @@ void makeEspec(TTree* tree,string ext=""){
   dRDist->Write();
   dRLowPt->Write();
   dRHighPt->Write();
+  dEtaPhi->Write();
 }
 
 

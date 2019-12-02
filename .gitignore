@@ -1,4 +1,5 @@
 *Dict*
+*.pdf
 */Makefile.in
 */depcomp
 */build/*

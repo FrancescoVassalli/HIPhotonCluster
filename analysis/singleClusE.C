@@ -146,6 +146,7 @@ void makeEspec(TTree* tree,string ext=""){
   eCoreSpec->Sumw2();
   eRes->Sumw2();
   eCoreRes->Sumw2();
+  responseRes->Sumw2();             
 
   //used to calculate the average
   vector<Average> v_average(kBINS);
@@ -233,7 +234,7 @@ void makeEspec(TTree* tree,string ext=""){
     eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
     cout<<"Energy bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<v_average[bin-1].getS()
-    <<"\n Response bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n';
+    <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n';
   }
   eSpec->Write();
   eCoreSpec->Write();

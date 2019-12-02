@@ -453,7 +453,7 @@ void baseError(TFile *thisFile,string savename){
 	HIRescoresub->Divide(HIcoresub);
 
 
-	HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIRes->SetTitle("Cluster Energy;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
 	HIcore->SetTitle("Core;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
 	HIRes->GetYaxis()->SetTitleOffset(1);
 	HIcore->GetYaxis()->SetTitleOffset(1);
@@ -517,7 +517,7 @@ void baseResponseError(TFile *thisFile,string savename){
 	HIRessub->Divide(HIspecsub);
 
 
-	HIRes->SetTitle(";E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIRes->SetTitle("Cluster Energy Response;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
 	HIRes->GetYaxis()->SetTitleOffset(1);
 
 	HIRessub->SetLineColor(kGreen-3);

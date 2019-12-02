@@ -153,13 +153,14 @@ void makeEspec(TTree* tree,string ext=""){
   vector<Average> v_average_core(kBINS);
 
   //the distribution of cluster energy for a photon E range
-  TH1F* eDist[3];
-  for(unsigned int count=0; count<3; count++){
+  TH1F* eDist[kBINS];
+  for(unsigned int count=0; count<kBINS; count++){
     name="dist";
+    name+=std::to_string(count);
     name+=ext;
-    string bound1=to_string(5+10*count);
-    string bound2=to_string(5+10*(count+1));
-    name+=bound1;name+="_";name+=bound2;
+    //string bound1=to_string(5+10*count);
+    //string bound2=to_string(5+10*(count+1));
+    //name+=bound1;name+="_";name+=bound2;
     eDist[count] = new TH1F(name.c_str(),"",kBINS,0,kBINS+1);
     eDist[count]->Sumw2();
   }
@@ -205,7 +206,8 @@ void makeEspec(TTree* tree,string ext=""){
         response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
         v_response[(int)(gammaE[i])]+=clusE[i]/gammaE[i];
       }
-      if(gammaE[i]<15){
+      eDist[(int)(gammaE[i])]->Fill(clusE[i]);
+          /*if(gammaE[i]<15){
         eDist[0]->Fill(clusE[i]);
       }
       else if(gammaE[i]<25){
@@ -213,7 +215,7 @@ void makeEspec(TTree* tree,string ext=""){
       }
       else{
         eDist[2]->Fill(clusE[i]);
-      }
+      }*/
       dRDist->Fill(matchDR[i]);
       if(gammaE[i]<15) dRLowPt->Fill(matchDR[i]);
       else dRHighPt->Fill(matchDR[i]);

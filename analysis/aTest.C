@@ -109,10 +109,12 @@ struct Average{
 };
 
 int aTest(){
-  vector<int> v_average(10);
+  Average average;
   for (int i = 0; i < 10; ++i)
   {
-    v_average.push_back(10);
+    average+=(double) i;
   }
-  cout<<v_average.value()<<endl;
+  cout<<average.value<<endl;
+  cout<<average.getS()<<endl;
+  return 0;
 }

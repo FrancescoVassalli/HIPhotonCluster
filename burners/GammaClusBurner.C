@@ -1,6 +1,5 @@
 #include "GammaClusBurner.h"
 
-#include <calobase/RawCluster.h>
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
 #include <jetbackground/TowerBackground.h>
@@ -40,6 +39,8 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");
   _ttree->Branch("sub_clus_prob",&_b_clustersub_prob,"sub_clus_prob[sub_clus_n]/F");
   _ttree->Branch("matchDR",&_b_matchDR,"matchDR[sub_clus_n]/F");
+  _ttree->Branch("matchEta",&_b_matchEta,"matchEta[sub_clus_n]/F");
+  _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");
 
   return 0;
 }
@@ -108,6 +109,8 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
         _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
         _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
+        _b_matchPhi[ _b_clustersub_n ] = DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
+        _b_matchEta[ _b_clustersub_n ] = TMath::Abs(gamma_tlv.Eta()-get_eta(cluster)); 
         keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 
       }
@@ -122,6 +125,8 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_clustersub_eta[ clustersub_n ] = -999 ; 
         _b_clustersub_phi[ clustersub_n ] = -999 ; 
         _b_matchDR[ clustersub_n ] = -999 ; 
+        _b_matchPhi[ _b_clustersub_n ] = -999 ; 
+        _b_matchEta[ _b_clustersub_n ] = -999; 
       }
     }
   }
@@ -157,6 +162,5 @@ int GammaClusBurner::End(PHCompositeNode *topNode)
 }
 
 double GammaClusBurner::DeltaR (TLorentzVector *tlv, RawCluster* cluster){
-  float cluseta=-1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) );
-  return DeltaR(tlv->Eta(),cluseta,tlv->Phi(),cluster->get_phi());
+  return DeltaR(tlv->Eta(),get_eta(cluster),tlv->Phi(),cluster->get_phi());
 }

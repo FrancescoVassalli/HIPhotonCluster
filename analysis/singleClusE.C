@@ -182,7 +182,7 @@ void makeEspec(TTree* tree,string ext=""){
   name="DR"; name+=ext;
   TH1F* dRDist = new TH1F(name.c_str(),"",kBINS,0,.1);
   name="DEtaPhi"; name+=ext;
-  TH2F* dEtaPhi = new TH2F(name.c_str(),"",kBINS,0,.08,kBINS,0,.005);
+  TH2F* dEtaPhi = new TH2F(name.c_str(),"",kBINS,0,.08,kBINS,0,.01);
 
   name="DRlowRes"; name+=ext;
   TH1F* dRLowPt = new TH1F(name.c_str(),"",kBINS,0,.1);

@@ -184,14 +184,15 @@ void makeEspec(TTree* tree,string ext=""){
   name="DEtaPhi"; name+=ext;
   TH2F* dEtaPhi = new TH2F(name.c_str(),"",kBINS,0,.1,kBINS,0,.1);
 
-  name="DRlowpt"; name+=ext;
+  name="DRlowRes"; name+=ext;
   TH1F* dRLowPt = new TH1F(name.c_str(),"",kBINS,0,.1);
 
-  name="DRhighpt"; name+=ext;
+  name="DRhighRes"; name+=ext;
   TH1F* dRHighPt = new TH1F(name.c_str(),"",kBINS,0,.1);
 
   dRDist->Sumw2();
   dRLowPt->Sumw2();
+  dRHighPt->Sumw2();
 
   //calculate average response at each truth e
   vector<Average> v_response(kBINS);
@@ -210,18 +211,10 @@ void makeEspec(TTree* tree,string ext=""){
       response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
       v_response[(int)(gammaE[i])]+=clusE[i]/gammaE[i];
       eDist[(int)(gammaE[i])]->Fill(clusE[i]);
-      /*if(gammaE[i]<15){
-        eDist[0]->Fill(clusE[i]);
-        }
-        else if(gammaE[i]<25){
-        eDist[1]->Fill(clusE[i]);
-        }
-        else{
-        eDist[2]->Fill(clusE[i]);
-        }*/
+      
       dRDist->Fill(matchDR[i]);
       dEtaPhi->Fill(matchDEta[i],matchDPhi[i]);
-      if(gammaE[i]<15) dRLowPt->Fill(matchDR[i]);
+      if(clusE[i]/gammaE[i]<.45) dRLowPt->Fill(matchDR[i]);
       else dRHighPt->Fill(matchDR[i]);
     }
   }

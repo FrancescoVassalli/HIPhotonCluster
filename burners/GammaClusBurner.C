@@ -94,13 +94,13 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       //find the matching cluster
       RawCluster* cluster=getCluster(&gamma_tlv);
       float energy = cluster->get_energy(); 
-      cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dR= "<<DeltaR(&gamma_tlv,cluster)<<'\n';
-      cout<<"\t \t cluster at (eta,phi) = ("<<-1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) )<<','<<cluster->get_phi()<<")and photon at (eta,phi) = ("
-        <<gamma_tlv.Eta()<<','<<gamma_tlv.Phi()<<")\n";
       if ( energy < _kMINCLUSTERENERGY ) continue; 
+      //prevent double counting 
       if (keys_map.find(cluster->get_id())==keys_map.end()){
+        cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dPhi= "<<(float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ;<<'\n';
+        cout<<"\t \t cluster at (eta,phi) = ("<<get_eta(cluster)<<','<<cluster->get_phi()<<")and photon at (eta,phi) = ("<<gamma_tlv.Eta()<<','<<gamma_tlv.Phi()<<")\n";
         float phi = cluster->get_phi(); 
-        float eta = -1 * log( tan( TMath::ATan2( cluster->get_r(), cluster->get_z()  ) / 2.0 ) ); 
+        float eta = get_eta(cluster); 
         _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
         _b_truthphoton_pT[_b_clustersub_n ] =gamma_tlv.Pt();
         _b_clustersub_E[ _b_clustersub_n ] = energy ; 
@@ -109,7 +109,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_clustersub_eta[ _b_clustersub_n ] = eta ; 
         _b_clustersub_phi[ _b_clustersub_n ] = phi ; 
         _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
-        _b_matchPhi[ _b_clustersub_n ] = DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
+        _b_matchPhi[ _b_clustersub_n ] = (float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
         _b_matchEta[ _b_clustersub_n ] = TMath::Abs(gamma_tlv.Eta()-get_eta(cluster)); 
         keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 

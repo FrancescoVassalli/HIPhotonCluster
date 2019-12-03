@@ -43,8 +43,6 @@ class GammaClusBurner: public SubsysReco
     }
 
     inline double DeltaPhi (double phi1, double phi2, const bool sign=0) {
-      phi1 = (phi1);
-      phi2 = (phi2);
       double dphi = abs(phi1 - phi2);
       while (dphi > TMath::Pi()) dphi = abs (dphi - 2*TMath::Pi());
 

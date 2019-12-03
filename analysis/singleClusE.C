@@ -125,8 +125,8 @@ void makeEspec(TTree* tree,string ext=""){
   tree->SetBranchAddress("sub_clus_e",clusE);
   tree->SetBranchAddress("sub_clus_ecore",clusEcore);
   tree->SetBranchAddress("matchDR",matchDR);
-  tree->SetBranchAddress("matchDPhi",matchDPhi);
-  tree->SetBranchAddress("matchDEta",matchDEta);
+  tree->SetBranchAddress("matchPhi",matchDPhi);
+  tree->SetBranchAddress("matchEta",matchDEta);
 
   const int kBINS=40;
   string name = "eSpec";

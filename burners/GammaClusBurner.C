@@ -97,7 +97,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       if ( energy < _kMINCLUSTERENERGY ) continue; 
       //prevent double counting 
       if (keys_map.find(cluster->get_id())==keys_map.end()){
-        cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dPhi= "<<(float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ;<<'\n';
+        cout<<"\t photon cluster with cluster e= "<<energy<<" and photon e= "<<g4particle->get_e()<<" dPhi= "<<(float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) <<'\n';
         cout<<"\t \t cluster at (eta,phi) = ("<<get_eta(cluster)<<','<<cluster->get_phi()<<")and photon at (eta,phi) = ("<<gamma_tlv.Eta()<<','<<gamma_tlv.Phi()<<")\n";
         float phi = cluster->get_phi(); 
         float eta = get_eta(cluster); 

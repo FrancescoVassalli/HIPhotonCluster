@@ -233,9 +233,9 @@ void makeEspec(TTree* tree,string ext=""){
     eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
     cout<<"Energy bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<v_average[bin-1].getS()
-      <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n'
-      <<<"\tLower bound: mu = "<<response[bin-1]->GetMean()<<"#pm"<<response[bin-1]->GetMeanError()
-      <<" and sigma = "<response[bin-1]->GetStdDev()<<"#pm"<<response[bin-1]->GetStdDevError()<<'\n';
+      <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<"#pm"<<v_response[bin-1].getError()<<" and sigma = "<<v_response[bin-1].getS()<<"#pm"<<v_response[bin-1].getSError()<<'\n'
+      <<"\tLower bound: mu = "<<response[bin-1]->GetMean()<<"#pm"<<response[bin-1]->GetMeanError()
+      <<" and sigma = "<<response[bin-1]->GetStdDev()<<"#pm"<<response[bin-1]->GetStdDevError()<<'\n';
   }
   eSpec->Write();
   eCoreSpec->Write();

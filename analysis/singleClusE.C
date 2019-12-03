@@ -182,7 +182,7 @@ void makeEspec(TTree* tree,string ext=""){
   name="DR"; name+=ext;
   TH1F* dRDist = new TH1F(name.c_str(),"",kBINS,0,.1);
   name="DEtaPhi"; name+=ext;
-  TH2F* dEtaPhi = new TH2F(name.c_str(),"",kBINS,0,.08,kBINS,0,.01);
+  TH2F* dEtaPhi = new TH2F(name.c_str(),"",kBINS,0,.01,kBINS,0,.01);
 
   name="DRlowRes"; name+=ext;
   TH1F* dRLowPt = new TH1F(name.c_str(),"",kBINS,0,.1);
@@ -233,7 +233,9 @@ void makeEspec(TTree* tree,string ext=""){
     eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
     cout<<"Energy bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<v_average[bin-1].getS()
-      <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n';
+      <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n'
+      <<<"\tLower bound: mu = "<<response[bin-1]->GetMean()<<"#pm"<<response[bin-1]->GetMeanError()
+      <<" and sigma = "<response[bin-1]->GetStdDev()<<"#pm"<<response[bin-1]->GetStdDevError()<<'\n';
   }
   eSpec->Write();
   eCoreSpec->Write();

@@ -581,6 +581,42 @@ void compareAverageResponse(TFile *thisFile){
 	tl->Draw();
 }
 
+void dRByResponse(TFile *thisFile){
+	gStyle->SetOptStat(0);
+	TH1F* highHI  = (TH1F*) thisFile->Get("DRhighResHI");
+	TH1F* lowHI= (TH1F*) thisFile->Get("DRlowResHI");
+	TH1F* highsub  = (TH1F*) thisFile->Get("DRhighRessub");
+	TH1F* lowsub= (TH1F*) thisFile->Get("DRlowRessub");
+	highHI->Scale(1/highHI->Integral());
+	lowHI->Scale(1/lowHI->Integral());
+	highsub->Scale(1/highsub->Integral());
+	lowsub->Scale(1/lowsub->Integral());
+	lowsub->SetLineColor(kRed);
+	lowHI->SetLineColor(kRed);
+	highHI->SetTitle("Unsubtractd;dR_{#gamma_#it{cluster}};#frac{dN}{dN}");
+	highsub->SetTitle("Subtracted;dR_{#gamma_#it{cluster}};#frac{dN}{dN}");
+	highHI->GetYaxis()->SetTitleOffset(1);
+	highsub->GetYaxis()->SetTitleOffset(1);
+	highHI->GetYaxis()->SetRangeUser(0,1);
+	highsub->GetYaxis()->SetRangeUser(0,1);
+	TCanvas *HIcanvas = new TCanvas();
+	TLegend *tlHI = new TLegend(.6,.6,.9,.9);
+	tlHI->AddEntry(highHI,"#frac{E_{#it{cluster}}}{E_{#it{truth}}}>.45","l");
+	tlHI->AddEntry(lowHI,"#frac{E_{#it{cluster}}}{E_{#it{truth}}}<.45","l");
+	highHI->Draw();
+	lowHI->Draw("same");
+	tlHI->Draw();
+
+	TCanvas *subcanvas = new TCanvas();
+	TLegend *tlsub = new TLegend(.6,.6,.9,.9);
+	tlsub->AddEntry(highsub,"#frac{E_{#it{cluster}}}{E_{#it{truth}}}>.45","l");
+	tlsub->AddEntry(lowsub,"#frac{E_{#it{cluster}}}{E_{#it{truth}}}<.45","l");
+	highsub->Draw();
+	lowsub->Draw("same");
+	tlsub->Draw();
+
+}
+
 
 void compareData(string savename=""){
 
@@ -590,6 +626,7 @@ void compareData(string savename=""){
 	//compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//compareDist(anaData);
-	baseError(anaData,savename);
-	baseResponseError(anaData,savename);
+	//baseError(anaData,savename);
+	//baseResponseError(anaData,savename);
+	dRByResponse(anaData);
 }

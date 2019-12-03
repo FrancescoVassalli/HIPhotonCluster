@@ -96,14 +96,14 @@ struct Average{
       //find out how much the error changed 
       if (lastError>0)
       {
-        change=std::abs(error.getError()-lastError);
+        change=std::fabs(error.getError()-lastError);
         tolerance=error.getError()*tolAdjust;
       }
       lastError=error.getError();
       // if the error changed less than the tolerance do this again 
     }while(change<0||change>tolerance);
     delete toy;
-    return error.getError();
+    return error.getS();
   }
 
   private:

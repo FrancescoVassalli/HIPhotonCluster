@@ -192,7 +192,7 @@ void makeEspec(TTree* tree,string ext=""){
 
   dRDist->Sumw2();
   dRLowPt->Sumw2();
-  
+
   //calculate average response at each truth e
   vector<Average> v_response(kBINS);
   name="Response_E";
@@ -205,23 +205,20 @@ void makeEspec(TTree* tree,string ext=""){
     for(unsigned i=0; i<clusn; i++){
       if(gammaE[i]<0||(int)gammaE[i]>=kBINS) continue;
 
-      if (clusE[i]>.2*gammaE[i])
-      {
-        v_average[(int)(gammaE[i])]+=clusE[i];
-        v_average_core[(int)(gammaE[i])]+=clusEcore[i];
-        response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
-        v_response[(int)(gammaE[i])]+=clusE[i]/gammaE[i];
-        eDist[(int)(gammaE[i])]->Fill(clusE[i]);
-      }
-          /*if(gammaE[i]<15){
+      v_average[(int)(gammaE[i])]+=clusE[i];
+      v_average_core[(int)(gammaE[i])]+=clusEcore[i];
+      response[(int)(gammaE[i])]->Fill( clusE[i]/gammaE[i]);
+      v_response[(int)(gammaE[i])]+=clusE[i]/gammaE[i];
+      eDist[(int)(gammaE[i])]->Fill(clusE[i]);
+      /*if(gammaE[i]<15){
         eDist[0]->Fill(clusE[i]);
-      }
-      else if(gammaE[i]<25){
+        }
+        else if(gammaE[i]<25){
         eDist[1]->Fill(clusE[i]);
-      }
-      else{
+        }
+        else{
         eDist[2]->Fill(clusE[i]);
-      }*/
+        }*/
       dRDist->Fill(matchDR[i]);
       dEtaPhi->Fill(matchDEta[i],matchDPhi[i]);
       if(gammaE[i]<15) dRLowPt->Fill(matchDR[i]);
@@ -243,7 +240,7 @@ void makeEspec(TTree* tree,string ext=""){
     eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
     eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
     cout<<"Energy bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<v_average[bin-1].getS()
-    <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n';
+      <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<" and sigma = "<<v_response[bin-1].getS()<<'\n';
   }
   eSpec->Write();
   eCoreSpec->Write();
@@ -281,6 +278,6 @@ int singleClusE(){
   TChain *subTree = new TChain("subtractedTree");
   subTree->Add(inName.c_str());
   makeEspec(subTree,"sub");
-  
+
   return 0;
 }

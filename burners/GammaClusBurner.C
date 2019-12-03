@@ -75,7 +75,7 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
 
 int GammaClusBurner::process_event(PHCompositeNode *topNode)
 {
-  doNodePointers(topNode);
+  if(!doNodePointers(topNode)) return 2;
   if(_kRunNumber%10==0){
     cout<<"GamaClusBurner Processesing Event "<<_kRunNumber<<endl;
   }

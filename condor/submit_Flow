@@ -34,13 +34,13 @@ Initialdir   = /phenix/u/vassalli/sphenix/id/
 Input           = /dev/null
 
 # The job's stdout is sent to this file.
-Output       = /sphenix/user/vassalli/condor_logs/out.gen.$(Process)
+Output       = /sphenix/user/vassalli/condor_logs/out.flow.$(Process)
 
 # The job's stderr is sent to this file.
-Error        = /sphenix/user/vassalli/condor_logs/err.gen.$(Process)
+Error        = /sphenix/user/vassalli/condor_logs/err.flow.$(Process)
 
-# The condor log file for this job, useful when debugggen
-Log          = /sphenix/user/vassalli/condor_logs/log.gen.$(Process)
+# The condor log file for this job, useful when debuggflow
+Log          = /sphenix/user/vassalli/condor_logs/log.flow.$(Process)
 
 # Email address to send notification to.
 Notify_user     = frva5829@colorado.edu
@@ -51,4 +51,4 @@ request_memory = 39000M
 # job.  If a number is placed after the command (i.e. Queue 15)
 # then the job will be submitted N times.  Use the $(Process)
 # macro to make your input/output and log files unique.
-Queue 200
+Queue 1

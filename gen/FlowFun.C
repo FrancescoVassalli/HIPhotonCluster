@@ -41,7 +41,7 @@ R__LOAD_LIBRARY(libhisubtraction.so)
 using namespace std;
 
 
-int Fun4All_G4_sPHENIX(
+int FlowFun(
     const int nEvents = 1,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",

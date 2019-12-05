@@ -2,6 +2,7 @@
 
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
+#include <g4main/PHG4VtxPoint.h>
 #include <jetbackground/TowerBackground.h>
 #include <phool/getClass.h>
 
@@ -81,6 +82,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
   }
   _b_clustersub_n=0; 
   std::map<unsigned int,unsigned int> keys_map; //make a list of which clusters I've used so I don't do merged clusters
+  std::vector<PHG4Particle> convertedPhotons;
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
@@ -128,7 +130,38 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchPhi[ _b_clustersub_n ] = -999 ; 
         _b_matchEta[ _b_clustersub_n ] = -999; 
       }
+    } //particle is photon
+    else if (abs(g4particle->get_pid())==11) //check if conversions need to be removed
+    {
+      PHG4Particle* parent =_truthinfo->GetParticle(g4particle->get_parent_id());
+      PHG4VtxPoint* vtx=_truthinfo->GetVtx(g4particle->get_vtx_id()); 
+      if (parent->get_pid()==22&&vtx)
+      {
+        if (sqrt(vtx->get_x()*vtx->get_x()+vtx->get_y()*vtx->get_y())<s_kTPCRADIUS)
+        {
+          convertedPhotons.push_back(parent);
+        }
+      }
     }
+  }
+  //remove the converted photons
+  for(PHG4Particle* g4particle : convertedPhotons){
+    TLorentzVector gamma_tlv;
+    gamma_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
+    if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta())>_kMAXETA) continue;
+    RawCluster* cluster=getCluster(&gamma_tlv);
+    if ( cluster->get_energy();  < _kMINCLUSTERENERGY ) continue; 
+    unsigned int clustersub_n = keys_map[cluster->get_id()];
+    _b_truthphoton_E[clustersub_n ] =-999;
+        _b_truthphoton_pT[clustersub_n ] =-999;
+        _b_clustersub_E[ clustersub_n ] = -999 ; 
+        _b_clustersub_ecore[ clustersub_n ] = -999 ; 
+        _b_clustersub_prob[ clustersub_n ] = -999 ; 
+        _b_clustersub_eta[ clustersub_n ] = -999 ; 
+        _b_clustersub_phi[ clustersub_n ] = -999 ; 
+        _b_matchDR[ clustersub_n ] = -999 ; 
+        _b_matchPhi[ _b_clustersub_n ] = -999 ; 
+        _b_matchEta[ _b_clustersub_n ] = -999; 
   }
   _ttree->Fill();
   return 0;

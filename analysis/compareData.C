@@ -589,6 +589,27 @@ void dRByResponse(TFile *thisFile){
 	tlsub->Draw();
 }
 
+void plotIDs(TFile *thisFile){
+	gStyle->SetOptStat(0);
+	TH1F* single  = (TH1F*) thisFile->Get("probpT");
+	TH1F* HI= (TH1F*) thisFile->Get("probpTHI");
+	TH1F* sub  = (TH1F*) thisFile->Get("probpTsub");
+	TCanvas *tc = new TCanvas();
+	TLegend *tl = new TLegend(.1,.7,.3,.9);
+	sub->SetLineColor(kGreen-3);
+	HI->SetLineColor(kMagenta-2);
+	single->SetTitle(";E_{#it{truth}};<P(EM Shower)>");
+	single->GetYaxis()->SetTitleOffset(1);
+	single->Draw();
+	sub->Draw("same");
+	HI->Draw("same");
+	tl->AddEntry(single,"single","l");
+	tl->AddEntry(HI,"unsubtracted","l");
+	tl->AddEntry(sub,"subtracted","l");
+	tl->Draw();
+
+}
+
 
 void compareData(string savename=""){
 
@@ -599,5 +620,9 @@ void compareData(string savename=""){
 	//compareAverageResponse(anaData);
 	//baseError(anaData,savename);
 	//baseResponseError(anaData,savename);
-	dRByResponse(anaData);
+	//dRByResponse(anaData);
+
+
+	TFile *iddata = new TFile("iddata.root","READ");
+	plotIDs(iddata);
 }

@@ -67,6 +67,7 @@ class GammaClusBurner: public SubsysReco
     const bool _kISHI;
     static const unsigned int _kMINCLUSTERENERGY=1;//in GeV
     static const unsigned int _kMAXCLUSTERS=600;
+    const static int s_kTPCRADIUS=21; //in cm there is a way to get this from the simulation I should implement?
     static const float _kCLUSTERDR;
     static const float _kMAXETA;
 

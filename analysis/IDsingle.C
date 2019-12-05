@@ -148,7 +148,7 @@ void makeID(TChain *tree,string ext=""){
   probpT->Sumw2();
   vector<Average> v_probpT(kBINS);
 
-  std::vector<TH1F> v_slice;
+  std::vector<TH1F*> v_slice;
   for (int i = 0; i < kBINS; ++i)
   {
   	name = "slice";

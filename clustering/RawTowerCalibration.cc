@@ -113,7 +113,6 @@ int RawTowerCalibration::process_event(PHCompositeNode *topNode)
     {
       if (raw_tower->get_energy() > _zero_suppression_GeV)
       {
-        cout<<"Here 1"<<endl;
         _calib_towers->AddTower(key, new RawTowerv1(*raw_tower));
       }
     }
@@ -126,7 +125,6 @@ int RawTowerCalibration::process_event(PHCompositeNode *topNode)
       {
         RawTower *calib_tower = new RawTowerv1(*raw_tower);
         calib_tower->set_energy(calib_energy);
-        cout<<"Here 2"<<endl;
         _calib_towers->AddTower(key, calib_tower);
       }
     }
@@ -146,7 +144,6 @@ int RawTowerCalibration::process_event(PHCompositeNode *topNode)
       {
         RawTower *calib_tower = new RawTowerv1(*raw_tower);
         calib_tower->set_energy(calib_energy);
-        cout<<"Here 3"<<endl;
         _calib_towers->AddTower(key, calib_tower);
       }
     }

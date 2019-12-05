@@ -1,6 +1,6 @@
 
 
-void makeRatio(TFile* thisFile){
+void makeRatio(TFile* thisFile,string savename){
 	gStyle->SetOptStat(0);
 	TH1F *spec  = (TH1F*) thisFile->Get("eSpec");
 	TH1F *core  = (TH1F*) thisFile->Get("eCoreSpec");
@@ -9,7 +9,6 @@ void makeRatio(TFile* thisFile){
 	HIcoresub  = (TH1F*) thisFile->Get("eCoreSpecsub");
 	HIspec  = (TH1F*) thisFile->Get("eSpecHI");
 	HIcore  = (TH1F*) thisFile->Get("eCoreSpecHI");
-	cout<<"here"<<endl;
 	if (!(spec&&core&&HIspecsub&&HIcore&&HIspec&&HIcoresub))
 	{
 		cerr<<"Missing Plot!"<<endl;
@@ -25,13 +24,16 @@ void makeRatio(TFile* thisFile){
 	HIspecsub->Divide(spec);
 	HIcoresub->Divide(core);
 	HIspec->SetTitle(";E_{#gamma} [GeV];E_{EMC_HIJING}/E_{EMC_Single}");
+	HIspec->GetYaxis()->SetRangeUser(.9,1.15);
+	HIspec->GetXaxis()->SetRangeUser(3,35);
 	HIcore->SetTitle("Core;E_{#gamma} [GeV];E_{EMC_HIJING}/E_{EMC_Single}");
+	HIcore->GetYaxis()->SetRangeUser(.9,1.15);
+	HIcore->GetXaxis()->SetRangeUser(3,35);
 	HIspec->GetYaxis()->SetTitleOffset(1);
 	HIcore->GetYaxis()->SetTitleOffset(1);
 	HIspecsub->SetLineColor(kGreen-3);
-	cout<<"here"<<endl;
 	HIcoresub->SetLineColor(kGreen-3);
-	TLegend *tl = new TLegend(.7,.1,.9,.3);
+	TLegend *tl = new TLegend(.7,.7,.9,.9);
 	TCanvas *tc = new TCanvas();
 	tc->Draw();
 	HIspec->Draw();
@@ -46,6 +48,21 @@ void makeRatio(TFile* thisFile){
 	tl2->AddEntry(HIcore,"unsubtracted","l");
 	tl2->AddEntry(HIcoresub,"subtracted","l");
 	tl2->Draw();
+
+	if (savename.length()>0)
+	{
+		savename+="compareMean.pdf";
+		TCanvas *saveCanvas = new TCanvas();
+		saveCanvas->Divide(1,2);
+		saveCanvas->cd(1);
+		HIspec->Draw();
+		HIspecsub->Draw("same");
+		tl->Draw();
+		saveCanvas->cd(2);
+		HIcore->Draw();
+		HIcoresub->Draw("same");
+		saveCanvas->SaveAs(savename.c_str());
+	}
 }
 
 void compareResponse(TFile *thisFile, string savename){
@@ -189,6 +206,7 @@ void compareResponse(TFile *thisFile, string savename){
 		low->Draw();
 		lowHI->Draw("same");
 		lowSub->Draw("same");
+		tl->Draw();
 		saveCanvas->cd(2);
 		medium->Draw();
 		mediumHI->Draw("same");
@@ -307,7 +325,7 @@ void compareResponse(TFile *thisFile, string savename){
 	tl3->Draw();*/
 }
 
-void compareError(TFile *thisFile){
+void compareError(TFile *thisFile,string savename){
 	gStyle->SetOptStat(0);
 	TH1F *Res  = (TH1F*) thisFile->Get("eRes");
 	TH1F *core  = (TH1F*) thisFile->Get("eResCore");
@@ -320,12 +338,12 @@ void compareError(TFile *thisFile){
 	{
 		cerr<<"Missing Plot!"<<endl;
 	}
-	/*Res->Rebin();
+	Res->Rebin();
 	core->Rebin();
 	HIRes->Rebin();
 	HIcoresub->Rebin();
 	HIcore->Rebin();
-	HIRessub->Rebin();*/
+	HIRessub->Rebin();
 	HIRes->Divide(Res);
 	HIcore->Divide(core);
 	HIRessub->Divide(Res);
@@ -333,10 +351,14 @@ void compareError(TFile *thisFile){
 	HIRes->SetTitle("HIJING vs Single;E_{#gamma} [GeV];#sigma_{EMC_HIJING}/#sigma_{EMC_Single}");
 	HIcore->SetTitle("Core;E_{#gamma} [GeV];#sigma_{EMC_HIJING}/#sigma_{EMC_Single}");
 	HIRes->GetYaxis()->SetTitleOffset(1);
+	HIRes->GetYaxis()->SetRangeUser(.78,1.55);
+	HIRes->GetXaxis()->SetRangeUser(3,35);
 	HIcore->GetYaxis()->SetTitleOffset(1);
+	HIcore->GetYaxis()->SetRangeUser(.78,1.55);
+	HIcore->GetXaxis()->SetRangeUser(3,35);
 	HIRessub->SetLineColor(kGreen-3);
 	HIcoresub->SetLineColor(kGreen-3);
-	TLegend *tl = new TLegend(.7,.1,.9,.3);
+	TLegend *tl = new TLegend(.3,.7,.5,.9);
 	TCanvas *tc = new TCanvas();
 	tc->Draw();
 	HIRes->Draw();
@@ -344,13 +366,28 @@ void compareError(TFile *thisFile){
 	tl->AddEntry(HIRes,"unsubtracted","l");
 	tl->AddEntry(HIRessub,"subtracted","l");
 	tl->Draw();
-	TLegend *tl2 = new TLegend(.7,.1,.9,.3);
+	TLegend *tl2 = new TLegend(.3,.7,.5,.9);
 	TCanvas *tc2 = new TCanvas();
 	HIcore->Draw();
 	HIcoresub->Draw("same");
 	tl2->AddEntry(HIcore,"unsubtracted","l");
 	tl2->AddEntry(HIcoresub,"subtracted","l");
 	tl2->Draw();
+
+	if (savename.length()>0)
+	{
+		savename+="compareError.pdf";
+		TCanvas *saveCanvas = new TCanvas();
+		saveCanvas->Divide(1,2);
+		saveCanvas->cd(1);
+		HIRes->Draw();
+		HIRessub->Draw("same");
+		tl->Draw();
+		saveCanvas->cd(2);
+		HIcore->Draw();
+		HIcoresub->Draw("same");
+		saveCanvas->SaveAs(savename.c_str());
+	}
 }
 
 void baseError(TFile *thisFile,string savename){
@@ -365,7 +402,7 @@ void baseError(TFile *thisFile,string savename){
 	TH1F *Res  = (TH1F*) thisFile->Get("eRes");
 	TH1F *coreres  = (TH1F*) thisFile->Get("eResCore");
 	TH1F* HIRessub  = (TH1F*) thisFile->Get("eRessub");
-	TH1F* HIRescoresub  = (TH1F*) thisFile->Get("eResCoresub");
+	TH1F* HIRescoresub  = (TH1F*) thisFile->Get("eResCoresub");	
 	TH1F* HIRes  = (TH1F*) thisFile->Get("eResHI");
 	TH1F* HIRescore  = (TH1F*) thisFile->Get("eResCoreHI");
 
@@ -389,16 +426,18 @@ void baseError(TFile *thisFile,string savename){
 
 
 	HIRes->SetTitle("Cluster Energy;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
-	HIcore->SetTitle("Core;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
+	HIRescore->SetTitle("Core;E_{#gamma} [GeV];#frac{#sigma}{#mu}");
 	HIRes->GetYaxis()->SetTitleOffset(1);
-	HIcore->GetYaxis()->SetTitleOffset(1);
+	HIRescore->GetYaxis()->SetTitleOffset(1);
+	HIRes->GetXaxis()->SetRangeUser(2,35);
+	HIRescore->GetXaxis()->SetRangeUser(2,35);
 
 	HIRessub->SetLineColor(kGreen-3);
 	Res->SetLineColor(kMagenta-2);
-	HIcoresub->SetLineColor(kGreen-3);
+	HIRescoresub->SetLineColor(kGreen-3);
 	coreres->SetLineColor(kMagenta-2);
 
-	TLegend *tl = new TLegend(.7,.1,.9,.3);
+	TLegend *tl = new TLegend(.7,.7,.9,.9);
 	TCanvas *tc = new TCanvas();
 	tc->Draw();
 	HIRes->Draw();
@@ -408,13 +447,13 @@ void baseError(TFile *thisFile,string savename){
 	tl->AddEntry(HIRessub,"subtracted","l");
 	tl->AddEntry(Res,"single","l");
 	tl->Draw();
-	TLegend *tl2 = new TLegend(.7,.1,.9,.3);
+	TLegend *tl2 = new TLegend(.7,.7,.9,.9);
 	TCanvas *tc2 = new TCanvas();
-	HIcore->Draw();
-	HIcoresub->Draw("same");
+	HIRescore->Draw();
+	HIRescoresub->Draw("same");
 	coreres->Draw("same");
-	tl2->AddEntry(HIcore,"unsubtracted","l");
-	tl2->AddEntry(HIcoresub,"subtracted","l");
+	tl2->AddEntry(HIRescore,"unsubtracted","l");
+	tl2->AddEntry(HIRescoresub,"subtracted","l");
 	tl2->AddEntry(coreres,"single","l");
 	tl2->Draw();
 	if (savename.length()>0)
@@ -423,15 +462,14 @@ void baseError(TFile *thisFile,string savename){
 		TCanvas *saveCanvas = new TCanvas();
 		saveCanvas->Divide(2,1);
 		saveCanvas->cd(1);
-		Res->Draw();
-		Res->GetYaxis()->SetRangeUser(.001,.05);
-		HIRes->Draw("same");
+		HIRes->Draw();
+		Res->Draw("same");
 		HIRessub->Draw("same");
+		tl->Draw();
 		saveCanvas->cd(2);
-		coreres->Draw();
-		coreres->GetYaxis()->SetRangeUser(.001,.05);
-		HIRescore->Draw("same");
+		HIRescore->Draw();
 		HIRescoresub->Draw("same");
+		coreres->Draw("same");
 		saveCanvas->SaveAs(savename.c_str());
 	}
 }
@@ -549,18 +587,17 @@ void dRByResponse(TFile *thisFile){
 	highsub->Draw();
 	lowsub->Draw("same");
 	tlsub->Draw();
-
 }
 
 
 void compareData(string savename=""){
 
 	TFile *anaData = new TFile("anadata.root","READ");
-	//makeRatio(anaData);
-	compareError(anaData);
+	//makeRatio(anaData,savename);
+	//compareError(anaData,savename);
 	//compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//baseError(anaData,savename);
 	//baseResponseError(anaData,savename);
-	//dRByResponse(anaData);
+	dRByResponse(anaData);
 }

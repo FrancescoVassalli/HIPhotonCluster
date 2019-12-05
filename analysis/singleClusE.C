@@ -274,10 +274,10 @@ int singleClusE(){
   subTree->Add(inName.c_str());
   makeEspec(subTree,"sub");
 
-  inName="/sphenix/user/vassalli/idTest/HIsample/flowana.root";
+  /*inName="/sphenix/user/vassalli/idTest/HIsample/flowana.root";
   TChain *flowTree = new TChain("subtractedTree");
   flowTree->Add(inName.c_str());
-  makeEspec(flowTree,"flow");
+  makeEspec(flowTree,"flow");*/
 
   return 0;
 }

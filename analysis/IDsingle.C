@@ -157,7 +157,7 @@ void makeID(TChain *tree,string ext=""){
 
 void IDsingle(){
 	string inName="/sphenix/user/vassalli/idTest/singlesample/gana.root";
-	TFile *f_data = new TFile("IDdata.root","UPDATE");
+	TFile *f_data = new TFile("iddata.root","UPDATE");
 	TChain *singleTree = new TChain("subtractedTree");
 	singleTree->Add(inName.c_str());
 	makeID(singleTree);
@@ -165,12 +165,12 @@ void IDsingle(){
   inName="/sphenix/user/vassalli/idTest/HIsample/HIana.root";
   TChain *hiTree = new TChain("subtractedTree");
   hiTree->Add(inName.c_str());
-  makeEspec(hiTree,"HI");
+  makeID(hiTree,"HI");
 
   inName="/sphenix/user/vassalli/idTest/HIsample/subana.root";
   TChain *subTree = new TChain("subtractedTree");
   subTree->Add(inName.c_str());
-  makeEspec(subTree,"sub");
+  makeID(subTree,"sub");
 
   /*inName="/sphenix/user/vassalli/idTest/HIsample/flowana.root";
   TChain *flowTree = new TChain("subtractedTree");

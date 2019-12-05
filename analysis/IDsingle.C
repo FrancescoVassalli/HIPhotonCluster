@@ -111,7 +111,7 @@ struct Average{
 
 };
 
-void makeID(){
+void makeID(TChain *tree){
 	int clusn;
   float gammaE[600];
   float clusE[600];
@@ -119,7 +119,7 @@ void makeID(){
   float matchDR[600];
   float matchDPhi[600];
   float matchDEta[600];
-  float prob[600]
+  float prob[600];
 
   tree->SetBranchAddress("tphoton_e",gammaE);
   tree->SetBranchAddress("sub_clus_n",&clusn);
@@ -133,7 +133,6 @@ void makeID(){
   const int kBINS=40;
 
   string name = "probpT";
-  name+=ext;
   //the average chi2 at each pT
   TH1F* prob1 = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
   prob1->Sumw2();
@@ -157,7 +156,7 @@ void makeID(){
 
 void IDsingle(){
 	string inName="/sphenix/user/vassalli/idTest/singlesample/gana.root";
-	TFile *f_data = new TFile("anadata.root","UPDATE");
+	TFile *f_data = new TFile("IDdata.root","UPDATE");
 	TChain *singleTree = new TChain("subtractedTree");
 	singleTree->Add(inName.c_str());
 	makeID(singleTree);

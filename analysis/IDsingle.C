@@ -114,6 +114,7 @@ struct Average{
 void makeID(TChain *tree,string ext=""){
 	int clusn;
   float gammaE[600];
+  float gammapT[600];
   float clusE[600];
   float clusEcore[600];
   float matchDR[600];
@@ -122,6 +123,7 @@ void makeID(TChain *tree,string ext=""){
   float prob[600];
 
   tree->SetBranchAddress("tphoton_e",gammaE);
+  tree->SetBranchAddress("tphoton_pT",gammapT);
   tree->SetBranchAddress("sub_clus_n",&clusn);
   tree->SetBranchAddress("sub_clus_e",clusE);
   tree->SetBranchAddress("sub_clus_ecore",clusEcore);
@@ -132,25 +134,51 @@ void makeID(TChain *tree,string ext=""){
 
   const int kBINS=40;
 
-  string name = "probpT";
+  string name = "probE";
   name+=ext;
-  //the average chi2 at each pT
-  TH1F* prob1 = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
-  prob1->Sumw2();
-  vector<Average> v_prob(kBINS);
+  //the average chi2 at each truth E
+  TH1F* probE = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
+  probE->Sumw2();
+  vector<Average> v_probE(kBINS);
+
+  name = "probpT";
+  name+=ext;
+  //the average chi2 at each truth pT
+  TH1F* probpT = new TH1F(name.c_str(),"",kBINS,-.5,kBINS+.5);
+  probpT->Sumw2();
+  vector<Average> v_probpT(kBINS);
+
+  std::vector<TH1F> v_slice;
+  for (int i = 0; i < kBINS; ++i)
+  {
+  	name = "slice";
+  	name+=std::to_string(i);
+  	name+=ext;
+  	TH1F* thisSlice = new TH1F(name.c_str(),"",kBINS,0,1);
+  	thisSlice->Sumw2();
+  	v_slice.push_back(thisSlice);
+  }
 
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
     for(unsigned i=0; i<clusn; i++){
       if(gammaE[i]<0||(int)gammaE[i]>=kBINS) continue;
-      v_prob[(int)(gammaE[i])]+=prob[i];
+      v_probE[(int)(gammaE[i])]+=prob[i];
+      v_probpT[(int)(gammapT[i])]+=prob[i];
+      v_slice[(int)(gammapT[i])]->Fill(prob[i]);
     }
   }
   for(unsigned bin=1;bin<kBINS+1;bin++){
-    prob1->SetBinContent(bin,v_prob[bin-1].value);
-    prob1->SetBinError(bin,v_prob[bin-1].getError());
+    probE->SetBinContent(bin,v_probE[bin-1].value);
+    probE->SetBinError(bin,v_probE[bin-1].getError());
+    probpT->SetBinContent(bin,v_probpT[bin-1].value);
+    probpT->SetBinError(bin,v_probpT[bin-1].getError());
   }
-  prob1->Write();
+  probE->Write();
+  probpT->Write();
+  for(TH1F* plot : v_slice){
+  	plot->Write();
+  }
 }
 
 

@@ -84,7 +84,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
   }
   _b_clustersub_n=0; 
   std::map<unsigned int,unsigned int> keys_map; //make a list of which clusters I've used so I don't do merged clusters
-  std::vector<PHG4Particle> convertedPhotons;
+  std::vector<PHG4Particle*> convertedPhotons;
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
@@ -156,7 +156,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
     gamma_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
     if(gamma_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(gamma_tlv.Eta())>_kMAXETA) continue;
     RawCluster* cluster=getCluster(&gamma_tlv);
-    if ( cluster->get_energy();  < _kMINCLUSTERENERGY ) continue; 
+    if ( cluster->get_energy()  < _kMINCLUSTERENERGY ) continue; 
     unsigned int clustersub_n = keys_map[cluster->get_id()];
     _b_truthphoton_E[clustersub_n ] =-999;
         _b_truthphoton_pT[clustersub_n ] =-999;

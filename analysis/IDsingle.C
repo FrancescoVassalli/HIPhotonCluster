@@ -148,6 +148,11 @@ void makeID(TChain *tree,string ext=""){
   probpT->Sumw2();
   vector<Average> v_probpT(kBINS);
 
+  name = "badEta";
+  name+=ext;
+  TH1F* badEta = new TH1F(name.c_str(),"",kBINS,0,1.1);
+  badEta->Sumw2();
+
   std::vector<TH1F*> v_slice;
   for (int i = 0; i < kBINS; ++i)
   {
@@ -166,6 +171,10 @@ void makeID(TChain *tree,string ext=""){
       v_probE[(int)(gammaE[i])]+=prob[i];
       v_probpT[(int)(gammapT[i])]+=prob[i];
       v_slice[(int)(gammapT[i])]->Fill(prob[i]);
+      if (prob[i]<.1)
+      {
+      	badEta->Fill(clusE[i]/gammaE[i]);
+      }
     }
   }
   for(unsigned bin=1;bin<kBINS+1;bin++){
@@ -176,6 +185,7 @@ void makeID(TChain *tree,string ext=""){
   }
   probE->Write();
   probpT->Write();
+  badEta->Write();
   for(TH1F* plot : v_slice){
   	plot->Write();
   }

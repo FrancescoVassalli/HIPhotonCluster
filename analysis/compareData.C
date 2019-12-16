@@ -610,6 +610,22 @@ void plotIDs(TFile *thisFile){
 
 }
 
+void compareProbRes(TFile *thisFile){
+	TH1F* good = (TH1F*) thisFile->Get("goodProbRes");
+	TH1F* bad = (TH1F*) thisFile->Get("badProbRes");
+	good->Scale(1/good->Integral());
+	bad->Scale(1/bad->Integral());
+	bad->SetLineColor(kRed);
+	good->SetTitle(";#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	TCanvas *tc = new TCanvas();
+	good->Draw();
+	bad->Draw("same");
+	TLegend *tl = new TLegend(.1,.7,.3,.9);
+	tl->AddEntry(good,"Prob>.1","l");
+	tl->AddEntry(bad,"Prob<.1","l");
+	tl->Draw();
+}
+
 
 void compareData(string savename=""){
 
@@ -625,4 +641,5 @@ void compareData(string savename=""){
 
 	TFile *iddata = new TFile("iddata.root","READ");
 	plotIDs(iddata);
+	//compareProbRes(iddata);
 }

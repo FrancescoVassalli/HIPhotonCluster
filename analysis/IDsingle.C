@@ -168,6 +168,7 @@ void makeID(TChain *tree,string ext=""){
   	v_slice.push_back(thisSlice);
   }
 
+  unsigned Ngood=0, Ntotal=0;
   for(unsigned event=0; event<tree->GetEntries();event++){
     tree->GetEntry(event);
     for(unsigned i=0; i<clusn; i++){
@@ -181,7 +182,9 @@ void makeID(TChain *tree,string ext=""){
       }
       else{
       	goodProbRes->Fill(clusE[i]/gammaE[i]);
+      	Ngood++;
       }
+      Ntotal++;
     }
   }
   for(unsigned bin=1;bin<kBINS+1;bin++){
@@ -197,6 +200,7 @@ void makeID(TChain *tree,string ext=""){
   for(TH1F* plot : v_slice){
   	plot->Write();
   }
+  cout<<ext<<" eff="<<(float)Ngood/Ntotal<<'\n';
 }
 
 

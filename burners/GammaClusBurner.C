@@ -1,4 +1,5 @@
 #include "GammaClusBurner.h"
+#include "IDBurner.h"
 
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
@@ -20,6 +21,7 @@ GammaClusBurner::GammaClusBurner(const std::string &name, unsigned runnumber=0,b
   _kRunNumber(runnumber), _kISHI(isHI)
 {
   _foutname = name;
+  _towerBurner(isHI);
 }
 
 GammaClusBurner::~GammaClusBurner(){
@@ -45,6 +47,16 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree->Branch("matchEta",&_b_matchEta,"matchEta[sub_clus_n]/F");
   _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");
 
+  //make a branch for each tower
+  string bTitle="tower";
+  string bStruct = "[sub_clus_n]/F"
+  for (int i = 0; i < _kNTOWERS; ++i)
+  {
+    string str = bTitle + std::to_string(i);
+    string str2 = str+bStruct;
+    _ttree->Branch(str.c_str(),_b_tower_Eray[i],str2.c_str());
+  }
+
   return 0;
 }
 
@@ -55,6 +67,7 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
   else _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
   _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
   TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
+  
   if(!towerBack){
     cerr<<Name()<<": TowerBackground not in node tree\n";
   }
@@ -62,6 +75,7 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
     cout<<"TowerBackground is valid = "<<towerBack->isValid();
     towerBack->identify();
   }
+  
   if(!_subClusterContainer){
     cerr<<Name()<<": critical error-bad nodes \n";
     if(!_subClusterContainer){
@@ -117,6 +131,11 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchDR[ _b_clustersub_n ] = DeltaR(&gamma_tlv,cluster) ; 
         _b_matchPhi[ _b_clustersub_n ] = (float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
         _b_matchEta[ _b_clustersub_n ] = TMath::Abs(gamma_tlv.Eta()-get_eta(cluster)); 
+        _towerBurner->process_cluster(cluster);
+        for (int i = 0; i < _kNTOWERS; ++i)
+        {
+          _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+        }
         keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 
       }

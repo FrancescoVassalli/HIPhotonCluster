@@ -22,6 +22,7 @@
 class PHCompositeNode;
 class PHG4TruthInfoContainer;
 class RawCluster;
+class IDBurner;
 
 class TLorentzVector;
 
@@ -67,6 +68,7 @@ class GammaClusBurner: public SubsysReco
     const bool _kISHI;
     static const unsigned int _kMINCLUSTERENERGY=1;//in GeV
     static const unsigned int _kMAXCLUSTERS=600;
+    static const unsigned int _kNTOWERS=49;
     const static int s_kTPCRADIUS=21; //in cm there is a way to get this from the simulation I should implement?
     static const float _kCLUSTERDR;
     static const float _kMAXETA;
@@ -76,6 +78,7 @@ class GammaClusBurner: public SubsysReco
     RawClusterContainer* _subClusterContainer=NULL;
     std::string _foutname;///<path+name for output file
     PHG4TruthInfoContainer *_truthinfo;
+    IDBurner *towerBurner=NULL;
 
     /** \defgroup  variables  for the TTrees
       @{*/
@@ -88,6 +91,7 @@ class GammaClusBurner: public SubsysReco
     float _b_clustersub_eta  [ _kMAXCLUSTERS ];
     float _b_clustersub_phi  [ _kMAXCLUSTERS ];
     float _b_clustersub_prob  [ _kMAXCLUSTERS ];
+    float _b_tower_Eray  [ _kNTOWERS ][_kMAXCLUSTERS];
     float _b_matchDR  [ _kMAXCLUSTERS ];
     float _b_matchEta  [ _kMAXCLUSTERS ];
     float _b_matchPhi  [ _kMAXCLUSTERS ];

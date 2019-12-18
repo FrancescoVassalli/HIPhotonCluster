@@ -43,7 +43,7 @@ cd $SCRATCH_AREA
 set OUT_FILE=FLOW${p}.root
 set ANA_FILE=FLOW_ANA${p}.root
 #root -b -q Fun4All_G4_sPHENIX.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
-root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},0\)
+root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
 #
 rm -rf $SCRATCH_AREA
 #

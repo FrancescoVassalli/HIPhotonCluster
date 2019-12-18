@@ -1,8 +1,15 @@
 #include "IDBurner.h"
+#include "TowerMap.h"
 #include "ChaseTower.h"
 
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
+#include <calobase/RawClusterContainer.h>
+#include <calobase/RawCluster.h>
+#include <calobase/RawTower.h>
+#include <calobase/RawTowerGeom.h>
+#include <calobase/RawTowerGeomContainer.h>
+#include <calobase/RawTowerContainer.h>
 #include <jetbackground/TowerBackground.h>
 #include <phool/getClass.h>
 
@@ -10,7 +17,7 @@
 
 #include <iostream>
 #include <map>
-#include <pair>
+#include <utility>
 using namespace std;
 
 const float IDBurner::_kSEGMENTATION = 0.025f;
@@ -64,54 +71,51 @@ void IDBurner::process_cluster(RawCluster *cluster)
   //https://github.com/ChaseSmith/PhotonIso/blob/master/treesource/TreeMaker.C
 
   //get the towers from the cluster
-    std::vector <ChaseTower> clusterTowers;
+  std::vector <ChaseTower> clusterTowers;
 
-    RawCluster::TowerConstRange clusterrange = cluster->get_towers();
-    for (RawCluster::TowerConstIterator rtiter = clusterrange.first; rtiter != clusterrange.second; ++rtiter) 
+  RawCluster::TowerConstRange clusterrange = cluster->get_towers();
+  for (RawCluster::TowerConstIterator rtiter = clusterrange.first; rtiter != clusterrange.second; ++rtiter) 
+  {
+    RawTower *tower = _towerContainer->getTower(rtiter->first);
+    RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
+    ChaseTower temp;
+    temp.setEta(tower_geom->get_eta());
+    temp.setPhi(tower_geom->get_phi());
+    temp.setEnergy(tower->get_energy());
+    temp.setKey(tower->get_key());
+    clusterTowers.push_back(temp);
+  }
+
+  //now that we have all towers from cluster, find max tower
+
+  ChaseTower MaxTower;
+  MaxTower = MaxTower.findMaxTower(clusterTowers);
+
+  //Find 49 towers around max tower, Sasha style
+
+  std::vector<ChaseTower> Sasha49Towers;
+
+  RawTowerContainer::ConstRange towerrange = _towerContainer->getTowers();
+  for (RawTowerContainer::ConstIterator rtiter = towerrange.first; rtiter != towerrange.second; ++rtiter) 
+  {
+    RawTower *tower = rtiter->second;
+    RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
+    double this_phi = tower_geom->get_phi();
+    double this_eta = tower_geom->get_eta();
+    double this_energy = tower->get_energy();
+    double dif_eta = this_eta - MaxTower.getEta();
+    double dif_phi = this_phi - MaxTower.getPhi();
+
+    if(dif_phi > TMath::Pi()){dif_phi -= 2*TMath::Pi();} //make sure dif_phi is between -pi and pi
+    else if(dif_phi < -1*TMath::Pi()){dif_phi += 2*TMath::Pi();}
+    const float kMAXDIFF = (_kTOPOSIZE+.4)*_kSEGMENTATION ;
+    if(fabs(dif_eta) < kMAXDIFF and fabs(dif_phi) < kMAXDIFF )
     {
-      RawTower *tower = _towerContainer->getTower(rtiter->first);
-      RawTowerGeom *tower_geom = geomEM->get_tower_geometry(tower->get_key());
-      ChaseTower temp;
-      temp.setEta(tower_geom->get_eta());
-      _b_clusterTower_eta[_b_clusterTower_towers] = tower_geom->get_eta();
-      temp.setPhi(tower_geom->get_phi());
-      _b_clusterTower_phi[_b_clusterTower_towers] = tower_geom->get_phi();
-      temp.setEnergy(tower->get_energy());
-      _b_clusterTower_energy[_b_clusterTower_towers] = tower->get_energy();
-      temp.setKey(tower->get_key());
-      clusterTowers.push_back(temp);
-      _b_clusterTower_towers++;
+      Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
     }
-
-    //now that we have all towers from cluster, find max tower
-
-    ChaseTower MaxTower = ChaseTower.findMaxTower(clusterTowers);
-
-    //Find 49 towers around max tower, Sasha style
-
-    std::vector<ChaseTower> Sasha49Towers;
-
-    RawTowerContainer::ConstRange towerrange = _towerContainer->getTowers();
-    for (RawTowerContainer::ConstIterator rtiter = towerrange.first; rtiter != towerrange.second; ++rtiter) 
-    {
-      RawTower *tower = rtiter->second;
-      RawTowerGeom *tower_geom = geomEM->get_tower_geometry(tower->get_key());
-      double this_phi = tower_geom->get_phi();
-      double this_eta = tower_geom->get_eta();
-      double this_energy = tower->get_energy();
-      double dif_eta = this_eta - MaxTower.getEta();
-      double dif_phi = this_phi - MaxTower.getPhi();
-
-      if(dif_phi > TMath::Pi()){dif_phi -= 2*TMath::Pi();} //make sure dif_phi is between -pi and pi
-      else if(dif_phi < -1*TMath::Pi()){dif_phi += 2*TMath::Pi();}
-      const float kMAXDIFF = (_kTOPOSIZE+.4)*_kSEGMENTATION ;
-      if(fabs(dif_eta) < kMAXDIFF and fabs(dif_phi) < kMAXDIFF )
-      {
-        Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
-      }
-    }
-    if(_towerMap) delete _towerMap;
-    _towerMap = new TowerMap(Sasha49Towers,MaxTower);
+  }
+  if(_towerMap) delete _towerMap;
+  _towerMap = new TowerMap(Sasha49Towers,&MaxTower);
 }
 
 float IDBurner::getTowerEnergy(unsigned mapPosition){

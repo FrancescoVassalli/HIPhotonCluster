@@ -21,7 +21,7 @@ GammaClusBurner::GammaClusBurner(const std::string &name, unsigned runnumber=0,b
   _kRunNumber(runnumber), _kISHI(isHI)
 {
   _foutname = name;
-  _towerBurner(isHI);
+  _towerBurner= new IDBurner(isHI);
 }
 
 GammaClusBurner::~GammaClusBurner(){
@@ -49,8 +49,8 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
 
   //make a branch for each tower
   string bTitle="tower";
-  string bStruct = "[sub_clus_n]/F"
-  for (int i = 0; i < _kNTOWERS; ++i)
+  string bStruct = "[sub_clus_n]/F";
+  for (unsigned i = 0; i < _kNTOWERS; ++i)
   {
     string str = bTitle + std::to_string(i);
     string str2 = str+bStruct;
@@ -132,7 +132,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchPhi[ _b_clustersub_n ] = (float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
         _b_matchEta[ _b_clustersub_n ] = TMath::Abs(gamma_tlv.Eta()-get_eta(cluster)); 
         _towerBurner->process_cluster(cluster);
-        for (int i = 0; i < _kNTOWERS; ++i)
+        for (unsigned i = 0; i < _kNTOWERS; ++i)
         {
           _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
         }

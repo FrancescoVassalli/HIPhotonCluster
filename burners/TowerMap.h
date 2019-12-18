@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <map>
-#include <pair>
+#include <utility>
 
 
 class ChaseTower;
@@ -20,19 +20,20 @@ class TowerMap
 
   public:
     //constructors
-  TowerMap(std::vector<ChaseTower> init_towers, ChaseTower MaxTower); 
-  inline float getTowerEnergy(std::pair<int,int> position){
-  	if (Map.find(position)!=Map.end())
-  	{
-  		return map[position];
-  	}
-  	else return -999;
-  }
+    TowerMap(std::vector<ChaseTower> init_towers, ChaseTower *MaxTower); 
+    inline float getTowerEnergy(std::pair<int,int> position){
+      if (_map.find(position)!=_map.end())
+      {
+        return _map[position];
+      }
+      else return -999;
+    }
+    ~TowerMap();
 
   private:
-    std::map<std::pair<int,int>, float> Map;
+    std::map<std::pair<int,int>, float> _map;
     int angle2Int(float eta);
-    ChaseTower _maxTower;
+    ChaseTower* _maxTower=NULL;
 };
 
 

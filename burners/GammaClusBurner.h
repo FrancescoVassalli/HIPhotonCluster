@@ -78,7 +78,7 @@ class GammaClusBurner: public SubsysReco
     RawClusterContainer* _subClusterContainer=NULL;
     std::string _foutname;///<path+name for output file
     PHG4TruthInfoContainer *_truthinfo;
-    IDBurner *towerBurner=NULL;
+    IDBurner *_towerBurner=NULL;
 
     /** \defgroup  variables  for the TTrees
       @{*/

@@ -78,15 +78,22 @@ void IDBurner::process_cluster(RawCluster *cluster)
   {
     cout<<"get tower"<<endl;
     RawTower *tower = _towerContainer->getTower(rtiter->first);
-    cout<<"get geom"<<endl;
-    RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
-    cout<<"make tower"<<endl;
-    ChaseTower temp;
-    temp.setEta(tower_geom->get_eta());
-    temp.setPhi(tower_geom->get_phi());
-    temp.setEnergy(tower->get_energy());
-    temp.setKey(tower->get_key());
-    clusterTowers.push_back(temp);
+    if (tower)
+    {
+      cout<<"get geom"<<endl;
+      RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
+      cout<<"make tower"<<endl;
+      ChaseTower temp;
+      temp.setEta(tower_geom->get_eta());
+      temp.setPhi(tower_geom->get_phi());
+      temp.setEnergy(tower->get_energy());
+      temp.setKey(tower->get_key());
+      clusterTowers.push_back(temp);
+    }
+    else{
+      cout<<"Tower not found"<<endl;
+      cerr<<"Tower not found"<<endl;
+    }
   }
 
   //now that we have all towers from cluster, find max tower

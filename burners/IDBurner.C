@@ -72,12 +72,15 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
   //get the towers from the cluster
   std::vector <ChaseTower> clusterTowers;
-
+  cout<<"Initializing Chase Towers"<<endl;
   RawCluster::TowerConstRange clusterrange = cluster->get_towers();
   for (RawCluster::TowerConstIterator rtiter = clusterrange.first; rtiter != clusterrange.second; ++rtiter) 
   {
+    cout<<"get tower"<<endl;
     RawTower *tower = _towerContainer->getTower(rtiter->first);
+    cout<<"get geom"<<endl;
     RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
+    cout<<"make tower"<<endl;
     ChaseTower temp;
     temp.setEta(tower_geom->get_eta());
     temp.setPhi(tower_geom->get_phi());
@@ -88,6 +91,7 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
   //now that we have all towers from cluster, find max tower
 
+  cout<<"Finding Max Tower"<<endl;
   ChaseTower MaxTower;
   MaxTower = MaxTower.findMaxTower(clusterTowers);
 
@@ -95,6 +99,7 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
   std::vector<ChaseTower> Sasha49Towers;
 
+  cout<<"Finding 49 towers "<<endl;
   RawTowerContainer::ConstRange towerrange = _towerContainer->getTowers();
   for (RawTowerContainer::ConstIterator rtiter = towerrange.first; rtiter != towerrange.second; ++rtiter) 
   {
@@ -114,7 +119,9 @@ void IDBurner::process_cluster(RawCluster *cluster)
       Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
     }
   }
+  cout<<"Deleting Map"<<endl;
   if(_towerMap) delete _towerMap;
+  cout<<"Creating Map"<<endl;
   _towerMap = new TowerMap(Sasha49Towers,&MaxTower);
 }
 

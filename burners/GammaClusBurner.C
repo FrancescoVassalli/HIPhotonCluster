@@ -134,7 +134,8 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _towerBurner->process_cluster(cluster);
         for (unsigned i = 0; i < _kNTOWERS; ++i)
         {
-          _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+          //_b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+          _b_tower_Eray[i][_b_clustersub_n] = -999;
         }
         keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 
@@ -154,6 +155,12 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchDR[ clustersub_n ] = -999 ; 
         _b_matchPhi[ _b_clustersub_n ] = -999 ; 
         _b_matchEta[ _b_clustersub_n ] = -999; 
+        _towerBurner->process_cluster(cluster);
+        for (unsigned i = 0; i < _kNTOWERS; ++i)
+        {
+          //_b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+          _b_tower_Eray[i][_b_clustersub_n] = -999;
+        }
       }
     } //particle is photon
     else if (abs(g4particle->get_pid())==11) //check if conversions need to be removed

@@ -76,13 +76,10 @@ void IDBurner::process_cluster(RawCluster *cluster)
   RawCluster::TowerConstRange clusterrange = cluster->get_towers();
   for (RawCluster::TowerConstIterator rtiter = clusterrange.first; rtiter != clusterrange.second; ++rtiter) 
   {
-    cout<<"get tower"<<endl;
     RawTower *tower = _towerContainer->getTower(rtiter->first);
     if (tower)
     {
-      cout<<"get geom"<<endl;
       RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
-      cout<<"make tower"<<endl;
       ChaseTower temp;
       temp.setEta(tower_geom->get_eta());
       temp.setPhi(tower_geom->get_phi());
@@ -91,7 +88,6 @@ void IDBurner::process_cluster(RawCluster *cluster)
       clusterTowers.push_back(temp);
     }
     else{
-      cout<<"Tower not found"<<endl;
       cerr<<"Tower not found"<<endl;
     }
   }
@@ -126,13 +122,18 @@ void IDBurner::process_cluster(RawCluster *cluster)
       Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
     }
   }
-  cout<<"Deleting Map"<<endl;
-  if(_towerMap) delete _towerMap;
-  cout<<"Creating Map"<<endl;
-  _towerMap = new TowerMap(Sasha49Towers,&MaxTower);
+  if(!_towerMap) {
+    cout<<"Creating map"<<endl;
+    _towerMap = new TowerMap(Sasha49Towers,MaxTower);
+  }
+  else{
+   cout<<"Resetting Map"<<endl;
+    _towerMap->Reset(Sasha49Towers,MaxTower);
+  }
 }
 
 float IDBurner::getTowerEnergy(unsigned mapPosition){
+  if(!_towerMap) return -999;
   unsigned xPos = mapPosition / 7;
   unsigned yPos = mapPosition % 7;
   return _towerMap->getTowerEnergy(pair<int,int>(xPos,yPos));

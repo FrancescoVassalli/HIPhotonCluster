@@ -37,12 +37,10 @@ class IDBurner: public SubsysReco
 
     void process_cluster(RawCluster *cluster);
     float getTowerEnergy(unsigned mapPosition);
+    bool doNodePointers(PHCompositeNode* topNode);
 
 
   private:
-
-    bool doNodePointers(PHCompositeNode* topNode);
-
     const bool _kISHI;
     static const unsigned int _kMINCLUSTERENERGY=1;//in GeV
     static const unsigned int _kMAXCLUSTERS=600;

@@ -20,7 +20,8 @@ class TowerMap
 
   public:
     //constructors
-    TowerMap(std::vector<ChaseTower> init_towers, ChaseTower *MaxTower); 
+    TowerMap(std::vector<ChaseTower> init_towers, ChaseTower MaxTower); 
+    void Reset(std::vector<ChaseTower> init_towers, ChaseTower MaxTower); 
     inline float getTowerEnergy(std::pair<int,int> position){
       if (_map.find(position)!=_map.end())
       {

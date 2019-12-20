@@ -26,6 +26,7 @@ GammaClusBurner::GammaClusBurner(const std::string &name, unsigned runnumber=0,b
 
 GammaClusBurner::~GammaClusBurner(){
   if (_f) delete _f;
+  if (_towerBurner) delete _towerBurner; 
 }
 
 int GammaClusBurner::InitRun(PHCompositeNode *topNode)
@@ -60,6 +61,8 @@ int GammaClusBurner::InitRun(PHCompositeNode *topNode)
   return 0;
 }
 
+
+//get all the nodes off of the tree that I will need and print an error if they cannot be found
 bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
   bool goodPointers=true;
   //use subtracted clusters for HI events
@@ -87,7 +90,8 @@ bool GammaClusBurner::doNodePointers(PHCompositeNode* topNode){
   else{
     cout<<Name()<<" found event with "<<_subClusterContainer->size()<<" clusters\n";
   }
-  return goodPointers;
+
+  return goodPointers && _towerBurner->doNodePointers(topNode);
 }
 
 int GammaClusBurner::process_event(PHCompositeNode *topNode)
@@ -96,13 +100,14 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
   if(_kRunNumber%10==0){
     cout<<"GamaClusBurner Processesing Event "<<_kRunNumber<<endl;
   }
+
   _b_clustersub_n=0; 
   std::map<unsigned int,unsigned int> keys_map; //make a list of which clusters I've used so I don't do merged clusters
-  std::vector<PHG4Particle*> convertedPhotons;
+  std::vector<PHG4Particle*> convertedPhotons; //make a list of the photon conversion so their photons are not added to the analysis 
+                                               //will not work if tracking was turned off 
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
-    //maybe I am double counting due to kinematic updates
     if(g4particle->get_pid()==22){
       //if it is a photon make the tlv
       TLorentzVector gamma_tlv;
@@ -132,15 +137,17 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchPhi[ _b_clustersub_n ] = (float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
         _b_matchEta[ _b_clustersub_n ] = TMath::Abs(gamma_tlv.Eta()-get_eta(cluster)); 
         _towerBurner->process_cluster(cluster);
+        cout<<"did cluster towers"<<endl;
         for (unsigned i = 0; i < _kNTOWERS; ++i)
         {
-          //_b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
-          _b_tower_Eray[i][_b_clustersub_n] = -999;
+          _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+          //_b_tower_Eray[i][_b_clustersub_n] = -999;
         }
+        cout<<"filled Eray"<<endl;
         keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 
       }
-      else{
+      else{ //two photons went to same cluster 
         cout<<"Cluster Rejected!\n";
         unsigned int clustersub_n = keys_map[cluster->get_id()];
         _b_truthphoton_E[clustersub_n ] =-999;
@@ -158,14 +165,18 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _towerBurner->process_cluster(cluster);
         for (unsigned i = 0; i < _kNTOWERS; ++i)
         {
-          //_b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+         //_b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+         //cout<<_b_tower_Eray[i][_b_clustersub_n]<<endl;
           _b_tower_Eray[i][_b_clustersub_n] = -999;
         }
-      }
+        cout<<"handled bad cluster"<<endl;
+      }//end two photons in same cluster 
     } //particle is photon
     else if (abs(g4particle->get_pid())==11) //check if conversions need to be removed
     {
+      cout<<"checking photon for conversion"<<endl;
       PHG4Particle* parent =_truthinfo->GetParticle(g4particle->get_parent_id());
+      if(!parent) continue;
       PHG4VtxPoint* vtx=_truthinfo->GetVtx(g4particle->get_vtx_id()); 
       if (parent->get_pid()==22&&vtx)
       {
@@ -176,6 +187,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
       }
     }
   }
+  cout<<"Did all clusters removing conversions"<<endl;
   //remove the converted photons
   for(PHG4Particle* g4particle : convertedPhotons){
     TLorentzVector gamma_tlv;
@@ -195,6 +207,7 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchPhi[ _b_clustersub_n ] = -999 ; 
         _b_matchEta[ _b_clustersub_n ] = -999; 
   }
+  cout<<"tree filled"<<endl;
   _ttree->Fill();
   return 0;
 }

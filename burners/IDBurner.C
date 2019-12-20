@@ -120,6 +120,7 @@ void IDBurner::process_cluster(RawCluster *cluster)
       Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
     }
   }
+  cout<<"got "<<Sasha49Towers.size()<<"/49 towers\n";
   if(!_towerMap) {
     _towerMap = new TowerMap(Sasha49Towers,MaxTower);
   }

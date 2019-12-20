@@ -45,7 +45,7 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
     TH2F *map= new TH2F(name.c_str(),std::to_string(gammaE[iarray]).c_str(),7,0,7,7,0,7);
     for (unsigned i = 0; i < kNTOWERS; ++i)
     {
-      map->SetBinContent(i/7,i%7,towers[i][iarray]);
+      map->SetBinContent((unsigned)i/7,i%7,towers[i][iarray]);
     }
     map->Write();
     if(iarray<clusn-1) iarray++;

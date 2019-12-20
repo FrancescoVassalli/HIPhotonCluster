@@ -131,7 +131,7 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
 float IDBurner::getTowerEnergy(unsigned mapPosition){
   if(!_towerMap) return -999;
-  unsigned xPos = mapPosition / 7;
+  unsigned xPos = (unsigned) mapPosition / 7;
   unsigned yPos = mapPosition % 7;
   return _towerMap->getTowerEnergy(pair<int,int>(xPos,yPos));
 }

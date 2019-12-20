@@ -1,6 +1,13 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TH1F.h>
+#include <utility>
+
+pair<int,int> getTowerEnergy(unsigned mapPosition){
+  unsigned xPos = (unsigned) mapPosition / 7;
+  unsigned yPos = mapPosition % 7;
+  return pair<int,int>(xPos,yPos);
+}
 
 
 void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
@@ -42,10 +49,12 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
      lastTree=treeEvent;
     }
     string name = strcluster + std::to_string(nclusters);
+    std::pair<int,int> loc;
     TH2F *map= new TH2F(name.c_str(),std::to_string(gammaE[iarray]).c_str(),7,-.5,6.5,7,-.5,6.5);
     for (unsigned i = 0; i < kNTOWERS; ++i)
     {
-      map->SetBinContent((unsigned)(i)/7,(i)%7,towers[i][iarray]);
+      loc = getTowerEnergy(i);
+      map->SetBinContent(loc.first,loc.second,towers[i][iarray]);
     }
     map->Write();
     if(iarray<clusn-1) iarray++;

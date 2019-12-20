@@ -54,7 +54,7 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
     for (unsigned i = 0; i < kNTOWERS; ++i)
     {
       loc = getTowerEnergy(i);
-      map->SetBinContent(loc.first,loc.second,towers[i][iarray]);
+      map->SetBinContent(loc.first+.5,loc.second+.5,towers[i][iarray]);
     }
     map->Write();
     if(iarray<clusn-1) iarray++;

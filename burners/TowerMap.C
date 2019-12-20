@@ -29,23 +29,23 @@ TowerMap::~TowerMap(){if(_maxTower) delete _maxTower;}
 
 int TowerMap::angle2Int(float eta){
   cout<<"mapping angle="<<eta<<'\n';
-  if (eta<=-.075)
+  if (eta<=-.07)
   {
     return 0;
   }
-  else if (eta<=-.05)
+  else if (eta<=-.04)
   {
     return 1;
   }
-  else if (eta<=-.025)
+  else if (eta<=-.02)
   {
     return 2;
   }
-  else if (eta<=0)
+  else if (eta==0)
   {
     return 3;
   }
-  else if(eta<=.025)
+  else if(eta<.04)
   {
     return 4;
   }
@@ -55,5 +55,5 @@ int TowerMap::angle2Int(float eta){
   else if(eta<=.075){
     return 6;
   }
-  else return 7;
+  else return -999;
 }

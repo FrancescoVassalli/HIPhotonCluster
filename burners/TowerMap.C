@@ -27,6 +27,7 @@ void TowerMap::Reset(std::vector<ChaseTower> towers, ChaseTower MaxTower){
 TowerMap::~TowerMap(){if(_maxTower) delete _maxTower;}
 
 int TowerMap::angle2Int(float eta){
+  cout<<"mapping angle="<<eta<<'\n';
   if (eta<=-.075)
   {
     return 0;

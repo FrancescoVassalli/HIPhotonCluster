@@ -72,7 +72,6 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
   //get the towers from the cluster
   std::vector <ChaseTower> clusterTowers;
-  cout<<"Initializing Chase Towers"<<endl;
   RawCluster::TowerConstRange clusterrange = cluster->get_towers();
   for (RawCluster::TowerConstIterator rtiter = clusterrange.first; rtiter != clusterrange.second; ++rtiter) 
   {
@@ -94,7 +93,6 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
   //now that we have all towers from cluster, find max tower
 
-  cout<<"Finding Max Tower"<<endl;
   ChaseTower MaxTower;
   MaxTower = MaxTower.findMaxTower(clusterTowers);
 
@@ -123,11 +121,9 @@ void IDBurner::process_cluster(RawCluster *cluster)
     }
   }
   if(!_towerMap) {
-    cout<<"Creating map"<<endl;
     _towerMap = new TowerMap(Sasha49Towers,MaxTower);
   }
   else{
-   cout<<"Resetting Map"<<endl;
     _towerMap->Reset(Sasha49Towers,MaxTower);
   }
 }

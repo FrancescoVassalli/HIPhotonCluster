@@ -137,13 +137,11 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
         _b_matchPhi[ _b_clustersub_n ] = (float) DeltaPhi(gamma_tlv.Phi(),cluster->get_phi()) ; 
         _b_matchEta[ _b_clustersub_n ] = TMath::Abs(gamma_tlv.Eta()-get_eta(cluster)); 
         _towerBurner->process_cluster(cluster);
-        cout<<"did cluster towers"<<endl;
         for (unsigned i = 0; i < _kNTOWERS; ++i)
         {
           _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
           //_b_tower_Eray[i][_b_clustersub_n] = -999;
         }
-        cout<<"filled Eray"<<endl;
         keys_map[cluster->get_id()]=_b_clustersub_n;
         _b_clustersub_n++; 
       }
@@ -169,7 +167,6 @@ int GammaClusBurner::process_event(PHCompositeNode *topNode)
          //cout<<_b_tower_Eray[i][_b_clustersub_n]<<endl;
           _b_tower_Eray[i][_b_clustersub_n] = -999;
         }
-        cout<<"handled bad cluster"<<endl;
       }//end two photons in same cluster 
     } //particle is photon
     else if (abs(g4particle->get_pid())==11) //check if conversions need to be removed

@@ -64,5 +64,5 @@ void ClusterPlotter(){
 	TFile *f_data = new TFile("towerData.root","UPDATE");
 	TChain *tree = new TChain("subtractedTree");
 	tree->Add(inName.c_str());
-	makeMaps(tree,"",1);
+	makeMaps(tree,"",5);
 }

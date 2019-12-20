@@ -42,7 +42,7 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
      lastTree=treeEvent;
     }
     string name = strcluster + std::to_string(nclusters);
-    TH2F *map= new TH2F(name.c_str(),std::to_string(gammaE[iarray]).c_str(),7,0,7,7,0,7);
+    TH2F *map= new TH2F(name.c_str(),std::to_string(gammaE[iarray]).c_str(),7,-.5,6.5,7,-.5,6.5);
     for (unsigned i = 0; i < kNTOWERS; ++i)
     {
       map->SetBinContent((unsigned)(i)/7,(i)%7,towers[i][iarray]);

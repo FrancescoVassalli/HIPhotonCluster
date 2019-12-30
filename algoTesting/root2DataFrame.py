@@ -113,6 +113,6 @@ import pandas as pd
 
 chain = TChain("subtractedTree")
 chain.Add("pythdata.root")
-df = makeDataFrame(processTree(chain))
-print(df.head())
+makeDataFrame(processTree(chain)).to_csv("photonClusters.csv")
+
 

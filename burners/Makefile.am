@@ -22,18 +22,23 @@ include_HEADERS = \
 	TowerMap.h\
 	TowerMapLinkDef.h\
 	IDBurner.h\
-	IDBurnerLinkDef.h
+	IDBurnerLinkDef.h\
+	AllClusBurner.h\
+	AllClusBurnerLinkDef.h
 
 if MAKEROOT6
 pcmdir = $(libdir)
 nobase_dist_pcm_DATA = \
 	GammaClusBurner_Dict_rdict.pcm \
+	AllClusBurner_Dict_rdict.pcm \
 	ChaseTower_Dict_rdict.pcm \
 	TowerMap_Dict_rdict.pcm \
 	IDBurner_Dict_rdict.pcm 
 endif
 
 libsubtractionburner_la_SOURCES = \
+  AllClusBurner.C \
+	AllClusBurner_Dict.C\
   GammaClusBurner.C \
 	GammaClusBurner_Dict.C\
   ChaseTower.C \

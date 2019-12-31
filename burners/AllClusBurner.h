@@ -63,6 +63,7 @@ class AllClusBurner: public SubsysReco
     double DeltaR (TLorentzVector *tlv, RawCluster* cluster);
 
     bool doNodePointers(PHCompositeNode* topNode);
+    std::set<int> getPhotonClusters(PHCompositeNode *topNode);
     RawCluster* getCluster(TLorentzVector* tlv);
 
     const unsigned int _kRunNumber;

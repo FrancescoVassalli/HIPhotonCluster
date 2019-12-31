@@ -91,7 +91,6 @@ bool AllClusBurner::doNodePointers(PHCompositeNode* topNode){
   else{
     cout<<Name()<<" found event with "<<_subClusterContainer->size()<<" clusters\n";
   }
-
   return goodPointers && _towerBurner->doNodePointers(topNode);
 }
 
@@ -105,13 +104,14 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
   _b_clustersub_n=0; 
   set<int> photonClusterIds = getPhotonClusters(topNode);
   auto range  = _subClusterContainer->getClusters();
-  for (auto icluster = range.first; i != range.second; ++i)
+  for (auto i = range.first; i != range.second; ++i)
   {
+    RawCluster* icluster = i->second;
     if(icluster->get_energy()<_kMINCLUSTERENERGY||get_eta(icluster)>_kMAXETA) continue;
     _b_isPhoton[_b_clustersub_n] = photonClusterIds.find(icluster->get_id()) != photonClusterIds.end();
     _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
     _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
-    _towerBurner->process_event(icluster);
+    _towerBurner->process_cluster(icluster);
     for (unsigned i = 0; i < _kNTOWERS; ++i)
     {
       _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);

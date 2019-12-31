@@ -1,12 +1,13 @@
 /**
- * @GammaClusBurner.h
+ * @AllClusBurner.h
  * @author Francesco Vassalli <Francesco.Vassalli@colorado.edu>
  * @version 1.0
  *
- * @section make photon cluster E spec
+ * @save data from every cluster to make Id algos
+ * @does not handle conversions
  */
-#ifndef GAMMACLUSBURNER_H__
-#define GAMMACLUSBURNER_H__
+#ifndef AllCLUSBURNER_H__
+#define AllCLUSBURNER_H__
 
 #include <fun4all/SubsysReco.h>
 #include <calobase/RawCluster.h>
@@ -26,13 +27,13 @@ class IDBurner;
 
 class TLorentzVector;
 
-class GammaClusBurner: public SubsysReco
+class AllClusBurner: public SubsysReco
 {
 
   public:
 
-    GammaClusBurner(const std::string &name,unsigned run,bool isHI);
-    ~GammaClusBurner();
+    AllClusBurner(const std::string &name,unsigned run,bool isHI);
+    ~AllClusBurner();
     int InitRun(PHCompositeNode*);
 
     int process_event(PHCompositeNode*);
@@ -73,9 +74,8 @@ class GammaClusBurner: public SubsysReco
     static const float _kCLUSTERDR;
     static const float _kMAXETA;
 
-    TFile *_f=NULL; ///<output file
-    TTree *_ttree=NULL; ///<data
-    TTree *_ttreeNot=NULL; ///<data
+    TFile *_f=NULL; ///< output file
+    TTree *_ttree=NULL; ///<photondata
     RawClusterContainer* _subClusterContainer=NULL;
     std::string _foutname;///<path+name for output file
     PHG4TruthInfoContainer *_truthinfo;
@@ -83,10 +83,11 @@ class GammaClusBurner: public SubsysReco
 
     /** \defgroup  variables  for the TTrees
       @{*/
-    float _b_truthphoton_E   [ _kMAXCLUSTERS ];
+    bool _b_isPhoton[_kMAXCLUSTERS];
+    /*float _b_truthphoton_E   [ _kMAXCLUSTERS ];
     float _b_truthphoton_pT   [ _kMAXCLUSTERS ];
     float _b_truthphoton_eta   [ _kMAXCLUSTERS ];
-    float _b_truthphoton_phi   [ _kMAXCLUSTERS ];
+    float _b_truthphoton_phi   [ _kMAXCLUSTERS ];*/
     float _b_clustersub_E    [ _kMAXCLUSTERS ];
     float _b_clustersub_ecore[ _kMAXCLUSTERS ] ;
     float _b_clustersub_eta  [ _kMAXCLUSTERS ];
@@ -102,7 +103,7 @@ class GammaClusBurner: public SubsysReco
 
 
 
-#endif // __GAMMACLUSBURNER_H__
+#endif // __AllCLUSBURNER_H__
 
 
 

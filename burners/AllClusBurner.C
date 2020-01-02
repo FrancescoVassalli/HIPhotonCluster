@@ -42,12 +42,12 @@ int AllClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree->Branch("tphoton_phi",&_b_truthphoton_phi,"tphoton_phi[sub_clus_n]/F");*/
   _ttree->Branch("sub_clus_e",&_b_clustersub_E,"sub_clus_e[sub_clus_n]/F");
   _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
-  _ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
+  /*_ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
   _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");
   _ttree->Branch("sub_clus_prob",&_b_clustersub_prob,"sub_clus_prob[sub_clus_n]/F");
   _ttree->Branch("matchDR",&_b_matchDR,"matchDR[sub_clus_n]/F");
   _ttree->Branch("matchEta",&_b_matchEta,"matchEta[sub_clus_n]/F");
-  _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");
+  _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");*/
 
   //make a branch for each tower
   string bTitle="tower";

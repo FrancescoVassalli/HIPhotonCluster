@@ -69,12 +69,11 @@ class Cluster:
 def makeClusters(chain,isPhoton):
 	rClusters = []
 	for i in range(0,len(chain.sub_clus_e)):
+		print(chain.isPhoton[i])
 		if chain.sub_clus_e[i] >1 and chain.isPhoton[i]==isPhoton:
-			print(chain.isPhoton[i])
 			rClusters.append(Cluster(chain,i))
+			print("append")
 	return rClusters
-
-	
 
 def processTree(tree,isPhoton):
 	rClusters = []

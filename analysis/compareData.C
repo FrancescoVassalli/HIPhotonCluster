@@ -9,8 +9,8 @@ void makeRatio(TFile* thisFile,string savename){
 	HIcoresub  = (TH1F*) thisFile->Get("eCoreSpecsub");
 	HIspec  = (TH1F*) thisFile->Get("eSpecHI");
 	HIcore  = (TH1F*) thisFile->Get("eCoreSpecHI");
-	flow_spec  = (TH1F*) thisFile->Get("eSpecflow");
-	flow_core  = (TH1F*) thisFile->Get("eCoreSpecflow");
+	//flow_spec  = (TH1F*) thisFile->Get("eSpec//flow");
+	//flow_core  = (TH1F*) thisFile->Get("eCoreSpec//flow");
 	if (!(spec&&core&&HIspecsub&&HIcore&&HIspec&&HIcoresub))
 	{
 		cerr<<"Missing Plot!"<<endl;
@@ -18,18 +18,18 @@ void makeRatio(TFile* thisFile,string savename){
 	spec->Rebin();
 	core->Rebin();
 	HIspec->Rebin();
-	flow_spec->Rebin();
+	//flow_spec->Rebin();
 	HIcoresub->Rebin();
 	HIcore->Rebin();
-	flow_core->Rebin();
+	//flow_core->Rebin();
 	HIspecsub->Rebin();
 
 	HIspec->Divide(spec);
 	HIcore->Divide(core);
 	HIspecsub->Divide(spec);
 	HIcoresub->Divide(core);
-	flow_spec->Divide(spec);
-	flow_core->Divide(core);
+	//flow_spec->Divide(spec);
+	//flow_core->Divide(core);
 
 	HIspec->SetTitle(";E_{#gamma} [GeV];E_{EMC_HIJING}/E_{EMC_Single}");
 	HIspec->GetYaxis()->SetRangeUser(.9,1.15);
@@ -41,25 +41,25 @@ void makeRatio(TFile* thisFile,string savename){
 	HIcore->GetYaxis()->SetTitleOffset(1);
 	HIspecsub->SetLineColor(kGreen-3);
 	HIcoresub->SetLineColor(kGreen-3);
-	flow_spec->SetLineColor(kPink+5);
-	flow_core->SetLineColor(kPink+5);
+	//flow_spec->SetLineColor(kPink+5);
+	//flow_core->SetLineColor(kPink+5);
 	TLegend *tl = new TLegend(.7,.7,.9,.9);
 	TCanvas *tc = new TCanvas();
 	tc->Draw();
 	HIspec->Draw();
 	HIspecsub->Draw("same");
-	flow_spec->Draw("same");
+	//flow_spec->Draw("same");
 	tl->AddEntry(HIspec,"unsubtracted","l");
-	tl->AddEntry(flow_spec,"flow","l");
+	//tl->AddEntry(//flow_spec,"//flow","l");
 	tl->AddEntry(HIspecsub,"subtracted","l");
 	tl->Draw();
 	TLegend *tl2 = new TLegend(.7,.1,.9,.3);
 	TCanvas *tc2 = new TCanvas();
 	HIcore->Draw();
 	HIcoresub->Draw("same");
-	flow_core->Draw("same");
+	//flow_core->Draw("same");
 	tl2->AddEntry(HIcore,"unsubtracted","l");
-	tl2->AddEntry(flow_core,"flow_unsubtracted","l");
+	//tl2->AddEntry(//flow_core,"//flow_unsubtracted","l");
 	tl2->AddEntry(HIcoresub,"subtracted","l");
 	tl2->Draw();
 
@@ -163,7 +163,7 @@ void compareResponse(TFile *thisFile, string savename){
 	TCanvas *tc = new TCanvas();
 	tc->Draw();
 	low->GetYaxis()->SetTitleOffset(1);
-	low->SetTitle("low;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	low->SetTitle("<13 GeV;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
 	low->Draw();
 	lowSub->Draw("same");
 	lowHI->Draw("same");
@@ -176,7 +176,7 @@ void compareResponse(TFile *thisFile, string savename){
 	TCanvas *tc2 = new TCanvas();
 	tc2->Draw();
 	medium->GetYaxis()->SetTitleOffset(1);
-	medium->SetTitle("medium;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
+	medium->SetTitle("13-26 GeV;#frac{E_{#it{cluster}}}{E_{#it{truth}}};dN/dN");
 	medium->Draw();
 	mediumSub->Draw("same");
 	mediumHI->Draw("same");
@@ -644,9 +644,9 @@ void compareProbRes(TFile *thisFile){
 void compareData(string savename=""){
 
 	TFile *anaData = new TFile("anadata.root","READ");
-	makeRatio(anaData,savename);
+	//makeRatio(anaData,savename);
 	compareError(anaData,savename);
-	compareResponse(anaData,savename);
+	//compareResponse(anaData,savename);
 	//compareAverageResponse(anaData);
 	//baseError(anaData,savename);
 	//baseResponseError(anaData,savename);

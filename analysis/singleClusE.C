@@ -230,8 +230,8 @@ void makeEspec(TTree* tree,string ext=""){
     eRes->SetBinError(bin,v_average[bin-1].getSError());
     responseRes->SetBinContent(bin,v_response[bin-1].getS());
     responseRes->SetBinError(bin,v_response[bin-1].getSError());
-    eCoreRes->SetBinContent(bin,v_average[bin-1].getS());
-    eCoreRes->SetBinError(bin,v_average[bin-1].getSError());
+    eCoreRes->SetBinContent(bin,v_average_core[bin-1].getS());
+    eCoreRes->SetBinError(bin,v_average_core[bin-1].getSError());
     cout<<"Energy bin with mu = "<<v_average[bin-1].value<<" and sigma = "<<v_average[bin-1].getS()
       <<"\n\tResponse bin with mu = "<<v_response[bin-1].value<<"#pm"<<v_response[bin-1].getError()<<" and sigma = "<<v_response[bin-1].getS()<<"#pm"<<v_response[bin-1].getSError()<<'\n'
       <<"\tLower bound: mu = "<<response[bin-1]->GetMean()<<"#pm"<<response[bin-1]->GetMeanError()

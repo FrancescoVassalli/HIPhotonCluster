@@ -35,7 +35,7 @@ int AllClusBurner::InitRun(PHCompositeNode *topNode)
   _f = new TFile( _foutname.c_str(), "RECREATE");
   _ttree = new TTree("subtractedTree","super stylish sapling");
   _ttree->Branch("sub_clus_n",&_b_clustersub_n);
-  _ttree->Branch("isPhoton",&_b_isPhoton,"isPhoton[sub_clus_n]/B");
+  _ttree->Branch("isPhoton",&_b_isPhoton,"isPhoton[sub_clus_n]/I");
   /*_ttree->Branch("tphoton_e",&_b_truthphoton_E,"tphoton_e[sub_clus_n]/F");
   _ttree->Branch("tphoton_pT",&_b_truthphoton_pT,"tphoton_pT[sub_clus_n]/F");
   _ttree->Branch("tphoton_eta",&_b_truthphoton_eta,"tphoton_eta[sub_clus_n]/F");
@@ -108,7 +108,9 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
   {
     RawCluster* icluster = i->second;
     if(icluster->get_energy()<_kMINCLUSTERENERGY||get_eta(icluster)>_kMAXETA) continue;
-    _b_isPhoton[_b_clustersub_n] = photonClusterIds.find(icluster->get_id()) != photonClusterIds.end();
+    if(photonClusterIds.find(icluster->get_id()) != photonClusterIds.end()) _b_isPhoton[_b_clustersub_n] = 1;
+    else _b_isPhoton[_b_clustersub_n] = 0;
+    cout<<icluster->get_id()<<": "<<_b_isPhoton[_b_clustersub_n];
     _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
     _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
     _towerBurner->process_cluster(icluster);
@@ -137,6 +139,10 @@ std::set<int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
       RawCluster* cluster=getCluster(&All_tlv);
       photonClusters.insert(cluster->get_id());
     }
+  }
+  cout<<"Found "<<photonClusters.size()<<" photon clusters"<<endl;
+  for(auto i = photonClusters.begin(); i!=photonClusters.end();i++){
+    cout<<"'\n\t"<<*i;
   }
   return photonClusters;
 }

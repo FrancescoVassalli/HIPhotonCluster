@@ -69,10 +69,9 @@ class Cluster:
 def makeClusters(chain,isPhoton):
 	rClusters = []
 	for i in range(0,len(chain.sub_clus_e)):
-		print(chain.isPhoton[i])
+		#print("chain:"+str(chain.isPhoton[i])+" check:"+str(isPhoton))
 		if chain.sub_clus_e[i] >1 and chain.isPhoton[i]==isPhoton:
 			rClusters.append(Cluster(chain,i))
-			print("append")
 	return rClusters
 
 def processTree(tree,isPhoton):
@@ -94,18 +93,22 @@ def makeDataFrame(l_cluster):
 	names = ['total_energy','core_energy']
 	for i in range(0,49):
 		names.append("tower" + str(i))
-		
-	df  = pd.DataFrame(columns=names)
+	rows = []
 	for cluster in l_cluster:
-		df.append(pd.DataFrame(columns=names,data=cluster.getRow()),ignore_index=True)
-	return df
+		rows.append(cluster.getDict())
+
+	return pd.DataFrame(columns = names,data=rows)
 
 from ROOT import TChain
 import pandas as pd
 
 chain = TChain("subtractedTree")
 chain.Add("pythdata.root")
-makeDataFrame(processTree(chain,True)).to_csv("photonClusters.csv")
-#makeDataFrame(processTree(chain,False)).to_csv("nonClusters.csv")
+#df = makeDataFrame(processTree(chain,True))
+#print(df.head())
+#df.to_csv("photonClusters.csv")
+df = makeDataFrame(processTree(chain,0))
+print(df.head())
+df.to_csv("nonClusters.csv")
 
 

@@ -142,7 +142,7 @@ std::set<int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
   }
   cout<<"Found "<<photonClusters.size()<<" photon clusters"<<endl;
   for(auto i = photonClusters.begin(); i!=photonClusters.end();i++){
-    cout<<"'\n\t"<<*i;
+    cout<<*i<<"'\n\t";
   }
   return photonClusters;
 }

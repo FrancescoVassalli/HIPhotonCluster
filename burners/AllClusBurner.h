@@ -84,7 +84,7 @@ class AllClusBurner: public SubsysReco
 
     /** \defgroup  variables  for the TTrees
       @{*/
-    bool _b_isPhoton[_kMAXCLUSTERS];
+    int _b_isPhoton[_kMAXCLUSTERS];
     /*float _b_truthphoton_E   [ _kMAXCLUSTERS ];
     float _b_truthphoton_pT   [ _kMAXCLUSTERS ];
     float _b_truthphoton_eta   [ _kMAXCLUSTERS ];
@@ -92,12 +92,12 @@ class AllClusBurner: public SubsysReco
     float _b_clustersub_E    [ _kMAXCLUSTERS ];
     float _b_clustersub_ecore[ _kMAXCLUSTERS ] ;
     float _b_clustersub_eta  [ _kMAXCLUSTERS ];
-    float _b_clustersub_phi  [ _kMAXCLUSTERS ];
-    float _b_clustersub_prob  [ _kMAXCLUSTERS ];
+    //float _b_clustersub_phi  [ _kMAXCLUSTERS ];
+    //float _b_clustersub_prob  [ _kMAXCLUSTERS ];
     float _b_tower_Eray  [ _kNTOWERS ][_kMAXCLUSTERS];
-    float _b_matchDR  [ _kMAXCLUSTERS ];
+    /*float _b_matchDR  [ _kMAXCLUSTERS ];
     float _b_matchEta  [ _kMAXCLUSTERS ];
-    float _b_matchPhi  [ _kMAXCLUSTERS ];
+    float _b_matchPhi  [ _kMAXCLUSTERS ];*/
     unsigned _b_clustersub_n;     
     /**@}*/                       
 };

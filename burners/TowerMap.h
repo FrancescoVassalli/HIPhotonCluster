@@ -35,6 +35,7 @@ class TowerMap
     std::map<std::pair<int,int>, float> _map;
     int angle2Int(float eta);
     ChaseTower* _maxTower=NULL;
+    const int _kNTOWERS=49;
 };
 
 

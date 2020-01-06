@@ -67,9 +67,7 @@ bool IDBurner::doNodePointers(PHCompositeNode* topNode){
 
 void IDBurner::process_cluster(RawCluster *cluster)
 {
-
   //https://github.com/ChaseSmith/PhotonIso/blob/master/treesource/TreeMaker.C
-
   //get the towers from the cluster
   std::vector <ChaseTower> clusterTowers;
   RawCluster::TowerConstRange clusterrange = cluster->get_towers();

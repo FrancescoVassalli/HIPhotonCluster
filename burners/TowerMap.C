@@ -21,14 +21,14 @@ void TowerMap::Reset(std::vector<ChaseTower> towers, ChaseTower MaxTower){
   }
   if(_maxTower) delete _maxTower;
   _maxTower = new ChaseTower(MaxTower);
-  std::cout<<"reset map"<<std::endl;
-  cout<<"Max energy check (3,3)= "<<_map[pair<int,int>(3,3)]<<" Max = "<<MaxTower.getEnergy()<< "(2,2) = "<<_map[pair<int,int>(2,2)]<<'\n';
+  //std::cout<<"reset map"<<std::endl;
+  //cout<<"Max energy check (3,3)= "<<_map[pair<int,int>(3,3)]<<" Max = "<<MaxTower.getEnergy()<< "(2,2) = "<<_map[pair<int,int>(2,2)]<<'\n';
 }
 
 TowerMap::~TowerMap(){if(_maxTower) delete _maxTower;}
 
 int TowerMap::angle2Int(float eta){
-  cout<<"mapping angle="<<eta<<'\n';
+  //cout<<"mapping angle="<<eta<<'\n';
   if (eta<=-.07)
   {
     return 0;

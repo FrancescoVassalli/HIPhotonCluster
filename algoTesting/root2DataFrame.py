@@ -60,7 +60,6 @@ class Cluster:
 		self.towers.append(treeEvent.tower47[i])
 		self.towers.append(treeEvent.tower48[i])
 	def getDict(self):
-		print(self.total_energy)
 		r = {"total_energy": self.total_energy, 'core_energy':self.core_energy}
 		for i in range(0,len(self.towers)):
 			r["tower"+str(i)] = self.towers[i]
@@ -104,9 +103,9 @@ import pandas as pd
 
 chain = TChain("subtractedTree")
 chain.Add("pythdata.root")
-#df = makeDataFrame(processTree(chain,True))
-#print(df.head())
-#df.to_csv("photonClusters.csv")
+df = makeDataFrame(processTree(chain,True))
+print(df.head())
+df.to_csv("photonClusters.csv")
 df = makeDataFrame(processTree(chain,0))
 print(df.head())
 df.to_csv("nonClusters.csv")

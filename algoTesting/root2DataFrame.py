@@ -9,6 +9,7 @@ class Cluster:
 		self.total_energy = treeEvent.sub_clus_e[i]
 		self.core_energy = treeEvent.sub_clus_ecore[i]
 		self.isPhoton = treeEvent.isPhoton[i]
+		self.prob = treeEvent.sub_clus_prob[i]
 		self.towers=[]
 		#print(total_energy)
 		self.towers.append(treeEvent.tower0[i])
@@ -61,7 +62,7 @@ class Cluster:
 		self.towers.append(treeEvent.tower47[i])
 		self.towers.append(treeEvent.tower48[i])
 	def getDict(self):
-		r = {'isPhoton': self.isPhoton, "total_energy": self.total_energy, 'core_energy':self.core_energy}
+		r = {'isPhoton': self.isPhoton, "total_energy": self.total_energy, 'core_energy':self.core_energy, 'sProb': self.prob}
 		for i in range(0,len(self.towers)):
 			r["tower"+str(i)] = self.towers[i]
 		return r
@@ -90,7 +91,7 @@ def processTree(tree):
 	return rClusters
 
 def makeDataFrame(l_cluster):
-	names = ['isPhoton','total_energy','core_energy']
+	names = ['isPhoton','total_energy','core_energy','sProb']
 	for i in range(0,49):
 		names.append("tower" + str(i))
 	rows = []

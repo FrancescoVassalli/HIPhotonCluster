@@ -93,7 +93,7 @@ class AllClusBurner: public SubsysReco
     float _b_clustersub_ecore[ _kMAXCLUSTERS ] ;
     float _b_clustersub_eta  [ _kMAXCLUSTERS ];
     //float _b_clustersub_phi  [ _kMAXCLUSTERS ];
-    //float _b_clustersub_prob  [ _kMAXCLUSTERS ];
+    float _b_clustersub_prob  [ _kMAXCLUSTERS ];
     float _b_tower_Eray  [ _kNTOWERS ][_kMAXCLUSTERS];
     /*float _b_matchDR  [ _kMAXCLUSTERS ];
     float _b_matchEta  [ _kMAXCLUSTERS ];

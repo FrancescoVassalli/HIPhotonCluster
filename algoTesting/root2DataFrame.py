@@ -8,6 +8,7 @@ class Cluster:
 	def __init__(self,treeEvent,i):
 		self.total_energy = treeEvent.sub_clus_e[i]
 		self.core_energy = treeEvent.sub_clus_ecore[i]
+		self.isPhoton = treeEvent.isPhoton[i]
 		self.towers=[]
 		#print(total_energy)
 		self.towers.append(treeEvent.tower0[i])
@@ -60,20 +61,20 @@ class Cluster:
 		self.towers.append(treeEvent.tower47[i])
 		self.towers.append(treeEvent.tower48[i])
 	def getDict(self):
-		r = {"total_energy": self.total_energy, 'core_energy':self.core_energy}
+		r = {'isPhoton': self.isPhoton, "total_energy": self.total_energy, 'core_energy':self.core_energy}
 		for i in range(0,len(self.towers)):
 			r["tower"+str(i)] = self.towers[i]
 		return r
 
-def makeClusters(chain,isPhoton):
+def makeClusters(chain):
 	rClusters = []
 	for i in range(0,len(chain.sub_clus_e)):
 		#print("chain:"+str(chain.isPhoton[i])+" check:"+str(isPhoton))
-		if chain.sub_clus_e[i] >1 and chain.isPhoton[i]==isPhoton:
+		if chain.sub_clus_e[i] >1:
 			rClusters.append(Cluster(chain,i))
 	return rClusters
 
-def processTree(tree,isPhoton):
+def processTree(tree):
 	rClusters = []
 	for jentry in xrange(tree.GetEntriesFast()):
 		#get and verify the tree within the chain
@@ -85,11 +86,11 @@ def processTree(tree,isPhoton):
 		nb = chain.GetEntry(jentry)
 		if nb <=0:
 			continue
-		rClusters.extend(makeClusters(chain,isPhoton))
+		rClusters.extend(makeClusters(chain))
 	return rClusters
 
 def makeDataFrame(l_cluster):
-	names = ['total_energy','core_energy']
+	names = ['isPhoton','total_energy','core_energy']
 	for i in range(0,49):
 		names.append("tower" + str(i))
 	rows = []
@@ -103,11 +104,8 @@ import pandas as pd
 
 chain = TChain("subtractedTree")
 chain.Add("pythdata.root")
-df = makeDataFrame(processTree(chain,True))
+df = makeDataFrame(processTree(chain))
 print(df.head())
-df.to_csv("photonClusters.csv")
-df = makeDataFrame(processTree(chain,0))
-print(df.head())
-df.to_csv("nonClusters.csv")
+df.to_csv("photonclusters.csv")
 
 

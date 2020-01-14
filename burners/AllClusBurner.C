@@ -36,19 +36,19 @@ int AllClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree = new TTree("subtractedTree","super stylish sapling");
   _ttree->Branch("sub_clus_n",&_b_clustersub_n);
   _ttree->Branch("isPhoton",&_b_isPhoton,"isPhoton[sub_clus_n]/I");
-  _ttree->Branch("parent_pdi",&_b_parent_pid,"parent_pid[sub_clus_n]/I");
+  _ttree->Branch("parent_pid",&_b_parent_pid,"parent_pid[sub_clus_n]/I");
   /*_ttree->Branch("tphoton_e",&_b_truthphoton_E,"tphoton_e[sub_clus_n]/F");
-  _ttree->Branch("tphoton_pT",&_b_truthphoton_pT,"tphoton_pT[sub_clus_n]/F");
-  _ttree->Branch("tphoton_eta",&_b_truthphoton_eta,"tphoton_eta[sub_clus_n]/F");
-  _ttree->Branch("tphoton_phi",&_b_truthphoton_phi,"tphoton_phi[sub_clus_n]/F");*/
+    _ttree->Branch("tphoton_pT",&_b_truthphoton_pT,"tphoton_pT[sub_clus_n]/F");
+    _ttree->Branch("tphoton_eta",&_b_truthphoton_eta,"tphoton_eta[sub_clus_n]/F");
+    _ttree->Branch("tphoton_phi",&_b_truthphoton_phi,"tphoton_phi[sub_clus_n]/F");*/
   _ttree->Branch("sub_clus_e",&_b_clustersub_E,"sub_clus_e[sub_clus_n]/F");
   _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
   /*_ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
-  _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");*/
+    _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");*/
   _ttree->Branch("sub_clus_prob",&_b_clustersub_prob,"sub_clus_prob[sub_clus_n]/F");
   /*_ttree->Branch("matchDR",&_b_matchDR,"matchDR[sub_clus_n]/F");
-  _ttree->Branch("matchEta",&_b_matchEta,"matchEta[sub_clus_n]/F");
-  _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");*/
+    _ttree->Branch("matchEta",&_b_matchEta,"matchEta[sub_clus_n]/F");
+    _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");*/
 
   //make a branch for each tower
   string bTitle="tower";
@@ -72,7 +72,7 @@ bool AllClusBurner::doNodePointers(PHCompositeNode* topNode){
   else _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
   _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
   TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
-  
+
   if(!towerBack){
     cerr<<Name()<<": TowerBackground not in node tree\n";
   }
@@ -80,7 +80,7 @@ bool AllClusBurner::doNodePointers(PHCompositeNode* topNode){
     cout<<"TowerBackground is valid = "<<towerBack->isValid();
     towerBack->identify();
   }
-  
+
   if(!_subClusterContainer){
     cerr<<Name()<<": critical error-bad nodes \n";
     if(!_subClusterContainer){
@@ -112,21 +112,22 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
     if(photonClusterIds.find(icluster->get_id()) != photonClusterIds.end()){
       _b_isPhoton[_b_clustersub_n] = 1;
       _b_parent_pid[_b_clustersub_n] = photonClusterIds.find(icluster->get_id())->second;
+      //}
+      /*else{
+        _b_isPhoton[_b_clustersub_n] = 0;
+        _b_parent_pid[_b_clustersub_n] = -999;
+        }*/
+      cout<<icluster->get_id()<<": "<<_b_isPhoton[_b_clustersub_n]<< " with source "<<photonClusterIds.find(icluster->get_id())->second;
+      _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
+      _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
+      _b_clustersub_prob[ _b_clustersub_n ] = icluster->get_prob() ; 
+      _towerBurner->process_cluster(icluster);
+      for (unsigned i = 0; i < _kNTOWERS; ++i)
+      {
+        _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+      }
+      _b_clustersub_n++; 
     }
-    else {
-      _b_isPhoton[_b_clustersub_n] = 0;
-      _b_parent_pid[_b_clustersub_n] = -999;
-    }
-    cout<<icluster->get_id()<<": "<<_b_isPhoton[_b_clustersub_n];
-    _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
-    _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
-    _b_clustersub_prob[ _b_clustersub_n ] = icluster->get_prob() ; 
-    _towerBurner->process_cluster(icluster);
-    for (unsigned i = 0; i < _kNTOWERS; ++i)
-    {
-      _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
-    }
-    _b_clustersub_n++; 
   }
   _ttree->Fill();
   return 0;
@@ -150,14 +151,20 @@ std::map<int,int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
       info.first = cluster->get_id();
       //get the parent info
       PHG4Particle *parent = _truthinfo->GetParticle(g4particle->get_parent_id());
-      if(parent) info.second = parent->get_pid();
-      else info.second = -999;
-      photonClusters.insert(info);
+      if(parent){
+        info.second = parent->get_pid();
+        cout<<"Found parent id "<<parent->get_pid()<<'\n';
+      }
+      else {
+        info.second = -999;
+        cout<<"Parent not found id = "<<g4particle->get_parent_id()<<'\n';
+      }
+        photonClusters.insert(info);
     }
   }
   cout<<"Found "<<photonClusters.size()<<" photon clusters"<<endl;
   for(auto i = photonClusters.begin(); i!=photonClusters.end();i++){
-    cout<<i->first<<"'\n\t";
+    cout<<i->first<<"\n\t";
   }
   return photonClusters;
 }

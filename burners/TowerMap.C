@@ -23,10 +23,10 @@ void TowerMap::Reset(std::vector<ChaseTower> towers, ChaseTower MaxTower){
   for (std::vector<ChaseTower>::iterator iTower = towers.begin(); iTower != towers.end(); ++iTower)
   {
     _map[pair<int,int>(angle2Int(iTower->getEta()),angle2Int(iTower->getPhi()))] = iTower->getEnergy();
-    if (towers.size()!=_kNTOWERS)
+   /* if (towers.size()!=_kNTOWERS)
     {
       cout<<iTower->getEta()<<", "<<iTower->getPhi()<<'\n';
-    }
+    }*/
   }
   if(_maxTower) delete _maxTower;
   _maxTower = new ChaseTower(MaxTower);

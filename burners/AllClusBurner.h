@@ -63,7 +63,7 @@ class AllClusBurner: public SubsysReco
     double DeltaR (TLorentzVector *tlv, RawCluster* cluster);
 
     bool doNodePointers(PHCompositeNode* topNode);
-    std::map<int,int> getPhotonClusters(PHCompositeNode *topNode);
+    std::map<int,int> getTagClusters(PHCompositeNode *topNode);
     RawCluster* getCluster(TLorentzVector* tlv);
 
     const unsigned int _kRunNumber;
@@ -71,9 +71,11 @@ class AllClusBurner: public SubsysReco
     static const unsigned int _kMINCLUSTERENERGY=1;//in GeV
     static const unsigned int _kMAXCLUSTERS=600;
     static const unsigned int _kNTOWERS=49;
-    const static int s_kTPCRADIUS=21; //in cm there is a way to get this from the simulation I should implement?
+    static const int s_kTPCRADIUS=21; //in cm there is a way to get this from the simulation I should implement?
     static const float _kCLUSTERDR;
     static const float _kMAXETA;
+
+    static const std::unordered_set<int> interest_pids {22,311,313,421,423,511,513,111,113,130,221,331};
 
     TFile *_f=NULL; ///< output file
     TTree *_ttree=NULL; ///<photondata

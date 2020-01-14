@@ -14,7 +14,7 @@
 using namespace std;
 
 const float AllClusBurner::_kCLUSTERDR = 0.2f;
-const float AllClusBurner::_kMAXETA=1.1f;
+const float AllClusBurner::_kMAXETA=1.f;
 
 
 AllClusBurner::AllClusBurner(const std::string &name, unsigned runnumber=0,bool isHI=false) : SubsysReco("AllClusBurner"),
@@ -133,23 +133,32 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
   return 0;
 }
 
-std::map<int,int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
-  std::map<int,int> photonClusters;
+std::map<int,int> AllClusBurner::getTagClusters(PHCompositeNode *topNode){
+  std::map<int,int> taggedClusters;
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
-    //check if photon
-    if(g4particle->get_pid()==22){
+    //check if a particle of interest
+    if(interest_pids.find(TMath::Abs(g4particle->get_pid()))!=interest_pids.end()){
       std::pair<int,int> info;
-      //if it is a photon make the tlv
+      //if it is make the tlv
       TLorentzVector All_tlv;
       All_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
-      //if the photon is not in acceptance eta or energy skip it
+      //if the particle is not in acceptance eta or energy skip it
       if(All_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(All_tlv.Eta())>_kMAXETA) continue;
       //find the matching cluster
       RawCluster* cluster=getCluster(&All_tlv);
       info.first = cluster->get_id();
-      //get the parent info
+      //check if this cluster is already in the list
+      if (taggedClusters.find(info.first)!=taggedClusters.end())
+      {
+        /*If it is already in the list tag it as multi particle cluster*/
+        taggedClusters.find(info.first)->second = -998;
+      }
+      else{
+        taggedClusters.find(info.first)->second = TMath::Abs(g4particle->get_pid());
+      }
+      /*get the parent info
       PHG4Particle *parent = _truthinfo->GetParticle(g4particle->get_parent_id());
       if(parent){
         info.second = parent->get_pid();
@@ -158,8 +167,8 @@ std::map<int,int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
       else {
         info.second = -999;
         cout<<"Parent not found id = "<<g4particle->get_parent_id()<<'\n';
-      }
-        photonClusters.insert(info);
+      }*/
+      photonClusters.insert(info);
     }
   }
   cout<<"Found "<<photonClusters.size()<<" photon clusters"<<endl;

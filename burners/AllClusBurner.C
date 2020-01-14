@@ -130,7 +130,9 @@ std::set<int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
+    //check if photon
     if(g4particle->get_pid()==22){
+      cout<<"barcode: "<<g4particle->get_barcode()<<'\n';
       //if it is a photon make the tlv
       TLorentzVector All_tlv;
       All_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());

@@ -75,7 +75,7 @@ class AllClusBurner: public SubsysReco
     static const float _kCLUSTERDR;
     static const float _kMAXETA;
 
-    static const std::unordered_set<int> interest_pids {22,311,313,421,423,511,513,111,113,130,221,331};
+    static const std::unordered_set<int> interest_pids ;
 
     TFile *_f=NULL; ///< output file
     TTree *_ttree=NULL; ///<photondata

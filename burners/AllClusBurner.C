@@ -11,10 +11,12 @@
 
 #include <iostream>
 #include <map>
+#include <unordered_set>
 using namespace std;
 
 const float AllClusBurner::_kCLUSTERDR = 0.2f;
 const float AllClusBurner::_kMAXETA=1.f;
+const std::unordered_set<int> interest_pids = {22,311,313,421,423,511,513,111,113,130,221,331};
 
 
 AllClusBurner::AllClusBurner(const std::string &name, unsigned runnumber=0,bool isHI=false) : SubsysReco("AllClusBurner"),
@@ -168,11 +170,11 @@ std::map<int,int> AllClusBurner::getTagClusters(PHCompositeNode *topNode){
         info.second = -999;
         cout<<"Parent not found id = "<<g4particle->get_parent_id()<<'\n';
       }*/
-      photonClusters.insert(info);
+      taggedClusters.insert(info);
     }
   }
-  cout<<"Found "<<photonClusters.size()<<" photon clusters"<<endl;
-  for(auto i = photonClusters.begin(); i!=photonClusters.end();i++){
+  cout<<"Found "<<taggedClusters.size()<<" photon clusters"<<endl;
+  for(auto i = taggedClusters.begin(); i!=taggedClusters.end();i++){
     cout<<i->first<<"\n\t";
   }
   return photonClusters;

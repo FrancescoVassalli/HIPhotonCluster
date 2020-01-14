@@ -36,6 +36,7 @@ int AllClusBurner::InitRun(PHCompositeNode *topNode)
   _ttree = new TTree("subtractedTree","super stylish sapling");
   _ttree->Branch("sub_clus_n",&_b_clustersub_n);
   _ttree->Branch("isPhoton",&_b_isPhoton,"isPhoton[sub_clus_n]/I");
+  _ttree->Branch("parent_pdi",&_b_parent_pid,"parent_pid[sub_clus_n]/I");
   /*_ttree->Branch("tphoton_e",&_b_truthphoton_E,"tphoton_e[sub_clus_n]/F");
   _ttree->Branch("tphoton_pT",&_b_truthphoton_pT,"tphoton_pT[sub_clus_n]/F");
   _ttree->Branch("tphoton_eta",&_b_truthphoton_eta,"tphoton_eta[sub_clus_n]/F");
@@ -98,18 +99,24 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
 {
   if(!doNodePointers(topNode)) return 2;
   if(_kRunNumber%10==0){
-    cout<<"GamaClusBurner Processesing Event "<<_kRunNumber<<endl;
+    cout<<"AllClusBurner Processesing Event "<<_kRunNumber<<endl;
   }
 
   _b_clustersub_n=0; 
-  set<int> photonClusterIds = getPhotonClusters(topNode);
+  map<int,int> photonClusterIds = getPhotonClusters(topNode);
   auto range  = _subClusterContainer->getClusters();
   for (auto i = range.first; i != range.second; ++i)
   {
     RawCluster* icluster = i->second;
     if(icluster->get_energy()<_kMINCLUSTERENERGY||get_eta(icluster)>_kMAXETA) continue;
-    if(photonClusterIds.find(icluster->get_id()) != photonClusterIds.end()) _b_isPhoton[_b_clustersub_n] = 1;
-    else _b_isPhoton[_b_clustersub_n] = 0;
+    if(photonClusterIds.find(icluster->get_id()) != photonClusterIds.end()){
+      _b_isPhoton[_b_clustersub_n] = 1;
+      _b_parent_pid[_b_clustersub_n] = photonClusterIds.find(icluster->get_id())->second;
+    }
+    else {
+      _b_isPhoton[_b_clustersub_n] = 0;
+      _b_parent_pid[_b_clustersub_n] = -999;
+    }
     cout<<icluster->get_id()<<": "<<_b_isPhoton[_b_clustersub_n];
     _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
     _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
@@ -125,14 +132,14 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
   return 0;
 }
 
-std::set<int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
-  std::set<int> photonClusters;
+std::map<int,int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
+  std::map<int,int> photonClusters;
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
     //check if photon
     if(g4particle->get_pid()==22){
-      cout<<"barcode: "<<g4particle->get_barcode()<<'\n';
+      std::pair<int,int> info;
       //if it is a photon make the tlv
       TLorentzVector All_tlv;
       All_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
@@ -140,12 +147,17 @@ std::set<int> AllClusBurner::getPhotonClusters(PHCompositeNode *topNode){
       if(All_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(All_tlv.Eta())>_kMAXETA) continue;
       //find the matching cluster
       RawCluster* cluster=getCluster(&All_tlv);
-      photonClusters.insert(cluster->get_id());
+      info.first = cluster->get_id();
+      //get the parent info
+      PHG4Particle *parent = _truthinfo->GetParticle(g4particle->get_parent_id());
+      if(parent) info.second = parent->get_pid();
+      else info.second = -999;
+      photonClusters.insert(info);
     }
   }
   cout<<"Found "<<photonClusters.size()<<" photon clusters"<<endl;
   for(auto i = photonClusters.begin(); i!=photonClusters.end();i++){
-    cout<<*i<<"'\n\t";
+    cout<<i->first<<"'\n\t";
   }
   return photonClusters;
 }

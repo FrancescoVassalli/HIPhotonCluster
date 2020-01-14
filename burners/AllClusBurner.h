@@ -63,7 +63,7 @@ class AllClusBurner: public SubsysReco
     double DeltaR (TLorentzVector *tlv, RawCluster* cluster);
 
     bool doNodePointers(PHCompositeNode* topNode);
-    std::set<int> getPhotonClusters(PHCompositeNode *topNode);
+    std::map<int,int> getPhotonClusters(PHCompositeNode *topNode);
     RawCluster* getCluster(TLorentzVector* tlv);
 
     const unsigned int _kRunNumber;
@@ -85,6 +85,7 @@ class AllClusBurner: public SubsysReco
     /** \defgroup  variables  for the TTrees
       @{*/
     int _b_isPhoton[_kMAXCLUSTERS];
+    int _b_parent_pid[_kMAXCLUSTERS];
     /*float _b_truthphoton_E   [ _kMAXCLUSTERS ];
     float _b_truthphoton_pT   [ _kMAXCLUSTERS ];
     float _b_truthphoton_eta   [ _kMAXCLUSTERS ];

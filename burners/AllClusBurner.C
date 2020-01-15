@@ -16,7 +16,7 @@ using namespace std;
 
 const float AllClusBurner::_kCLUSTERDR = 0.2f;
 const float AllClusBurner::_kMAXETA=1.f;
-const std::unordered_set<int> interest_pids = {22,311,313,421,423,511,513,111,113,130,221,331};
+const std::unordered_set<int> AllClusBurner::interest_pids {22,311,313,421,423,511,513,111,113,130,221,331};
 
 
 AllClusBurner::AllClusBurner(const std::string &name, unsigned runnumber=0,bool isHI=false) : SubsysReco("AllClusBurner"),
@@ -105,7 +105,7 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
   }
 
   _b_clustersub_n=0; 
-  map<int,int> photonClusterIds = getPhotonClusters(topNode);
+  map<int,int> photonClusterIds = getTaggedClusters(topNode);
   auto range  = _subClusterContainer->getClusters();
   for (auto i = range.first; i != range.second; ++i)
   {
@@ -114,12 +114,12 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
     if(photonClusterIds.find(icluster->get_id()) != photonClusterIds.end()){
       _b_isPhoton[_b_clustersub_n] = 1;
       _b_parent_pid[_b_clustersub_n] = photonClusterIds.find(icluster->get_id())->second;
-      //}
-      /*else{
-        _b_isPhoton[_b_clustersub_n] = 0;
-        _b_parent_pid[_b_clustersub_n] = -999;
-        }*/
       cout<<icluster->get_id()<<": "<<_b_isPhoton[_b_clustersub_n]<< " with source "<<photonClusterIds.find(icluster->get_id())->second;
+    }
+    else{
+      _b_isPhoton[_b_clustersub_n] = 0;
+      _b_parent_pid[_b_clustersub_n] = -999;
+    }
       _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
       _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
       _b_clustersub_prob[ _b_clustersub_n ] = icluster->get_prob() ; 
@@ -129,20 +129,18 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
         _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
       }
       _b_clustersub_n++; 
-    }
   }
   _ttree->Fill();
   return 0;
 }
 
-std::map<int,int> AllClusBurner::getTagClusters(PHCompositeNode *topNode){
+std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
   std::map<int,int> taggedClusters;
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
     //check if a particle of interest
     if(interest_pids.find(TMath::Abs(g4particle->get_pid()))!=interest_pids.end()){
-      std::pair<int,int> info;
       //if it is make the tlv
       TLorentzVector All_tlv;
       All_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
@@ -150,15 +148,14 @@ std::map<int,int> AllClusBurner::getTagClusters(PHCompositeNode *topNode){
       if(All_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(All_tlv.Eta())>_kMAXETA) continue;
       //find the matching cluster
       RawCluster* cluster=getCluster(&All_tlv);
-      info.first = cluster->get_id();
       //check if this cluster is already in the list
-      if (taggedClusters.find(info.first)!=taggedClusters.end())
+      if (taggedClusters.find(cluster->get_id())!=taggedClusters.end())
       {
         /*If it is already in the list tag it as multi particle cluster*/
-        taggedClusters.find(info.first)->second = -998;
+        taggedClusters.find(cluster->get_id())->second = -998;
       }
       else{
-        taggedClusters.find(info.first)->second = TMath::Abs(g4particle->get_pid());
+        taggedClusters[cluster->get_id()] = TMath::Abs(g4particle->get_pid());
       }
       /*get the parent info
       PHG4Particle *parent = _truthinfo->GetParticle(g4particle->get_parent_id());
@@ -170,14 +167,13 @@ std::map<int,int> AllClusBurner::getTagClusters(PHCompositeNode *topNode){
         info.second = -999;
         cout<<"Parent not found id = "<<g4particle->get_parent_id()<<'\n';
       }*/
-      taggedClusters.insert(info);
     }
   }
   cout<<"Found "<<taggedClusters.size()<<" photon clusters"<<endl;
   for(auto i = taggedClusters.begin(); i!=taggedClusters.end();i++){
     cout<<i->first<<"\n\t";
   }
-  return photonClusters;
+  return taggedClusters;
 }
 
 RawCluster* AllClusBurner::getCluster(TLorentzVector* tlv){

@@ -139,6 +139,9 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
+    if(g4particle->get_e()>5){
+      cout<<"High energy particle "<<g4particle->get_pid()<<" with "<<g4particle->get_e()<<" GeV \n";
+    }
     //check if a particle of interest
     if(interest_pids.find(TMath::Abs(g4particle->get_pid()))!=interest_pids.end()){
       //if it is make the tlv

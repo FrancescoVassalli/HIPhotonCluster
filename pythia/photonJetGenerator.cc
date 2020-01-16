@@ -15,7 +15,7 @@ void generator(std::string filename, long nEvents){
   Pythia pythiaengine;
   pythiaengine.readString("Beams:eCM = 200.");
   pythiaengine.readString("promptphoton:all = on");
-  pythiaengine.readString("HardQCD:all = on");
+  //pythiaengine.readString("HardQCD:all = on");
   pythiaengine.readString("PhaseSpace:pTHatMin = 10.");
   pythiaengine.readString("Random::setSeed = on");
   pythiaengine.readString("Random::seed =0");

@@ -153,6 +153,7 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
       {
         /*If it is already in the list tag it as multi particle cluster*/
         taggedClusters.find(cluster->get_id())->second = -998;
+        cout<<"Collision cluster with E = "<<cluster->get_energy()<<'\n';
       }
       else{
         taggedClusters[cluster->get_id()] = TMath::Abs(g4particle->get_pid());

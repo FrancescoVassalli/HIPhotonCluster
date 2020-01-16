@@ -1,26 +1,23 @@
 #!/bin/csh 
 @ p = ( ${1} )
 #
-set OUT_LOCATION="/sphenix/user/vassalli/idTest/"
-set OUT_FILE="HI_DST_OUT${p}.root"
-set ANA_FILE=HI_ANA${p}.root
+set OUT_LOCATION="/sphenix/user/vassalli/idTest/HIsample/"
 #
-set SCRATCH_AREA="/sphenix/user/vassalli/srtch/"
-set SOURCE_GEN="/direct/phenix+u/vassalli/sphenix/id/gen/*"
-set BURNER="burnerMacro.C"
+set SCRATCH_AREA="srtch" 
 #
 source /phenix/u/vassalli/.cshrc
 mkdir $SCRATCH_AREA
-cp  $SOURCE_GEN $SCRATCH_AREA
-cp $BURNER $SCRATCH_AREA
+cp ../gen/* $SCRATCH_AREA
 cp ../clustering/* $SCRATCH_AREA
 cp ../subtraction/* $SCRATCH_AREA
 cp ../burners/* $SCRATCH_AREA
+cp ../condor/pythMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-#root -b -q Fun4All_G4_sPHENIX.C\(1,\"\",\"$OUT_FILE\"\) 
-#cp $OUT_FILE $OUT_LOCATION$OUT_FILE
-root -b -q $BURNER\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
+set OUT_FILE=HIPYTH${p}.root
+set ANA_FILE=hipytha_ANA${p}.root
+
+root -b -q pythMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
 #
 rm -rf $SCRATCH_AREA
 #

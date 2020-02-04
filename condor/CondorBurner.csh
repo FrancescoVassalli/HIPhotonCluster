@@ -5,7 +5,8 @@ set OUT_LOCATION="/sphenix/user/vassalli/idTest/singlesample/"
 set OUT_FILE=G_DST_OUT${p}.root
 set ANA_FILE=G_ANA${p}.root
 #
-set SCRATCH_AREA="$_CONDOR_SCRATCH_DIR/fran_HIDST${p}" 
+#set SCRATCH_AREA="$_CONDOR_SCRATCH_DIR/fran_HIDST${p}" 
+set SCRATCH_AREA="fran_HIDST" 
 #
 source /phenix/u/vassalli/.cshrc
 mkdir $SCRATCH_AREA

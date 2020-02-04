@@ -34,16 +34,23 @@ IDBurner::~IDBurner(){
 bool IDBurner::doNodePointers(PHCompositeNode* topNode){
   bool goodPointers=true;
   //use subtracted clusters for HI events
-  if(_kISHI)_subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC_SUB");
-  else _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
-  _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
-  TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
-  _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC_SUB1");
+  TowerBackground *towerBack;
+  if(_kISHI){
+    _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC_SUB");
+    towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
+    _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC_SUB1");
+  }
+    else{
+      _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
+      towerBack = NULL;
+      _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC");
+    }
+      _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
   _geomEM = findNode::getClass<RawTowerGeomContainer>(topNode, "TOWERGEOM_CEMC");
-  if(!towerBack){
+  if(!towerBack&&_kISHI){
     cerr<<Name()<<": TowerBackground not in node tree\n";
   }
-  else{
+  else if(_kISHI){
     cout<<"TowerBackground is valid = "<<towerBack->isValid();
     towerBack->identify();
   }
@@ -98,7 +105,6 @@ void IDBurner::process_cluster(RawCluster *cluster)
 
   std::vector<ChaseTower> Sasha49Towers;
 
-  cout<<"Finding 49 towers "<<endl;
   RawTowerContainer::ConstRange towerrange = _towerContainer->getTowers();
   for (RawTowerContainer::ConstIterator rtiter = towerrange.first; rtiter != towerrange.second; ++rtiter) 
   {

@@ -1,6 +1,7 @@
 #include <fun4all/Fun4AllServer.h>
 #include <fun4all/Fun4AllDstInputManager.h>
 #include "GammaClusBurner.h"
+#include "AllClusBurner.h"
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libsubtractionburner.so)
@@ -27,10 +28,10 @@ int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfil
   hitsin->fileopen( infile );
   se->registerInputManager(hitsin);
  
-  GammaClusBurner *rCE = new GammaClusBurner(outfile,runNumber,HI);
+  AllClusBurner *rCE = new AllClusBurner(outfile,runNumber,HI);
   se->registerSubsystem( rCE );
 
-  se->run();
+  se->run(10);
   se->End();
   delete se;
   //gSystem->Exit(0);

@@ -1,9 +1,14 @@
 #include "GammaLocal.h"
+#include "ChaseTower.h"
 #include "IDBurner.h"
 
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
 #include <g4main/PHG4VtxPoint.h>
+#include <calobase/RawTower.h>
+#include <calobase/RawTowerGeom.h>
+#include <calobase/RawTowerContainer.h>
+#include <calobase/RawTowerGeomContainer.h>
 #include <jetbackground/TowerBackground.h>
 #include <phool/getClass.h>
 
@@ -70,7 +75,9 @@ bool GammaLocal::doNodePointers(PHCompositeNode* topNode){
   else _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
   _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
   TowerBackground *towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
-  
+  _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC_SUB1");
+  _geomEM = findNode::getClass<RawTowerGeomContainer>(topNode, "TOWERGEOM_CEMC");
+
   if(!towerBack){
     cerr<<Name()<<": TowerBackground not in node tree\n";
   }
@@ -78,7 +85,7 @@ bool GammaLocal::doNodePointers(PHCompositeNode* topNode){
     cout<<"TowerBackground is valid = "<<towerBack->isValid();
     towerBack->identify();
   }
-  
+
   if(!_subClusterContainer){
     cerr<<Name()<<": critical error-bad nodes \n";
     if(!_subClusterContainer){
@@ -101,10 +108,9 @@ int GammaLocal::process_event(PHCompositeNode *topNode)
     cout<<"GamaLocal Processesing Event "<<_kRunNumber<<endl;
   }
 
-  _b_clustersub_n=0; 
   //std::map<unsigned int,unsigned int> keys_map; //make a list of which clusters I've used so I don't do merged clusters
   //std::vector<PHG4Particle*> convertedPhotons; //make a list of the photon conversion so their photons are not added to the analysis 
-                                               //will not work if tracking was turned off 
+  //will not work if tracking was turned off 
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
@@ -117,17 +123,17 @@ int GammaLocal::process_event(PHCompositeNode *topNode)
       //find the towers
       std::vector<ChaseTower> towers = getTowers(gamma_tlv);
       cout<<"Got "<<towers.size()<< "towers\n";
-        _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
-        _b_truthphoton_eta[_b_clustersub_n ] =gamma_tlv.Eta();
-        _b_truthphoton_phi[_b_clustersub_n ] =gamma_tlv.Phi();
-        for (unsigned i = 0; i < _kNTOWERS; ++i)
+      _b_clustersub_n=0; 
+      _b_truthphoton_E[_b_clustersub_n ] =gamma_tlv.E();
+      _b_truthphoton_eta[_b_clustersub_n ] =gamma_tlv.Eta();
+      _b_truthphoton_phi[_b_clustersub_n ] =gamma_tlv.Phi();
+      /*for (unsigned i = 0; i < _kNTOWERS; ++i)
         {
-          _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
-          //_b_tower_Eray[i][_b_clustersub_n] = -999;
-        }
-        keys_map[cluster->get_id()]=_b_clustersub_n;
-        _b_clustersub_n++; 
+        _b_tower_Eray[i][_b_clustersub_n] = _towerBurner->getTowerEnergy(i);
+      //_b_tower_Eray[i][_b_clustersub_n] = -999;
       }
+      keys_map[cluster->get_id()]=_b_clustersub_n;*/
+      _b_clustersub_n++; 
     } //particle is photon
   }
   cout<<"tree filled"<<endl;
@@ -135,7 +141,8 @@ int GammaLocal::process_event(PHCompositeNode *topNode)
   return 0;
 }
 
-std::vector<ChaseTower> GammaLocal::getTowers(TLorentzVector* tlv){
+std::vector<ChaseTower> GammaLocal::getTowers(TLorentzVector tlv){
+  vector<ChaseTower> Sasha49Towers;
   RawTowerContainer::ConstRange towerrange = _towerContainer->getTowers();
   for (RawTowerContainer::ConstIterator rtiter = towerrange.first; rtiter != towerrange.second; ++rtiter) 
   {
@@ -144,13 +151,13 @@ std::vector<ChaseTower> GammaLocal::getTowers(TLorentzVector* tlv){
     double this_phi = tower_geom->get_phi();
     double this_eta = tower_geom->get_eta();
     double this_energy = tower->get_energy();
-    double dif_eta = this_eta - tlv->getEta();
-    double dif_phi = this_phi - tlv->getPhi();
+    double dif_eta = this_eta - tlv.Eta();
+    double dif_phi = this_phi - tlv.Phi();
 
     if(dif_phi > TMath::Pi()){dif_phi -= 2*TMath::Pi();} //make sure dif_phi is between -pi and pi
     else if(dif_phi < -1*TMath::Pi()){dif_phi += 2*TMath::Pi();}
     const float kMAXDIFF = .8;
-    if(fabs(dif_eta) < kMAXDIFF and fabs(dif_phi) < kMAXDIFF )
+    if(fabs(dif_eta) < kMAXDIFF and fabs(dif_phi) < kMAXDIFF and this_energy>.1 )
     {
       Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
     }

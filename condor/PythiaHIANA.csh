@@ -11,13 +11,13 @@ cp gen/* $SCRATCH_AREA
 cp clustering/* $SCRATCH_AREA
 cp subtraction/* $SCRATCH_AREA
 cp burners/* $SCRATCH_AREA
-cp condor/pythMacro.C $SCRATCH_AREA
+cp condor/burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
 set OUT_FILE=HIPYTH${p}.root
 set ANA_FILE=hipytha_ANA${p}.root
 
-root -b -q pythMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
+root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},0\)
 #
 rm -rf $SCRATCH_AREA
 #

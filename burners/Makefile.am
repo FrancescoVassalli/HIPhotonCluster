@@ -17,6 +17,8 @@ lib_LTLIBRARIES = \
 include_HEADERS = \
 	GammaClusBurner.h\
 	GammaClusBurnerLinkDef.h\
+	GammaLocal.h\
+	GammaLocalLinkDef.h\
 	ChaseTower.h\
 	ChaseTowerLinkDef.h\
 	TowerMap.h\
@@ -30,6 +32,7 @@ if MAKEROOT6
 pcmdir = $(libdir)
 nobase_dist_pcm_DATA = \
 	GammaClusBurner_Dict_rdict.pcm \
+	GammaLocal_Dict_rdict.pcm \
 	AllClusBurner_Dict_rdict.pcm \
 	ChaseTower_Dict_rdict.pcm \
 	TowerMap_Dict_rdict.pcm \
@@ -39,8 +42,8 @@ endif
 libsubtractionburner_la_SOURCES = \
   AllClusBurner.C \
 	AllClusBurner_Dict.C\
-  GammaClusBurner.C \
-	GammaClusBurner_Dict.C\
+  GammaLocal.C \
+	GammaLocal_Dict.C\
   ChaseTower.C \
 	ChaseTower_Dict.C\
   TowerMap.C \

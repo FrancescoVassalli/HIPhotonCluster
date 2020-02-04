@@ -1,6 +1,7 @@
 #include <fun4all/Fun4AllServer.h>
 #include <fun4all/Fun4AllDstInputManager.h>
-#include "GammaClusBurner.h"
+#include "GammaLocal.h"
+#include "AllClusBurner.h"
 
 R__LOAD_LIBRARY(libfun4all.so)
 R__LOAD_LIBRARY(libsubtractionburner.so)

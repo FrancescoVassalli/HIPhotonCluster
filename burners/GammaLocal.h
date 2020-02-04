@@ -22,6 +22,8 @@
 class PHCompositeNode;
 class PHG4TruthInfoContainer;
 class RawCluster;
+class RawTowerContainer;
+class RawTowerGeomContainer;
 class RawTower;
 class IDBurner;
 class ChaseTower;
@@ -64,7 +66,7 @@ class GammaLocal: public SubsysReco
     double DeltaR (TLorentzVector *tlv, RawCluster* cluster);
 
     bool doNodePointers(PHCompositeNode* topNode);
-    std::vector<ChaseTower> getTowers(TLorentzVector* tlv);
+    std::vector<ChaseTower> getTowers(TLorentzVector tlv);
 
     const unsigned int _kRunNumber;
     const bool _kISHI;
@@ -78,6 +80,8 @@ class GammaLocal: public SubsysReco
     TFile *_f=NULL; ///<output file
     TTree *_ttree=NULL; ///<data
     RawClusterContainer* _subClusterContainer=NULL;
+    RawTowerContainer* _towerContainer=NULL;
+    RawTowerGeomContainer *_geomEM=NULL;
     std::string _foutname;///<path+name for output file
     PHG4TruthInfoContainer *_truthinfo;
     IDBurner *_towerBurner=NULL;

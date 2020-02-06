@@ -105,7 +105,7 @@ from ROOT import TChain
 import pandas as pd
 
 chain = TChain("subtractedTree")
-chain.Add("pythdata.root")
+chain.Add("subdata.root")
 df = makeDataFrame(processTree(chain))
 print(df.head())
 df.to_csv("photonclusters.csv")

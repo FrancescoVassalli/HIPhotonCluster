@@ -23,6 +23,7 @@
 class PHCompositeNode;
 class PHG4TruthInfoContainer;
 class RawCluster;
+class RawTowerContainer;
 class IDBurner;
 
 class TLorentzVector;
@@ -61,7 +62,8 @@ class AllClusBurner: public SubsysReco
     }
     ///Handle the conversion to the inline functions
     double DeltaR (TLorentzVector *tlv, RawCluster* cluster);
-
+    ///Sum the total energy in the calorimeter
+    double getCalEnergy();
     bool doNodePointers(PHCompositeNode* topNode);
     std::map<int,int> getTaggedClusters(PHCompositeNode *topNode);
     RawCluster* getCluster(TLorentzVector* tlv);
@@ -83,6 +85,9 @@ class AllClusBurner: public SubsysReco
     std::string _foutname;///<path+name for output file
     PHG4TruthInfoContainer *_truthinfo;
     IDBurner *_towerBurner=NULL;
+    RawTowerContainer *_towerContainerEM;
+    RawTowerContainer *_towerContainerOH;
+    RawTowerContainer *_towerContainerIH;
 
     /** \defgroup  variables  for the TTrees
       @{*/
@@ -93,6 +98,7 @@ class AllClusBurner: public SubsysReco
     float _b_truthphoton_eta   [ _kMAXCLUSTERS ];
     float _b_truthphoton_phi   [ _kMAXCLUSTERS ];*/
     float _b_clustersub_E    [ _kMAXCLUSTERS ];
+    float _b_clustersub_calE    [ _kMAXCLUSTERS ];
     float _b_clustersub_ecore[ _kMAXCLUSTERS ] ;
     //float _b_clustersub_eta  [ _kMAXCLUSTERS ];
     //float _b_clustersub_phi  [ _kMAXCLUSTERS ];

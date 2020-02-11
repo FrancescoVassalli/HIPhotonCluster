@@ -18,3 +18,4 @@ gen/flowAfterburner.xml
 gen/vis.mac
 gen/*.cfg
 *.txt
+condor/srtch*

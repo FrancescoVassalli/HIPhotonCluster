@@ -205,7 +205,7 @@ int RawClusterBuilderTemplateSub::process_event(PHCompositeNode *topNode)
     }
   }
 
-  //std::cout << " DVP : size of HitList = " << HitList.size() << std::endl;
+  std::cout << " DVP : size of HitList = " << HitList.size() << std::endl;
 
   bemc->SetModules(&HitList);
 
@@ -256,7 +256,7 @@ int RawClusterBuilderTemplateSub::process_event(PHCompositeNode *topNode)
 
 
     int npk = pc->GetPeaks(pPList, pPeaks);
-    //std::cout << " DVP this cluster  # " << dvp_ncl << " has " << npk << " peaks " << std::endl;
+    std::cout << " DVP this cluster  # " << dvp_ncl << " has " << npk << " peaks " << std::endl;
     if (npk < 0) return Fun4AllReturnCodes::ABORTEVENT;
 
     //    printf("  iCl=%d (%d): E=%f  x=%f  y=%f\n",ncl,npk,ecl,xcg,ycg);
@@ -289,7 +289,7 @@ int RawClusterBuilderTemplateSub::process_event(PHCompositeNode *topNode)
       prob = pp->GetProb(chi2, ndf);
       //      printf("Prob/Chi2/NDF= %f %f %d Ecl=%f\n",prob,chi2,ndf,ecl);
 
-      //std::cout << " DVP : new raw cluster with energy / phi = " << ecl << " / " << phi << ", size = " << pp->GetHitList().size() << std::endl;
+      std::cout << " DVP : new raw cluster with energy / phi = " << ecl << " / " << phi << ", size = " << pp->GetHitList().size() << std::endl;
 
       cluster = new RawClusterv1();
       cluster->set_energy(ecl);
@@ -323,7 +323,7 @@ int RawClusterBuilderTemplateSub::process_event(PHCompositeNode *topNode)
       _clusters->AddCluster(cluster);
       // ncl++;
 
-      //      printf("    ipk=%d: E=%f  E9=%f  x=%f  y=%f  MaxTower: (%d,%d) e=%f\n",ipk,ecl,e9,xcg,ycg,hmax.ich%NPHI,hmax.ich/NPHI,hmax.amp);
+            printf("    ipk=%d: E=%f  E9=%f  x=%f  y=%f  MaxTower: (%d,%d) e=%f\n",ipk,ecl,e9,xcg,ycg,hmax.ich%NPHI,hmax.ich/NPHI,hmax.amp);
     }
   }
 

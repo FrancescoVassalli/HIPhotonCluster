@@ -3,6 +3,8 @@
 
 #include <g4main/PHG4Particle.h>
 #include <g4main/PHG4TruthInfoContainer.h>
+#include <calobase/RawTower.h>
+#include <calobase/RawTowerContainer.h>
 #include <g4main/PHG4VtxPoint.h>
 #include <jetbackground/TowerBackground.h>
 #include <phool/getClass.h>
@@ -44,6 +46,7 @@ int AllClusBurner::InitRun(PHCompositeNode *topNode)
     _ttree->Branch("tphoton_eta",&_b_truthphoton_eta,"tphoton_eta[sub_clus_n]/F");
     _ttree->Branch("tphoton_phi",&_b_truthphoton_phi,"tphoton_phi[sub_clus_n]/F");*/
   _ttree->Branch("sub_clus_e",&_b_clustersub_E,"sub_clus_e[sub_clus_n]/F");
+  _ttree->Branch("sub_clus_calE",&_b_clustersub_calE,"sub_clus_calE[sub_clus_n]/F");
   _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
   /*_ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
     _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");*/
@@ -79,6 +82,9 @@ bool AllClusBurner::doNodePointers(PHCompositeNode* topNode){
     _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
     towerBack = NULL;
   }
+  _towerContainerEM = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC");
+  _towerContainerIH = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_HCALIN");
+  _towerContainerOH = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_HCALOUT");
   _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
   if(!towerBack&&_kISHI){
     cerr<<Name()<<": TowerBackground not in node tree\n";
@@ -98,6 +104,15 @@ bool AllClusBurner::doNodePointers(PHCompositeNode* topNode){
   else{
     cout<<Name()<<" found event with "<<_subClusterContainer->size()<<" clusters\n";
   }
+  if(!_towerContainerEM){
+    cerr<<Name()<<"EMcal towers not found"<<endl; 
+  }
+  if(!_towerContainerIH){
+    cerr<<Name()<<"IHcal towers not found"<<endl; 
+  }
+  if(!_towerContainerOH){
+    cerr<<Name()<<"OHcal towers not found"<<endl; 
+  }
   return goodPointers && _towerBurner->doNodePointers(topNode);
 }
 
@@ -107,8 +122,10 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
   if(_kRunNumber%10==0){
     cout<<"AllClusBurner Processesing Event "<<_kRunNumber<<endl;
   }
-
+  cout<<"getting CalEnergy"<<endl;
+  const float calE =(float) getCalEnergy();
   _b_clustersub_n=0; 
+  cout<<"tagging clusters"<<endl;
   map<int,int> photonClusterIds = getTaggedClusters(topNode);
   auto range  = _subClusterContainer->getClusters();
   for (auto i = range.first; i != range.second; ++i)
@@ -127,6 +144,7 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
     _b_clustersub_E[ _b_clustersub_n ] = icluster->get_energy() ; 
     _b_clustersub_ecore[ _b_clustersub_n ] = icluster->get_ecore() ; 
     _b_clustersub_prob[ _b_clustersub_n ] = icluster->get_prob() ; 
+    _b_clustersub_calE[ _b_clustersub_n ] = calE ; 
     _towerBurner->process_cluster(icluster);
     for (unsigned i = 0; i < _kNTOWERS; ++i)
     {
@@ -143,10 +161,13 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
-    if(g4particle->get_e()>5){
+    float pt = sqrt(g4particle->get_px()*g4particle->get_px()+g4particle->get_py()*g4particle->get_py());
+    if(pt>5){
       TLorentzVector tlv;
       tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
-      cout<<"High energy particle "<<g4particle->get_pid()<<" with "<<g4particle->get_e()<<" GeV and eta = "<<tlv.Eta()<<"\n";
+      if(TMath::Abs(tlv.Eta())<1.1){
+        cout<<"High energy particle "<<g4particle->get_pid()<<" with "<<pt<<" GeV and eta = "<<tlv.Eta()<<"\n";
+      }
     }
     //check if a particle of interest
     if(interest_pids.find(TMath::Abs(g4particle->get_pid()))!=interest_pids.end()){
@@ -192,7 +213,6 @@ RawCluster* AllClusBurner::getCluster(TLorentzVector* tlv){
   double dr=-1;
   RawCluster *rcluster=NULL;
   //loop over all clusters to find match with lowest delta R
-  cout<<"looping"<<endl;
   for (rtiter = begin_end.first; rtiter != begin_end.second; ++rtiter) 
   { 
     RawCluster *cluster = rtiter->second; 
@@ -201,8 +221,26 @@ RawCluster* AllClusBurner::getCluster(TLorentzVector* tlv){
       rcluster=cluster;
     }
   }
-  cout<<"looped"<<endl;
   return rcluster;
+}
+
+double AllClusBurner::getCalEnergy(){
+  //loop over all towers in EMcal
+  double rsum = 0;
+  auto range = _towerContainerEM->getTowers();
+  for(auto itTower =range.first; itTower !=range.second; itTower++){
+    rsum+=itTower->second->get_energy();
+  }
+  //then do the hadronic calorimeters
+  range = _towerContainerIH->getTowers();
+  for(auto itTower =range.first; itTower !=range.second; itTower++){
+    rsum+=itTower->second->get_energy();
+  }
+  range = _towerContainerOH->getTowers();
+  for(auto itTower =range.first; itTower !=range.second; itTower++){
+    rsum+=itTower->second->get_energy();
+  }
+  return rsum;
 }
 
 int AllClusBurner::End(PHCompositeNode *topNode)

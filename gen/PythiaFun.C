@@ -45,8 +45,7 @@ int PythiaFun(
     const int nEvents = 1,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
-    const char *embed_input_file = NULL,
-    const bool subtract=0)
+    const char *embed_input_file = NULL)
 {
 
   //===============
@@ -450,19 +449,18 @@ int PythiaFun(
     HIJetReco();
   }
 
-  if(subtract){
-    cout<<"Adding Subtraction"<<endl;
-    gSystem->Load("libcalo_reco.so");
-    gSystem->Load("libhisubtraction.so");
-    SubtractCEMC *st = new SubtractCEMC();
-    st->SetFlowModulation( 1 );
-    st->Verbosity( 10 );
-    se->registerSubsystem( st );
+  /*cout<<"Adding Subtraction"<<endl;
+  gSystem->Load("libcalo_reco.so");
+  gSystem->Load("libhisubtraction.so");
+  SubtractCEMC *st = new SubtractCEMC();
+  st->SetFlowModulation( 1 );
+  st->Verbosity( 10 );
+  se->registerSubsystem( st );
 
-    RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
-    ClusterBuilderSub->Verbosity( 10 );
-    se->registerSubsystem( ClusterBuilderSub );
-  }
+  RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
+  ClusterBuilderSub->Verbosity( 10 );
+  se->registerSubsystem( ClusterBuilderSub );
+  */
   //----------------------
   // Simulation evaluation
   //----------------------

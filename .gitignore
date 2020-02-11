@@ -17,3 +17,4 @@ gen/LocalGen.csh
 gen/flowAfterburner.xml
 gen/vis.mac
 gen/*.cfg
+*.txt

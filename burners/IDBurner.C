@@ -32,6 +32,7 @@ IDBurner::~IDBurner(){
 }
 
 bool IDBurner::doNodePointers(PHCompositeNode* topNode){
+  cout<<"Doing IDBurner nodes"<<endl;
   bool goodPointers=true;
   //use subtracted clusters for HI events
   TowerBackground *towerBack;
@@ -40,12 +41,12 @@ bool IDBurner::doNodePointers(PHCompositeNode* topNode){
     towerBack = findNode::getClass<TowerBackground>(topNode,"TowerBackground_Sub2");
     _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC_SUB1");
   }
-    else{
-      _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
-      towerBack = NULL;
-      _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC");
-    }
-      _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
+  else{
+    _subClusterContainer = findNode::getClass<RawClusterContainer>(topNode,"CLUSTER_CEMC");
+    towerBack = NULL;
+    _towerContainer = findNode::getClass<RawTowerContainer>(topNode,"TOWER_CALIB_CEMC");
+  }
+  _truthinfo = findNode::getClass<PHG4TruthInfoContainer>(topNode,"G4TruthInfo");
   _geomEM = findNode::getClass<RawTowerGeomContainer>(topNode, "TOWERGEOM_CEMC");
   if(!towerBack&&_kISHI){
     cerr<<Name()<<": TowerBackground not in node tree\n";

@@ -41,8 +41,8 @@ cp burners/* $SCRATCH_AREA
 cp condor/burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-set OUT_FILE=HI${2}PYTH${p}.root
-set ANA_FILE=hi${2}pytha_ANA${p}.root
+set OUT_FILE=HI4PYTH${p}.root
+set ANA_FILE=hi4pytha_ANA${p}.root
 #
 root -b -q PythiaFun4.C\(3,\"$PYTHIA_FILE\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)

@@ -449,7 +449,7 @@ int InternalFun(
     HIJetReco();
   }
 
-  /*cout<<"Adding Subtraction"<<endl;
+  cout<<"Adding Subtraction"<<endl;
   gSystem->Load("libcalo_reco.so");
   gSystem->Load("libhisubtraction.so");
   SubtractCEMC *st = new SubtractCEMC();
@@ -460,7 +460,7 @@ int InternalFun(
   RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
   ClusterBuilderSub->Verbosity( 10 );
   se->registerSubsystem( ClusterBuilderSub );
-  */
+  
   //----------------------
   // Simulation evaluation
   //----------------------

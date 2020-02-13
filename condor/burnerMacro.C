@@ -1,5 +1,6 @@
 #include <fun4all/Fun4AllServer.h>
 #include <fun4all/Fun4AllDstInputManager.h>
+#include <phool/recoConsts.h>
 #include "GammaClusBurner.h"
 #include "AllClusBurner.h"
 
@@ -22,7 +23,9 @@ int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfil
   Fun4AllServer *se = Fun4AllServer::instance();
   se->Verbosity(verbosity);
   // just if we set some flags somewhere in this macro
-  //recoConsts *rc = recoConsts::instance();
+  recoConsts *rc = recoConsts::instance();
+  //for DVP
+  rc->set_IntFlag("RUNNUMBER",0);
 
   Fun4AllInputManager *hitsin = new Fun4AllDstInputManager("DSTin");
   hitsin->fileopen( infile );
@@ -31,10 +34,10 @@ int burnerMacro(std::string infile = "XjPhi3_pT5_98_dst.root",std::string outfil
   AllClusBurner *rCE = new AllClusBurner(outfile,runNumber,HI);
   se->registerSubsystem( rCE );
 
-  se->run(10);
+  se->run();
   se->End();
   delete se;
-  //gSystem->Exit(0);
   std::cout << "All done" << std::endl;
+  gSystem->Exit(0);
   return 0;
 }

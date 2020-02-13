@@ -44,7 +44,7 @@ cd $SCRATCH_AREA
 set OUT_FILE=NoSubHIPYTH${p}.root
 set ANA_FILE=NoSubhipytha_ANA${p}.root
 #
-root -b -q PythiaFun.C\(3,\"$PYTHIA_FILE\",\"$OUT_LOCATION$OUT_FILE\"\) 
+root -b -q PythiaFun4.C\(3,\"$PYTHIA_FILE\",\"$OUT_LOCATION$OUT_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
 #
 rm -rf $SCRATCH_AREA

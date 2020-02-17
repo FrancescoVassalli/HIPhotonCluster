@@ -6,7 +6,7 @@ Universe        = vanilla
 Notification    = Never
 
 # The executable we want to run.
-Executable   =  /phenix/u/vassalli/sphenix/id/condor/LoInternal.csh
+Executable   =  /phenix/u/vassalli/sphenix/id/condor/InternalGen.csh
 
  # The argument to pass to the executable.
 Arguments       = $(Process)
@@ -34,13 +34,13 @@ Initialdir   = /phenix/u/vassalli/sphenix/id/
 Input           = /dev/null
 
 # The job's stdout is sent to this file.
-Output       = /sphenix/user/vassalli/condor_logs/out.testInt.$(Process)
+Output       = /sphenix/user/vassalli/condor_logs/out.Int.$(Process)
 
 # The job's stderr is sent to this file.
-Error        = /sphenix/user/vassalli/condor_logs/err.testInt.$(Process)
+Error        = /sphenix/user/vassalli/condor_logs/err.Int.$(Process)
 
-# The condor log file for this job, useful when debuggtestInt
-Log          = /sphenix/user/vassalli/condor_logs/log.testInt.$(Process)
+# The condor log file for this job, useful when debuggInt
+Log          = /sphenix/user/vassalli/condor_logs/log.Int.$(Process)
 
 # Email address to send notification to.
 Notify_user     = frva5829@colorado.edu

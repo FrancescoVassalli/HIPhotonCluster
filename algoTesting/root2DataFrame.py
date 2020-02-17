@@ -7,6 +7,7 @@ class Cluster:
 		 	self.towers.append(0)
 	def __init__(self,treeEvent,i):
 		self.total_energy = treeEvent.sub_clus_e[i]
+		self.cal_energy = treeEvent.sub_clus_calE[i]
 		self.core_energy = treeEvent.sub_clus_ecore[i]
 		self.isPhoton = treeEvent.isPhoton[i]
 		self.prob = treeEvent.sub_clus_prob[i]
@@ -62,8 +63,9 @@ class Cluster:
 		self.towers.append(treeEvent.tower46[i])
 		self.towers.append(treeEvent.tower47[i])
 		self.towers.append(treeEvent.tower48[i])
+
 	def getDict(self):
-		r = {'isPhoton': self.isPhoton, "total_energy": self.total_energy, 'core_energy':self.core_energy, 'sProb': self.prob, 'pid': self.parent_pid}
+		r = {'isPhoton': self.isPhoton, "total_energy": self.total_energy, "cal_energy": self.cal_energy, "core_energy": self.core_energy, 'sProb': self.prob, 'pid': self.parent_pid}
 		for i in range(0,len(self.towers)):
 			r["tower"+str(i)] = self.towers[i]
 		return r
@@ -92,7 +94,7 @@ def processTree(tree):
 	return rClusters
 
 def makeDataFrame(l_cluster):
-	names = ['isPhoton','total_energy','core_energy','sProb','pid']
+	names = ['isPhoton','total_energy','cal_energy','core_energy','sProb','pid']
 	for i in range(0,49):
 		names.append("tower" + str(i))
 	rows = []
@@ -105,7 +107,8 @@ from ROOT import TChain
 import pandas as pd
 
 chain = TChain("subtractedTree")
-chain.Add("pythdata.root")
+chain.Add("subdata.root")
+#chain.Add("data.root")
 df = makeDataFrame(processTree(chain))
 print(df.head())
 df.to_csv("photonclusters.csv")

@@ -40,8 +40,8 @@ cp burners/* $SCRATCH_AREA
 cp condor/burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-set OUT_FILE=IntHIPYTH${p}.root
-set ANA_FILE=Inthipytha_ANA${p}.root
+set OUT_FILE=IntBHIPYTH${p}.root
+set ANA_FILE=IntBhipytha_ANA${p}.root
 #
 root -b -q InternalBFun.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)

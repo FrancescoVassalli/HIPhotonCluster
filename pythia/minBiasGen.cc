@@ -46,15 +46,19 @@ void generator(std::string filename, unsigned nEvents){
     } 
     ntracks=0;
     for (int i = 0; i < pythia.event.size (); i++) {
-      if (pythia.event[i].pT() >= 5 && TMath::Abs(pythia.event[i].eta())<1&&pythia.event[i].isFinal()) {
+      if (pythia.event[i].e() >= 5 && TMath::Abs(pythia.event[i].eta())<1&&pythia.event[i].isFinal()) {
         energy[ntracks]=pythia.event[i].pT ();
         eta[ntracks]=pythia.event[i].eta ();
         pid[ntracks]=pythia.event[i].id();
         prompt[ntracks++]=isPrompt(&pythia.event,i);
       }
     }
+    if(ntracks==0) iEvent--;
+    else t->Fill();
   }
   pythia.stat();
+  t->Write();
+  f->Close();
 }
 
 int main(int argc, char const *argv[] )

@@ -19,3 +19,7 @@ gen/vis.mac
 gen/*.cfg
 *.txt
 condor/srtch*
+algoTesting/*.root
+algoTesting/*.csv
+algoTesting/.ipynb*
+analysis/*.root

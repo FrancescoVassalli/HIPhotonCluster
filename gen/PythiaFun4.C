@@ -41,7 +41,7 @@ R__LOAD_LIBRARY(libhisubtraction.so)
 using namespace std;
 
 
-int PythiaFun(
+int PythiaFun4(
     const int nEvents = 1,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
@@ -448,8 +448,7 @@ int PythiaFun(
     gROOT->LoadMacro("G4_HIJetReco.C");
     HIJetReco();
   }
-
-  /*cout<<"Adding Subtraction"<<endl;
+  cout<<"Adding Subtraction"<<endl;
   gSystem->Load("libcalo_reco.so");
   gSystem->Load("libhisubtraction.so");
   SubtractCEMC *st = new SubtractCEMC();
@@ -460,7 +459,7 @@ int PythiaFun(
   RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
   ClusterBuilderSub->Verbosity( 10 );
   se->registerSubsystem( ClusterBuilderSub );
-  */
+  
   //----------------------
   // Simulation evaluation
   //----------------------
@@ -525,7 +524,7 @@ int PythiaFun(
     //! positive ID is the embedded event of interest, e.g. jetty event from pythia
     //! negative IDs are backgrounds, .e.g out of time pile up collisions
     //! Usually, ID = 0 means the primary Au+Au collision background
-    in->set_embedding_id(2);
+    //in->set_embedding_id(2);
   }
   else
   {

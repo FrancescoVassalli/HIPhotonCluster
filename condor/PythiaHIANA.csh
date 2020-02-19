@@ -17,7 +17,7 @@ cd $SCRATCH_AREA
 set OUT_FILE=HIPYTH${p}.root
 set ANA_FILE=hipytha_ANA${p}.root
 
-root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},0\)
+root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
 #
 rm -rf $SCRATCH_AREA
 #

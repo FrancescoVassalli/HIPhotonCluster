@@ -200,7 +200,7 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
         }*/
     }
   }
-  cout<<"Found "<<taggedClusters.size()<<" photon clusters"<<endl;
+  cout<<"Found "<<taggedClusters.size()<<" neutral meson/photon  clusters"<<endl;
   for(auto i = taggedClusters.begin(); i!=taggedClusters.end();i++){
     cout<<i->first<<"\n\t";
   }

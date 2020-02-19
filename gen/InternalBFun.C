@@ -41,7 +41,7 @@ R__LOAD_LIBRARY(libhisubtraction.so)
 using namespace std;
 
 
-int PythiaFun(
+int InternalBFun(
     const int nEvents = 1,
     const char *inputFile = "/sphenix/data/data02/review_2017-08-02/single_particle/spacal2d/fieldmap/G4Hits_sPHENIX_e-_eta0_8GeV-0002.root",
     const char *outputFile = "G4sPHENIX.root",
@@ -62,10 +62,10 @@ int PythiaFun(
   const bool readhits = false;
   // Or:
   // read files in HepMC format (typically output from event generators like hijing or pythia)
-  const bool readhepmc = true;  // read HepMC files
+  const bool readhepmc = false;  // read HepMC files
   // Or:
   // Use pythia
-  const bool runpythia8 = false;
+  const bool runpythia8 = true;
   const bool runpythia6 = false;
   //
   // **** And ****
@@ -221,7 +221,7 @@ int PythiaFun(
 
       PHPythia8 *pythia8 = new PHPythia8();
       // see coresoftware/generators/PHPythia8 for example config
-      pythia8->set_config_file("phpythia8.cfg"); // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
+      pythia8->set_config_file("phpythia8Background.cfg"); // example configure files : https://github.com/sPHENIX-Collaboration/coresoftware/tree/master/generators/PHPythia8
       if (readhepmc)
         pythia8->set_reuse_vertex(0);  // reuse vertex of subevent with embedding ID of 0
       // pythia8->set_vertex_distribution_width(0,0,10,0); // additional vertex smearing if needed, more vertex options available
@@ -449,7 +449,7 @@ int PythiaFun(
     HIJetReco();
   }
 
-  /*cout<<"Adding Subtraction"<<endl;
+  cout<<"Adding Subtraction"<<endl;
   gSystem->Load("libcalo_reco.so");
   gSystem->Load("libhisubtraction.so");
   SubtractCEMC *st = new SubtractCEMC();
@@ -460,7 +460,7 @@ int PythiaFun(
   RawClusterBuilderTemplateSub *ClusterBuilderSub = new RawClusterBuilderTemplateSub("EmcRawClusterBuilderTemplateSub");
   ClusterBuilderSub->Verbosity( 10 );
   se->registerSubsystem( ClusterBuilderSub );
-  */
+  
   //----------------------
   // Simulation evaluation
   //----------------------

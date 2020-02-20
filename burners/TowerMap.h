@@ -32,10 +32,12 @@ class TowerMap
     ~TowerMap();
 
   private:
+    void init(std::vector<ChaseTower> init_towers, ChaseTower MaxTower);
     std::map<std::pair<int,int>, float> _map;
     int angle2Int(float eta);
     ChaseTower* _maxTower=NULL;
     const unsigned _kNTOWERS=49;
+    bool has49;
 };
 
 

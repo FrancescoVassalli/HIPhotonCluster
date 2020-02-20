@@ -70,7 +70,7 @@ class AllClusBurner: public SubsysReco
 
     const unsigned int _kRunNumber;
     const bool _kISHI;
-    static const unsigned int _kMINCLUSTERENERGY=2;//in GeV
+    static const unsigned int _kMINCLUSTERENERGY=5;//in GeV
     static const unsigned int _kMAXCLUSTERS=600;
     static const unsigned int _kNTOWERS=49;
     static const int s_kTPCRADIUS=21; //in cm there is a way to get this from the simulation I should implement?

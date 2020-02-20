@@ -7,7 +7,8 @@ using namespace std;
 
 bool isPrompt(Event *e,unsigned index){
   if((*e)[index].id()!=22) return 0;
-  if(index==5||index==6) return 1;
+  if(index==5||index==6||(*e)[index].mother1()==5||(*e)[index].mother1()==6||(*e)[index].mother1()==4||(*e)[index].mother1()==3) return 1;
+  cout<<"Mother is "<<(*e)[(*e)[index].mother1()].id()<<'\n';
   return isPrompt(e,(*e)[index].mother1());
 }
 

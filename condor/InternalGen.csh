@@ -45,7 +45,7 @@ set OUT_FILE=IntHIPYTH${p}.root
 set ANA_FILE=Inthipytha_ANA${p}.root
 #
 root -b -q InternalFun.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
-root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
+root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
 #
 rm -rf $SCRATCH_AREA
 #

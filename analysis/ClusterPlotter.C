@@ -40,9 +40,13 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
      tree->GetEntry(treeEvent);
      lastTree=treeEvent;
     }
+    if(clusn==0){
+      treeEvent++;
+      continue;
+    }
     string name = strcluster + std::to_string(nclusters);
     std::pair<int,int> loc;
-    TH2F *map= new TH2F(name.c_str(),,7,-.5,6.5,7,-.5,6.5);
+    TH2F *map= new TH2F(name.c_str(),"",7,-.5,6.5,7,-.5,6.5);
     for (unsigned i = 0; i < kNTOWERS; ++i)
     {
       loc = getTowerEnergy(i);
@@ -64,7 +68,7 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
 
 
 void ClusterPlotter(){
-	string inName="/sphenix/user/vassalli/idTest/HIsample/hipytha_ANA0.root";
+	string inName="/sphenix/user/vassalli/idTest/HIsample/intana5.root";
 	TFile *f_data = new TFile("towerData.root","CREATE");
 	TChain *tree = new TChain("subtractedTree");
 	tree->Add(inName.c_str());

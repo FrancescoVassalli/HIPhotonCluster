@@ -264,7 +264,7 @@ int FunBack(
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(12, 13);
+      gen->set_pt_range(5,20);
       gen->Embed(2);
       gen->Verbosity(10);
 

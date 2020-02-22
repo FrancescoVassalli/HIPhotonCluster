@@ -153,7 +153,7 @@ int AllClusBurner::process_event(PHCompositeNode *topNode)
     }
     _b_clustersub_n++; 
   }
-  _ttree->Fill();
+  if(_b_clustersub_n>0) _ttree->Fill();
   return 0;
 }
 
@@ -162,6 +162,7 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
   PHG4TruthInfoContainer::Range range = _truthinfo->GetPrimaryParticleRange(); //look at all truth particles
   for ( PHG4TruthInfoContainer::ConstIterator iter = range.first; iter != range.second; ++iter ) {
     PHG4Particle* g4particle = iter->second;
+    //this block is just for printing purposes no critical function
     float pt = sqrt(g4particle->get_px()*g4particle->get_px()+g4particle->get_py()*g4particle->get_py());
     if(pt>5){
       TLorentzVector tlv;
@@ -170,41 +171,33 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
         cout<<"High energy particle "<<g4particle->get_pid()<<" with "<<pt<<" GeV and eta = "<<tlv.Eta()<<"\n";
       }
     }
+    //if(g4particle->get_pid()==111) cout<<"Pi0 with pT = "<<pt<<'\n';
     //check if a particle of interest
     if(interest_pids.find(TMath::Abs(g4particle->get_pid()))!=interest_pids.end()){
       //if it is make the tlv
       TLorentzVector All_tlv;
       All_tlv.SetPxPyPzE(g4particle->get_px(),g4particle->get_py(),g4particle->get_pz(),g4particle->get_e());
       //if the particle is not in acceptance eta or energy skip it
-      if(All_tlv.Pt()<_kMINCLUSTERENERGY||TMath::Abs(All_tlv.Eta())>_kMAXETA) continue;
+      if(All_tlv.E()<_kMINCLUSTERENERGY||TMath::Abs(All_tlv.Eta())>_kMAXETA) continue;
       //find the matching cluster
       RawCluster* cluster=getCluster(&All_tlv);
       //check if this cluster is already in the list
       if (cluster && taggedClusters.find(cluster->get_id())!=taggedClusters.end())
       {
         /*If it is already in the list tag it as multi particle cluster*/
+        cout<<"Collision cluster between "<<taggedClusters.find(cluster->get_id())->second<<" and "<<g4particle->get_pid()<<'\n';
         taggedClusters.find(cluster->get_id())->second = -998;
-        //cout<<"Collision cluster with E = "<<cluster->get_energy()<<'\n';
       }
       else if(cluster){
         taggedClusters[cluster->get_id()] = TMath::Abs(g4particle->get_pid());
-        //testing the primary particle 
+        //testing the mother particle 
         if(TMath::Abs(g4particle->get_pid())==22){
-          if(_truthinfo->GetPrimaryParticle(iter->first)) cout<<"Primary particle is "<<_truthinfo->GetPrimaryParticle(iter->first)->get_pid();
+          if(_truthinfo->GetParticle(g4particle->get_parent_id())) cout<<"Mother particle is "<<_truthinfo->GetParticle(g4particle->get_parent_id())->get_pid();
         }
       }
-      /*get the parent info
-        PHG4Particle *parent = _truthinfo->GetParticle(g4particle->get_parent_id());
-        if(parent){
-        info.second = parent->get_pid();
-        cout<<"Found parent id "<<parent->get_pid()<<'\n';
-        }
-        else {
-        info.second = -999;
-        cout<<"Parent not found id = "<<g4particle->get_parent_id()<<'\n';
-        }*/
     }
   }
+  //print what you did 
   cout<<"Found "<<taggedClusters.size()<<" neutral meson/photon  clusters"<<endl;
   for(auto i = taggedClusters.begin(); i!=taggedClusters.end();i++){
     cout<<i->first<<"\n\t";

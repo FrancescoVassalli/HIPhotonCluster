@@ -93,6 +93,7 @@ class AllClusBurner: public SubsysReco
       @{*/
     int _b_isPhoton[_kMAXCLUSTERS];
     int _b_parent_pid[_kMAXCLUSTERS];
+    //int _b_primary_pid[_kMAXCLUSTERS];
     /*float _b_truthphoton_E   [ _kMAXCLUSTERS ];
     float _b_truthphoton_pT   [ _kMAXCLUSTERS ];
     float _b_truthphoton_eta   [ _kMAXCLUSTERS ];

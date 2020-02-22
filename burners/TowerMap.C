@@ -5,35 +5,32 @@
 using namespace std;
 
 TowerMap::TowerMap(std::vector<ChaseTower> towers, ChaseTower MaxTower){
-  for (std::vector<ChaseTower>::iterator iTower = towers.begin(); iTower != towers.end(); ++iTower)
-  {
-    _map[pair<int,int>(angle2Int(iTower->getEta()),angle2Int(iTower->getPhi()))] = iTower->getEnergy();
-  }
-  _maxTower = new ChaseTower(MaxTower);
-  std::cout<<"made tower"<<std::endl;
+  init(towers,MaxTower);
 }
 
 void TowerMap::Reset(std::vector<ChaseTower> towers, ChaseTower MaxTower){
   _map.clear();
-  if (towers.size()!=_kNTOWERS)
-  {
-    cerr<<"Bad tower count\n";
-    cout<<"Bad tower count\n";
-  }
-  for (std::vector<ChaseTower>::iterator iTower = towers.begin(); iTower != towers.end(); ++iTower)
-  {
-    _map[pair<int,int>(angle2Int(iTower->getEta()),angle2Int(iTower->getPhi()))] = iTower->getEnergy();
-   /* if (towers.size()!=_kNTOWERS)
-    {
-      cout<<iTower->getEta()<<", "<<iTower->getPhi()<<'\n';
-    }*/
-  }
-  if(_maxTower) delete _maxTower;
-  _maxTower = new ChaseTower(MaxTower);
-  //std::cout<<"reset map"<<std::endl;
+  init(towers,MaxTower);
 }
 
 TowerMap::~TowerMap(){if(_maxTower) delete _maxTower;}
+
+void TowerMap::init(std::vector<ChaseTower> init_towers, ChaseTower MaxTower){
+  if (init_towers.size()!=_kNTOWERS)
+  {
+    cerr<<"Bad tower count\n";
+    cout<<"Bad tower count\n";
+    has49=false;
+  }
+  else has49=true;
+  for (std::vector<ChaseTower>::iterator iTower = init_towers.begin(); iTower != init_towers.end(); ++iTower)
+  {
+    _map[pair<int,int>(angle2Int(iTower->getEta()),angle2Int(iTower->getPhi()))] = iTower->getEnergy();
+  }
+  if(_maxTower) delete _maxTower;
+  _maxTower = new ChaseTower(MaxTower);
+
+}
 
 int TowerMap::angle2Int(float eta){
   //cout<<"mapping angle="<<eta<<'\n';

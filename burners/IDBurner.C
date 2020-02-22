@@ -105,24 +105,35 @@ void IDBurner::process_cluster(RawCluster *cluster)
   //Find 49 towers around max tower, Sasha style
 
   std::vector<ChaseTower> Sasha49Towers;
-
+  
+//  pair<int,int> maxBins = pair<int,int>(_geomEM->get_etabin(MaxTower.getEta()),_geomEM->get_phibin(MaxTower.getPhi()));
+  
   RawTowerContainer::ConstRange towerrange = _towerContainer->getTowers();
+
   for (RawTowerContainer::ConstIterator rtiter = towerrange.first; rtiter != towerrange.second; ++rtiter) 
   {
     RawTower *tower = rtiter->second;
     RawTowerGeom *tower_geom = _geomEM->get_tower_geometry(tower->get_key());
+    double this_energy = tower->get_energy();
     double this_phi = tower_geom->get_phi();
     double this_eta = tower_geom->get_eta();
-    double this_energy = tower->get_energy();
     double dif_eta = this_eta - MaxTower.getEta();
     double dif_phi = this_phi - MaxTower.getPhi();
 
     if(dif_phi > TMath::Pi()){dif_phi -= 2*TMath::Pi();} //make sure dif_phi is between -pi and pi
     else if(dif_phi < -1*TMath::Pi()){dif_phi += 2*TMath::Pi();}
-    const float kMAXDIFF = .084;
+    const float kMAXDIFF = .084; //this sets the size of the image cluster
     if(fabs(dif_eta) < kMAXDIFF and fabs(dif_phi) < kMAXDIFF )
     {
       Sasha49Towers.push_back(ChaseTower(dif_eta, dif_phi, this_energy, tower->get_key()));
+      //tower_geom->identify();
+      /* Not using the bin method because of the wrap around issue
+      pair<int,int> thisBins (_geomEM->get_etabin(tower_geom->get_eta()),_geomEM->get_phibin(tower_geom->get_phi()));
+      if(!(abs(thisBins.first-maxBins.first)<=3 and abs(thisBins.second-maxBins.second)<=3)){
+        //Sasha49Towers.push_back(ChaseTower(thisBins.first-maxBins.first, thisBins.second-maxBins.second, this_energy, tower->get_key()));
+        cout<<"Miss match \n\t"<<'('<<dif_eta<<','<<dif_phi<<")  = ("<<thisBins.first-maxBins.first<<','<<thisBins.second-maxBins.second<<')';
+        tower_geom->identify();
+      }*/
     }
   }
   if(Sasha49Towers.size()!=49){

@@ -38,26 +38,27 @@ int AllClusBurner::InitRun(PHCompositeNode *topNode)
 
   _f = new TFile( _foutname.c_str(), "RECREATE");
   _ttree = new TTree("subtractedTree","super stylish sapling");
-  _ttree->Branch("sub_clus_n",&_b_clustersub_n);
-  _ttree->Branch("isPhoton",&_b_isPhoton,"isPhoton[sub_clus_n]/I");
-  _ttree->Branch("parent_pid",&_b_parent_pid,"parent_pid[sub_clus_n]/I");
+  _ttree->Branch("clus_n",&_b_clustersub_n);
+  _ttree->Branch("isPhoton",&_b_isPhoton,"isPhoton[clus_n]/I");
+  _ttree->Branch("parent_pid",&_b_parent_pid,"parent_pid[clus_n]/I");
+  //_ttree->Branch("primary_pid",&_b_primary_pid,"primary_pid[clus_n]/I");
   /*_ttree->Branch("tphoton_e",&_b_truthphoton_E,"tphoton_e[sub_clus_n]/F");
     _ttree->Branch("tphoton_pT",&_b_truthphoton_pT,"tphoton_pT[sub_clus_n]/F");
     _ttree->Branch("tphoton_eta",&_b_truthphoton_eta,"tphoton_eta[sub_clus_n]/F");
     _ttree->Branch("tphoton_phi",&_b_truthphoton_phi,"tphoton_phi[sub_clus_n]/F");*/
-  _ttree->Branch("sub_clus_e",&_b_clustersub_E,"sub_clus_e[sub_clus_n]/F");
-  _ttree->Branch("sub_clus_calE",&_b_clustersub_calE,"sub_clus_calE[sub_clus_n]/F");
-  _ttree->Branch("sub_clus_ecore",&_b_clustersub_ecore,"sub_clus_ecore[sub_clus_n]/F");
+  _ttree->Branch("clus_e",&_b_clustersub_E,"clus_e[clus_n]/F");
+  _ttree->Branch("clus_calE",&_b_clustersub_calE,"clus_calE[clus_n]/F");
+  _ttree->Branch("clus_ecore",&_b_clustersub_ecore,"clus_ecore[clus_n]/F");
   /*_ttree->Branch("sub_clus_eta",&_b_clustersub_eta,"sub_clus_eta[sub_clus_n]/F");
     _ttree->Branch("sub_clus_phi",&_b_clustersub_phi,"sub_clus_phi[sub_clus_n]/F");*/
-  _ttree->Branch("sub_clus_prob",&_b_clustersub_prob,"sub_clus_prob[sub_clus_n]/F");
+  _ttree->Branch("clus_prob",&_b_clustersub_prob,"clus_prob[clus_n]/F");
   /*_ttree->Branch("matchDR",&_b_matchDR,"matchDR[sub_clus_n]/F");
     _ttree->Branch("matchEta",&_b_matchEta,"matchEta[sub_clus_n]/F");
     _ttree->Branch("matchPhi",&_b_matchPhi,"matchPhi[sub_clus_n]/F");*/
 
   //make a branch for each tower
   string bTitle="tower";
-  string bStruct = "[sub_clus_n]/F";
+  string bStruct = "[clus_n]/F";
   for (unsigned i = 0; i < _kNTOWERS; ++i)
   {
     string str = bTitle + std::to_string(i);
@@ -183,10 +184,14 @@ std::map<int,int> AllClusBurner::getTaggedClusters(PHCompositeNode *topNode){
       {
         /*If it is already in the list tag it as multi particle cluster*/
         taggedClusters.find(cluster->get_id())->second = -998;
-        cout<<"Collision cluster with E = "<<cluster->get_energy()<<'\n';
+        //cout<<"Collision cluster with E = "<<cluster->get_energy()<<'\n';
       }
       else if(cluster){
         taggedClusters[cluster->get_id()] = TMath::Abs(g4particle->get_pid());
+        //testing the primary particle 
+        if(TMath::Abs(g4particle->get_pid())==22){
+          if(_truthinfo->GetPrimaryParticle(iter->first)) cout<<"Primary particle is "<<_truthinfo->GetPrimaryParticle(iter->first)->get_pid();
+        }
       }
       /*get the parent info
         PHG4Particle *parent = _truthinfo->GetParticle(g4particle->get_parent_id());

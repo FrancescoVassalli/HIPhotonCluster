@@ -43,8 +43,8 @@ cd $SCRATCH_AREA
 set OUT_FILE=IntBHIPYTH${p}.root
 set ANA_FILE=IntBhipytha_ANA${p}.root
 #
-root -b -q InternalBFun.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
-root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p}\)
+#root -b -q InternalBFun.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
 #
 rm -rf $SCRATCH_AREA
 #

@@ -23,3 +23,5 @@ algoTesting/*.root
 algoTesting/*.csv
 algoTesting/.ipynb*
 analysis/*.root
+pythia/*.root
+condor/*.root

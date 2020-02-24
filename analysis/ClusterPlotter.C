@@ -71,7 +71,7 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
 void ClusterPlotter(){
 	//string inName="/sphenix/user/vassalli/idTest/singlesample/backana.root";
 	//TFile *f_data = new TFile("btowerData.root","CREATE");
-	string inName="/sphenix/user/vassalli/idTest/singlesample/backana.root";
+	string inName="/sphenix/user/vassalli/idTest/HIsample/intana.root";
 	TFile *f_data = new TFile("stowerData.root","CREATE");
 	TChain *tree = new TChain("subtractedTree");
 	tree->Add(inName.c_str());

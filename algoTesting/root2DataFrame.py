@@ -1,4 +1,4 @@
-
+#stores the data for a specfic cluster gets it from the root tree
 class Cluster:
 	def __init__(self):
 		self.total_energy =0
@@ -6,11 +6,11 @@ class Cluster:
 		for x in range(0,49):
 		 	self.towers.append(0)
 	def __init__(self,treeEvent,i):
-		self.total_energy = treeEvent.sub_clus_e[i]
-		self.cal_energy = treeEvent.sub_clus_calE[i]
-		self.core_energy = treeEvent.sub_clus_ecore[i]
+		self.total_energy = treeEvent.clus_e[i]
+		self.cal_energy = treeEvent.clus_calE[i]
+		self.core_energy = treeEvent.clus_ecore[i]
 		self.isPhoton = treeEvent.isPhoton[i]
-		self.prob = treeEvent.sub_clus_prob[i]
+		self.prob = treeEvent.clus_prob[i]
 		self.parent_pid = treeEvent.parent_pid[i]
 		self.towers=[]
 		#print(total_energy)
@@ -63,21 +63,21 @@ class Cluster:
 		self.towers.append(treeEvent.tower46[i])
 		self.towers.append(treeEvent.tower47[i])
 		self.towers.append(treeEvent.tower48[i])
-
+        #return a dictionary version of the cluster 
 	def getDict(self):
 		r = {'isPhoton': self.isPhoton, "total_energy": self.total_energy, "cal_energy": self.cal_energy, "core_energy": self.core_energy, 'sProb': self.prob, 'pid': self.parent_pid}
 		for i in range(0,len(self.towers)):
 			r["tower"+str(i)] = self.towers[i]
 		return r
-
+#get the clusters for this event 
 def makeClusters(chain):
 	rClusters = []
-	for i in range(0,len(chain.sub_clus_e)):
+	for i in range(0,len(chain.clus_e)):
 		#print("chain:"+str(chain.isPhoton[i])+" check:"+str(isPhoton))
-		if chain.sub_clus_e[i] >1:
+		if chain.clus_e[i] >1:
 			rClusters.append(Cluster(chain,i))
 	return rClusters
-
+#convert the root tree into an array of clusters 
 def processTree(tree):
 	rClusters = []
 	for jentry in xrange(tree.GetEntriesFast()):
@@ -90,9 +90,10 @@ def processTree(tree):
 		nb = chain.GetEntry(jentry)
 		if nb <=0:
 			continue
-		rClusters.extend(makeClusters(chain))
+                if chain.clus_n>0:
+		    rClusters.extend(makeClusters(chain))
 	return rClusters
-
+#convert the cluster array into a df 
 def makeDataFrame(l_cluster):
 	names = ['isPhoton','total_energy','cal_energy','core_energy','sProb','pid']
 	for i in range(0,49):
@@ -102,13 +103,13 @@ def makeDataFrame(l_cluster):
 		rows.append(cluster.getDict())
 
 	return pd.DataFrame(columns = names,data=rows)
-
+#NO MAIN START HERE
 from ROOT import TChain
 import pandas as pd
-
+#add the file you want with its tree name
 chain = TChain("subtractedTree")
 chain.Add("intana.root")
-#chain.Add("data.root")
+#make the df and save it
 df = makeDataFrame(processTree(chain))
 print(df.head())
 df.to_csv("photonclusters.csv")

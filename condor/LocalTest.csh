@@ -1,7 +1,7 @@
 #!/bin/csh 
 @ p = ( ${1} )
 #
-set OUT_LOCATION="/sphenix/user/vassalli/idTest/HIsample/"
+set OUT_LOCATION="/sphenix/user/vassalli/idTest/singlesample/"
 #
 @ n1 = 50 * ($p + 1)
 @ n2 = 50 * $p
@@ -40,8 +40,8 @@ cp ../burners/* $SCRATCH_AREA
 cp ../condor/burnerMacro.C $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-set OUT_FILE=IntBHIPYTH${p}.root
-set ANA_FILE=IntBhipytha_ANA${p}.root
+set OUT_FILE=Back_DST_OUT${p}.root
+set ANA_FILE=testANA${p}.root
 #
 #root -b -q InternalBFun.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$ANA_FILE\",${p},1\)

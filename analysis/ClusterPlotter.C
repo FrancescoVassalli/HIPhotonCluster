@@ -44,6 +44,8 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
       continue;
     }
     string name = strcluster + std::to_string(nclusters);
+    string title = string(clusE);
+    title+=" GeV";
     std::pair<int,int> loc;
     TH2F *map= new TH2F(name.c_str(),"",7,-.5,6.5,7,-.5,6.5);
     for (unsigned i = 0; i < kNTOWERS; ++i)

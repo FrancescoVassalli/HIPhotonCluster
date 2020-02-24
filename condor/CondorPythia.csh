@@ -2,7 +2,7 @@
 @ p =  ${1}
 #
 set OUT_LOCATION="/sphenix/user/vassalli/minBiasPythia/"
-set PYTHIA_FILE=${OUT_LOCATION}out${p}.root
+set PYTHIA_FILE=${OUT_LOCATION}out1.root
 #
 set SCRATCH_AREA="$_CONDOR_SCRATCH_DIR/fran_photons${p}"
 #

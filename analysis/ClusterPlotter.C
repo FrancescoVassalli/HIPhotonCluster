@@ -44,7 +44,7 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
       continue;
     }
     string name = strcluster + std::to_string(nclusters);
-    string title = string(clusE);
+    string title = to_string(clusE[iarray]);
     title+=" GeV";
     std::pair<int,int> loc;
     TH2F *map= new TH2F(name.c_str(),"",7,-.5,6.5,7,-.5,6.5);
@@ -69,8 +69,8 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
 
 
 void ClusterPlotter(){
-	string inName="/sphenix/user/vassalli/idTest/HIsample/intana.root";
-	TFile *f_data = new TFile("stowerData.root","CREATE");
+	string inName="/sphenix/user/vassalli/idTest/singlesample/backana.root";
+	TFile *f_data = new TFile("btowerData.root","CREATE");
 	TChain *tree = new TChain("subtractedTree");
 	tree->Add(inName.c_str());
 	makeMaps(tree,"",5);

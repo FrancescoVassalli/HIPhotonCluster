@@ -25,13 +25,14 @@ void TowerMap::init(std::vector<ChaseTower> init_towers, ChaseTower MaxTower){
   else has49=true;
   for (std::vector<ChaseTower>::iterator iTower = init_towers.begin(); iTower != init_towers.end(); ++iTower)
   {
-    _map[pair<int,int>(angle2Int(iTower->getEta()),angle2Int(iTower->getPhi()))] = iTower->getEnergy();
+    _map[pair<int,int>(iTower->getEta(),iTower->getPhi())] = iTower->getEnergy();
   }
   if(_maxTower) delete _maxTower;
   _maxTower = new ChaseTower(MaxTower);
 
 }
 
+//deprecated
 int TowerMap::angle2Int(float eta){
   //cout<<"mapping angle="<<eta<<'\n';
   if (eta<=-.07)

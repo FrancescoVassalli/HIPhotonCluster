@@ -3,8 +3,9 @@
 
 
 int DrawClusters(){
-  TFile *input = new TFile("towerData.root","READ");
-  const unsigned ncluster=5;
+  //TFile *input = new TFile("btowerData.root","READ");
+  TFile *input = new TFile("stowerData.root","READ");
+  const unsigned ncluster=3;
   string sclus= "cluster";
   gStyle->SetPaintTextFormat("1.3f");
   gStyle->SetOptStat(0);

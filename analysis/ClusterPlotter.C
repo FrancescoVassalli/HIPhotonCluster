@@ -9,7 +9,6 @@ pair<int,int> getTowerEnergy(unsigned mapPosition){
   return pair<int,int>(xPos,yPos);
 }
 
-
 void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
   const unsigned kNTOWERS = 49;
 	int clusn;

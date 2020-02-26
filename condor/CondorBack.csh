@@ -1,7 +1,7 @@
 #!/bin/csh 
 @ p = ( ${1} )
 #
-set OUT_LOCATION="/sphenix/user/vassalli/idTest/singlesample/"
+set OUT_LOCATION="/sphenix/user/vassalli/idTest/HIsample/"
 @ n1 = 50 * ($p + 1)
 @ n2 = 50 * $p
 set s1 = ""
@@ -43,7 +43,7 @@ cp burners/* $SCRATCH_AREA
 cp condor/* $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-#root -b -q FunBack.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
+root -b -q FunBack.C\(3,\"\",\"$OUT_LOCATION$OUT_FILE\",\"$IN_FILE\"\) 
 root -b -q burnerMacro.C\(\"$OUT_LOCATION$OUT_FILE\",\"$OUT_LOCATION$ANA_FILE\",${p},1\)
 #
 rm -rf $SCRATCH_AREA

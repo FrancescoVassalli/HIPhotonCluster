@@ -6,7 +6,7 @@ Universe        = vanilla
 Notification    = Never
 
 # The executable we want to run.
-Executable   =  /phenix/u/vassalli/sphenix/id/condor/FlowCondor.csh
+Executable   =  /phenix/u/vassalli/sphenix/id/condor/CondorSignal.csh
 
  # The argument to pass to the executable.
 Arguments       = $(Process)
@@ -24,7 +24,7 @@ Rank		= CPU_Speed
 
 # Jobs with higher numerical priority will run before jobs 
 # with lower numerical priority (-20 to 20).
-Priority        = +18
+Priority        = +10
 
 # Used to give jobs a directory with respect to file input 
 # and output.
@@ -34,18 +34,18 @@ Initialdir   = /phenix/u/vassalli/sphenix/id/
 Input           = /dev/null
 
 # The job's stdout is sent to this file.
-Output       = /sphenix/user/vassalli/condor_logs/out.flow.$(Process)
+Output       = /sphenix/user/vassalli/condor_logs/out.sig.$(Process)
 
 # The job's stderr is sent to this file.
-Error        = /sphenix/user/vassalli/condor_logs/err.flow.$(Process)
+Error        = /sphenix/user/vassalli/condor_logs/err.sig.$(Process)
 
-# The condor log file for this job, useful when debuggflow
-Log          = /sphenix/user/vassalli/condor_logs/log.flow.$(Process)
+# The condor log file for this job, useful when debuggsig
+Log          = /sphenix/user/vassalli/condor_logs/log.sig.$(Process)
 
 # Email address to send notification to.
 Notify_user     = frva5829@colorado.edu
 
-request_memory = 39100M
+request_memory = 39000M
 
 # This should be the last command and tells condor to queue the
 # job.  If a number is placed after the command (i.e. Queue 15)

@@ -18,7 +18,7 @@ void generator(std::string filename, unsigned nEvents){
   Pythia pythia;
   pythia.readString("Beams:eCM = 200.");
   pythia.readString("HardQCD:all = on");
-  pythia.readString("PhaseSpace:pTHatMin = 5.");
+  pythia.readString("PhaseSpace:pTHatMin = 7.");
   pythia.readString("Random::setSeed = on");
   pythia.readString("Random::seed =0");
   pythia.init();
@@ -47,7 +47,7 @@ void generator(std::string filename, unsigned nEvents){
     } 
     ntracks=0;
     for (int i = 0; i < pythia.event.size (); i++) {
-      if (pythia.event[i].e() >= 5 && TMath::Abs(pythia.event[i].eta())<1&&pythia.event[i].isFinal()) {
+      if (pythia.event[i].e() >= 10 && TMath::Abs(pythia.event[i].eta())<1&&pythia.event[i].isFinal()) {
         energy[ntracks]=pythia.event[i].pT ();
         eta[ntracks]=pythia.event[i].eta ();
         pid[ntracks]=pythia.event[i].id();

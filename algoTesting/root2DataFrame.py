@@ -108,7 +108,7 @@ from ROOT import TChain
 import pandas as pd
 #add the file you want with its tree name
 chain = TChain("subtractedTree")
-chain.Add("intana.root")
+chain.Add("sigana.root")
 #make the df and save it
 df = makeDataFrame(processTree(chain))
 print(df.head())

@@ -44,8 +44,10 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
       continue;
     }
     string name = strcluster + std::to_string(nclusters);
+    name+=ext;
     string title = to_string(clusE[iarray]);
-    title+=" GeV";
+    title+=" GeV p=";
+    title+=to_string(prob[iarray]);
     std::pair<int,int> loc;
     TH2F *map= new TH2F(name.c_str(),title.c_str(),7,-.5,6.5,7,-.5,6.5);
     for (unsigned i = 0; i < kNTOWERS; ++i)
@@ -66,14 +68,46 @@ void makeMaps(TChain *tree,string ext="",unsigned nclusters=0){
   test->Write();*/
 }
 
+int DrawClusters(TFile* input){
+  input->ReOpen("READ");
+  const unsigned ncluster=3;
+  string sclus= "cluster";
+  gStyle->SetPaintTextFormat("1.3f");
+  gStyle->SetOptStat(0);
+  for(unsigned iclus=0;iclus<ncluster;iclus++){
+    string name = sclus;
+    name+=to_string(iclus+1);
+    name+="s";
+    cout<<"getting "<<name<<'\n';
+    TH2F *thisClus = (TH2F*) input->Get(name.c_str());
+    TCanvas *tc = new TCanvas();
+    thisClus->Draw("colz text");
+  }
+/*  for(unsigned iclus=0;iclus<ncluster;iclus++){
+    string name = sclus;
+    name+=to_string(iclus+1);
+    name+="b";
+    TH2F *thisClus = (TH2F*) input->Get(name.c_str());
+    TCanvas *tc = new TCanvas();
+    thisClus->Draw("colz text");
+  }*/
+  return 0;
+}
+
 
 
 void ClusterPlotter(){
 	//string inName="/sphenix/user/vassalli/idTest/singlesample/backana.root";
 	//TFile *f_data = new TFile("btowerData.root","CREATE");
-	string inName="/sphenix/user/vassalli/idTest/HIsample/intana.root";
-	TFile *f_data = new TFile("stowerData.root","CREATE");
+	string inName="../algoTesting/intana.root";
+	TFile *f_data = new TFile("towerData.root","CREATE");
 	TChain *tree = new TChain("subtractedTree");
+	TChain *treeb = new TChain("subtractedTree");
 	tree->Add(inName.c_str());
-	makeMaps(tree,"",5);
+	makeMaps(tree,"s",3);
+	inName="../algoTesting/backana.root";
+	treeb->Add(inName.c_str());
+  makeMaps(treeb,"b",3);
+  f_data->Close();
+  DrawClusters(f_data);
 }

@@ -2,7 +2,7 @@
 @ p =  ${1}
 #
 set OUT_LOCATION="/sphenix/user/vassalli/minBiasPythia/"
-set PYTHIA_FILE=${OUT_LOCATION}out1.root
+set PYTHIA_FILE=${OUT_LOCATION}ten${p}.root
 #
 set SCRATCH_AREA="$_CONDOR_SCRATCH_DIR/fran_photons${p}"
 #
@@ -13,7 +13,7 @@ mkdir $SCRATCH_AREA
 cp ./pythia/$GENNAME $SCRATCH_AREA
 #
 cd $SCRATCH_AREA
-./$GENNAME $PYTHIA_FILE 10000000
+./$GENNAME $PYTHIA_FILE 100000
 #
 rm -r $SCRATCH_AREA
 #

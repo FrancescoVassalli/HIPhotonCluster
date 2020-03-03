@@ -55,7 +55,10 @@ void generator(std::string filename, unsigned nEvents){
       }
     }
     if(ntracks==0) iEvent--;
-    else t->Fill();
+    else {
+      t->Fill();
+      if(iEvent%10000) cout<<iEvent<<" of "<<nEvents<<" completed\n";
+    }
   }
   pythia.stat();
   t->Write();

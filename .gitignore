@@ -25,3 +25,6 @@ algoTesting/.ipynb*
 analysis/*.root
 pythia/*.root
 condor/*.root
+*.png
+*/backup/*
+*/exclus/*

@@ -108,10 +108,10 @@ from ROOT import TChain
 import pandas as pd
 #add the file you want with its tree name
 chain = TChain("subtractedTree")
-chain.Add("intana.root")
+chain.Add("gana.root")
 #make the df and save it
 df = makeDataFrame(processTree(chain))
 print(df.head())
-df.to_csv("photonclusters.csv")
+df.to_csv("singleClusters.csv")
 
 

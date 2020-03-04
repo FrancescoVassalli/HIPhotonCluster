@@ -245,8 +245,8 @@ int FunSignal(
     {
       // toss low multiplicity dummy events
       PHG4SimpleEventGenerator *gen = new PHG4SimpleEventGenerator();
-      gen->add_particles("gamma",10);
-      //gen->add_particles("pi0",10);
+      gen->add_particles("gamma",8);
+      gen->add_particles("pi0",8);
       if (readhepmc || do_embedding || runpythia8 || runpythia6)
       {
         gen->set_reuse_existing_vertex(true);
@@ -264,7 +264,7 @@ int FunSignal(
       gen->set_vertex_size_parameters(0.0, 0.0);
       gen->set_eta_range(-1.0, 1.0);
       gen->set_phi_range(-1.0 * TMath::Pi(), 1.0 * TMath::Pi());
-      gen->set_pt_range(5,20);
+      gen->set_pt_range(10,16);
       gen->Embed(2);
       gen->Verbosity(10);
 
